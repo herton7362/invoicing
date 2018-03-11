@@ -57,9 +57,7 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
 
     @Override
     public void delete(String id) throws Exception {
-        T t = getRepository().findOne(id);
-        t.setLogicallyDeleted(true);
-        getRepository().save(t);
+        getRepository().delete(id);
     }
 
     @Override
@@ -135,7 +133,11 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
                 if("isNull".equals(values[0])) {
                     predicate.add(criteriaBuilder.isNull(root.get(key)));
                 } else if(attribute.getJavaType().equals(String.class)) {
-                    predicate.add(criteriaBuilder.like(root.get(key), "%"+ values[0] +"%"));
+                    if(values.length == 1) {
+                        predicate.add(criteriaBuilder.like(root.get(key), "%"+ values[0] +"%"));
+                    } else {
+                        predicate.add(criteriaBuilder.in(root.get(key)).value(values));
+                    }
                 } else if(attribute.getJavaType().equals(Boolean.class)) {
                     predicate.add(criteriaBuilder.equal(root.get(key), Boolean.valueOf(values[0])));
                 } else if(attribute.getJavaType().getSuperclass().equals(Enum.class)) {
@@ -193,7 +195,6 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
                     }
                 }
             }
-            predicate.add(criteriaBuilder.equal(root.get("logicallyDeleted"), false));
             String clientId = UserThread.getInstance().getClientId();
             if(StringUtils.isNotBlank(clientId) && !this.allEntities) {
                 predicate.add(criteriaBuilder.equal(root.get("clientId"), UserThread.getInstance().getClientId()));

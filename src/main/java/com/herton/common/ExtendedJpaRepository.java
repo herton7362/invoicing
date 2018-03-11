@@ -28,7 +28,7 @@ public class ExtendedJpaRepository<T extends BaseEntity> extends SimpleJpaReposi
     public <S extends T> S save(S entity) {
         Assert.notNull(entity, "entity need be initialized");
         if (StringUtils.isEmpty(entity.getId())) {
-            entity.setCreatedDate(new Date().getTime());
+            entity.setCreatedDate(new Date());
             BaseUser user = UserThread.getInstance().get();
             if(user != null) {
                 entity.setCreateUserId(user.getId());
@@ -42,7 +42,7 @@ public class ExtendedJpaRepository<T extends BaseEntity> extends SimpleJpaReposi
         if(entity.getLogicallyDeleted() == null) {
             entity.setLogicallyDeleted(false);
         }
-        entity.setUpdatedDate(new Date().getTime());
+        entity.setUpdatedDate(new Date());
         return super.save(entity);
     }
 }
