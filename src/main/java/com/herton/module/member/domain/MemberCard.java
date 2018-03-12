@@ -17,7 +17,7 @@ public class MemberCard extends BaseEntity {
     private String cardNumber;
     @ApiModelProperty(value = "会员卡类型id")
     @Column(length = 36)
-    private String MemberCardTypeId;
+    private String memberCardTypeId;
     @ApiModelProperty(value = "会员id")
     @Column(length = 36)
     private String memberId;
@@ -43,11 +43,11 @@ public class MemberCard extends BaseEntity {
     }
 
     public String getMemberCardTypeId() {
-        return MemberCardTypeId;
+        return memberCardTypeId;
     }
 
     public void setMemberCardTypeId(String memberCardTypeId) {
-        MemberCardTypeId = memberCardTypeId;
+        this.memberCardTypeId = memberCardTypeId;
     }
 
     public String getMemberId() {

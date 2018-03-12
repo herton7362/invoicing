@@ -17,4 +17,11 @@ public interface MemberCardService extends CrudService<MemberCard> {
      * @return 会员总积分
      */
     Integer getMemberTotalPoints(String memberId) throws Exception;
+
+    /**
+     * 获取会员的会员卡数量
+     * @param memberId 会员id
+     * @return 会员的会员卡数量
+     */
+    Integer getMemberCardCount(String memberId);
 }

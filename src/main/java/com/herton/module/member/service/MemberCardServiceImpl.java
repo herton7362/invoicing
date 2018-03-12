@@ -57,6 +57,13 @@ public class MemberCardServiceImpl extends AbstractCrudService<MemberCard> imple
         return result;
     }
 
+    @Override
+    public Integer getMemberCardCount(String memberId) {
+        Map<String, String[]> params = new HashMap<>();
+        params.put("memberId", new String[]{memberId});
+        return Long.valueOf(memberCardRepository.count(getSpecification(params))).intValue();
+    }
+
     @Autowired
     public MemberCardServiceImpl(MemberCardRepository memberCardRepository) {
         this.memberCardRepository = memberCardRepository;

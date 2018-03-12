@@ -17,4 +17,23 @@ public interface MemberService extends CrudService<Member> {
      * @return 积分
      */
     Integer getPoints(String id) throws Exception;
+
+    /**
+     * 获取会员卡数量
+     * @param id 会员id
+     * @return 会员卡数量
+     */
+    Integer getCardCount(String id) throws Exception;
+
+    /**
+     * 启用
+     * @param id 会员id
+     */
+    void enable(String id) throws Exception;
+
+    /**
+     * 停用
+     * @param id 会员id
+     */
+    void disable(String id);
 }
