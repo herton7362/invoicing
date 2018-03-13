@@ -33,6 +33,8 @@ public class MemberCard extends BaseEntity {
     @ApiModelProperty(value = "过期日期")
     @JsonFormat(pattern = "yyyy-MM-dd", locale = "zh", timezone = "GMT+8")
     private Date expireDate;
+    @ApiModelProperty(value = "支付密码")
+    private String password;
 
     public String getCardNumber() {
         return cardNumber;
@@ -88,5 +90,13 @@ public class MemberCard extends BaseEntity {
 
     public void setExpireDate(Date expireDate) {
         this.expireDate = expireDate;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

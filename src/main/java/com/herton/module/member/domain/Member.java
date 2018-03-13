@@ -1,6 +1,7 @@
 package com.herton.module.member.domain;
 
 import com.herton.entity.BaseEntity;
+import com.herton.entity.BaseUser;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -11,16 +12,13 @@ import javax.persistence.Enumerated;
 
 @Entity
 @ApiModel("会员")
-public class Member extends BaseEntity {
+public class Member extends BaseUser {
     @ApiModelProperty(value = "会员编号")
     @Column(length = 20)
     private String code;
     @ApiModelProperty(value = "会员名")
     @Column(length = 10)
     private String name;
-    @ApiModelProperty(value = "电话")
-    @Column(length = 20)
-    private String mobile;
     @ApiModelProperty(value = "证件号码")
     @Column(length = 50)
     private String licenseNumber;
@@ -46,14 +44,6 @@ public class Member extends BaseEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getMobile() {
-        return mobile;
-    }
-
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
     }
 
     public String getLicenseNumber() {
