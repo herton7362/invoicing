@@ -9,6 +9,7 @@ import com.herton.exceptions.BusinessException;
 import com.herton.module.member.domain.Member;
 import com.herton.module.member.domain.MemberCard;
 import com.herton.module.member.domain.MemberRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
@@ -31,25 +32,31 @@ public class MemberServiceImpl extends AbstractCrudService<Member> implements Me
 
     @Override
     public List<Member> findAll(Map<String, String[]> param) throws Exception {
-        if(param.containsKey("cardNumber")) {
+        return super.findAll(produceQueryParam(param));
+    }
+
+    @Override
+    public PageResult<Member> findAll(PageRequest pageRequest, Map<String, String[]> param) throws Exception {
+        return super.findAll(pageRequest, produceQueryParam(param));
+    }
+
+    private Map<String, String[]> produceQueryParam(Map<String, String[]> param) throws Exception {
+        Map<String, String[]> newParam = new HashMap<>();
+        param.entrySet().forEach((stringEntry -> newParam.put(stringEntry.getKey(), stringEntry.getValue())));
+        if(param.containsKey("cardNumber") && StringUtils.isNotBlank(param.get("cardNumber")[0])) {
             Map<String, String[]> paramTemp = new HashMap<>();
-            param.put("cardNumber", param.get("cardNumber"));
-            param.remove("cardNumber");
+            paramTemp.put("cardNumber", param.get("cardNumber"));
+            newParam.remove("cardNumber");
             List<MemberCard> memberCards = memberCardService.findAll(paramTemp);
             if(memberCards != null && !memberCards.isEmpty()) {
                 List<String> ids = new ArrayList<>();
                 for (MemberCard memberCard : memberCards) {
                     ids.add(memberCard.getMemberId());
                 }
-                param.put("id", ids.toArray(new String[]{}));
+                newParam.put("id", ids.toArray(new String[]{}));
             }
         }
-        return super.findAll(param);
-    }
-
-    @Override
-    public PageResult<Member> findAll(PageRequest pageRequest, Map<String, String[]> param) throws Exception {
-        return super.findAll(pageRequest, param);
+        return newParam;
     }
 
     @Override
@@ -86,6 +93,9 @@ public class MemberServiceImpl extends AbstractCrudService<Member> implements Me
 
     @Override
     public void enable(String id) throws Exception {
+        if(StringUtils.isBlank(id)) {
+            throw new BusinessException("会员id不能为空");
+        }
         Member member = memberRepository.findOne(id);
         if(!member.getLogicallyDeleted()) {
             return;
@@ -95,7 +105,10 @@ public class MemberServiceImpl extends AbstractCrudService<Member> implements Me
     }
 
     @Override
-    public void disable(String id) {
+    public void disable(String id) throws Exception {
+        if(StringUtils.isBlank(id)) {
+            throw new BusinessException("会员id不能为空");
+        }
         Member member = memberRepository.findOne(id);
         if(member.getLogicallyDeleted()) {
             return;

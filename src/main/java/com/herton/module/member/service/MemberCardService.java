@@ -2,6 +2,8 @@ package com.herton.module.member.service;
 
 import com.herton.common.CrudService;
 import com.herton.module.member.domain.MemberCard;
+import com.herton.module.member.web.ChangePointsParam;
+import com.herton.module.member.web.ChangeBalanceParam;
 
 public interface MemberCardService extends CrudService<MemberCard> {
     /**
@@ -24,4 +26,30 @@ public interface MemberCardService extends CrudService<MemberCard> {
      * @return 会员的会员卡数量
      */
     Integer getMemberCardCount(String memberId);
+
+    /**
+     * 启用
+     * @param id 会员卡id
+     */
+    void enable(String id) throws Exception;
+
+    /**
+     * 停用
+     * @param id 会员卡id
+     */
+    void disable(String id) throws Exception;
+
+    /**
+     * 充值
+     * @param id 会员卡id
+     * @param changeBalanceParam 充值参数
+     */
+    void changeBalance(String id, ChangeBalanceParam changeBalanceParam) throws Exception;
+
+    /**
+     * 变更积分
+     * @param id 会员卡id
+     * @param changePointsParam 变更积分参数
+     */
+    void changePoints(String id, ChangePointsParam changePointsParam) throws Exception;
 }

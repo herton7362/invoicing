@@ -6,6 +6,8 @@ import com.herton.common.utils.StringUtils;
 import com.herton.exceptions.BusinessException;
 import com.herton.module.member.domain.MemberCard;
 import com.herton.module.member.domain.MemberCardRepository;
+import com.herton.module.member.web.ChangePointsParam;
+import com.herton.module.member.web.ChangeBalanceParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,6 +64,74 @@ public class MemberCardServiceImpl extends AbstractCrudService<MemberCard> imple
         Map<String, String[]> params = new HashMap<>();
         params.put("memberId", new String[]{memberId});
         return Long.valueOf(memberCardRepository.count(getSpecification(params))).intValue();
+    }
+
+    @Override
+    public void enable(String id) throws Exception {
+        if(StringUtils.isBlank(id)) {
+            throw new BusinessException("会员卡id不能为空");
+        }
+        MemberCard memberCard = memberCardRepository.findOne(id);
+        if(!memberCard.getLogicallyDeleted()) {
+            return;
+        }
+        memberCard.setLogicallyDeleted(false);
+        memberCardRepository.save(memberCard);
+    }
+
+    @Override
+    public void disable(String id) throws Exception {
+        if(StringUtils.isBlank(id)) {
+            throw new BusinessException("会员卡id不能为空");
+        }
+        MemberCard memberCard = memberCardRepository.findOne(id);
+        if(memberCard.getLogicallyDeleted()) {
+            return;
+        }
+        memberCard.setLogicallyDeleted(true);
+        memberCardRepository.save(memberCard);
+    }
+
+    @Override
+    public void changeBalance(String id, ChangeBalanceParam changeBalanceParam) throws Exception {
+        if(StringUtils.isBlank(id)) {
+            throw new BusinessException("会员卡id不能为空");
+        }
+        if(changeBalanceParam.getValue() == null) {
+            throw new BusinessException("充值金额不能为空");
+        }
+        if(changeBalanceParam.getValue() == 0) {
+            throw new BusinessException("充值金额不能为0");
+        }
+        if(StringUtils.isBlank(changeBalanceParam.getReceiveAccountId())) {
+            throw new BusinessException("收款账户id不能为空");
+        }
+        MemberCard memberCard = memberCardRepository.findOne(id);
+        memberCard.setBalance(new BigDecimal(memberCard.getBalance())
+                .add(new BigDecimal(changeBalanceParam.getValue()))
+                .add(new BigDecimal(changeBalanceParam.getExtra())).doubleValue());
+        memberCardRepository.save(memberCard);
+        // TODO 增加收款单
+    }
+
+    @Override
+    public void changePoints(String id, ChangePointsParam changePointsParam) throws Exception {
+        if(StringUtils.isBlank(id)) {
+            throw new BusinessException("会员卡id不能为空");
+        }
+        if(changePointsParam.getValue() == null) {
+            throw new BusinessException("变更积分不能为空");
+        }
+        if(changePointsParam.getValue() == 0) {
+            throw new BusinessException("变更积分不能为0");
+        }
+        if(StringUtils.isBlank(changePointsParam.getRemark())) {
+            throw new BusinessException("调整原因不能为空");
+        }
+        MemberCard memberCard = memberCardRepository.findOne(id);
+        memberCard.setPoints(memberCard.getPoints() + changePointsParam.getValue());
+        memberCardRepository.save(memberCard);
+        // TODO 增加积分变更明细
     }
 
     @Autowired

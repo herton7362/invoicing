@@ -1,6 +1,5 @@
 package com.herton.module.member.domain;
 
-import com.herton.entity.BaseEntity;
 import com.herton.entity.BaseUser;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

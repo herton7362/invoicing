@@ -35,5 +35,5 @@ public interface MemberService extends CrudService<Member> {
      * 停用
      * @param id 会员id
      */
-    void disable(String id);
+    void disable(String id) throws Exception;
 }
