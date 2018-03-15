@@ -1,4 +1,4 @@
-package com.herton.module.member.web;
+package com.herton.module.basicdata.member.web;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

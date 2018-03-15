@@ -1,4 +1,4 @@
-package com.herton.module.member.service;
+package com.herton.module.basicdata.member.service;
 
 import com.herton.common.AbstractCrudService;
 import com.herton.common.PageRepository;
@@ -6,9 +6,9 @@ import com.herton.common.PageResult;
 import com.herton.common.utils.NumberUtils;
 import com.herton.common.utils.StringUtils;
 import com.herton.exceptions.BusinessException;
-import com.herton.module.member.domain.Member;
-import com.herton.module.member.domain.MemberCard;
-import com.herton.module.member.domain.MemberRepository;
+import com.herton.module.basicdata.member.domain.Member;
+import com.herton.module.basicdata.member.domain.MemberCard;
+import com.herton.module.basicdata.member.domain.MemberRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;

@@ -1,4 +1,4 @@
-package com.herton.module.member.domain;
+package com.herton.module.basicdata.member.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.herton.entity.BaseEntity;

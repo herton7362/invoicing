@@ -1,9 +1,10 @@
-package com.herton.module.member.service;
+package com.herton.module.basicdata.member.service;
 
 import com.herton.common.CrudService;
-import com.herton.module.member.domain.MemberCard;
-import com.herton.module.member.web.ChangePointsParam;
-import com.herton.module.member.web.ChangeBalanceParam;
+import com.herton.module.basicdata.member.domain.MemberCard;
+import com.herton.module.basicdata.member.web.ChangePointsParam;
+import com.herton.module.basicdata.member.web.ChangeBalanceParam;
+import com.herton.module.basicdata.member.web.ExchangePointsToBalanceParam;
 
 public interface MemberCardService extends CrudService<MemberCard> {
     /**
@@ -52,4 +53,11 @@ public interface MemberCardService extends CrudService<MemberCard> {
      * @param changePointsParam 变更积分参数
      */
     void changePoints(String id, ChangePointsParam changePointsParam) throws Exception;
+
+    /**
+     * 积分转换储值
+     * @param id 会员卡id
+     * @param exchangePointsToBalanceParam 积分转换储值参数
+     */
+    void exchangePointsToBalance(String id, ExchangePointsToBalanceParam exchangePointsToBalanceParam) throws Exception;
 }

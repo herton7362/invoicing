@@ -1,9 +1,9 @@
-package com.herton.module.member.web;
+package com.herton.module.basicdata.member.web;
 
 import com.herton.common.AbstractCrudController;
 import com.herton.common.CrudService;
-import com.herton.module.member.domain.MemberCardType;
-import com.herton.module.member.service.MemberCardTypeService;
+import com.herton.module.basicdata.member.domain.MemberCardType;
+import com.herton.module.basicdata.member.service.MemberCardTypeService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

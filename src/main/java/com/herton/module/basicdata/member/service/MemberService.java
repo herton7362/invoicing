@@ -1,7 +1,7 @@
-package com.herton.module.member.service;
+package com.herton.module.basicdata.member.service;
 
 import com.herton.common.CrudService;
-import com.herton.module.member.domain.Member;
+import com.herton.module.basicdata.member.domain.Member;
 
 public interface MemberService extends CrudService<Member> {
     /**

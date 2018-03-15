@@ -1,4 +1,4 @@
-package com.herton.module.member.domain;
+package com.herton.module.basicdata.member.domain;
 
 import com.herton.entity.BaseUser;
 import io.swagger.annotations.ApiModel;

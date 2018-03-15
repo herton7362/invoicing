@@ -1,13 +1,14 @@
-package com.herton.module.member.service;
+package com.herton.module.basicdata.member.service;
 
 import com.herton.common.AbstractCrudService;
 import com.herton.common.PageRepository;
 import com.herton.common.utils.StringUtils;
 import com.herton.exceptions.BusinessException;
-import com.herton.module.member.domain.MemberCard;
-import com.herton.module.member.domain.MemberCardRepository;
-import com.herton.module.member.web.ChangePointsParam;
-import com.herton.module.member.web.ChangeBalanceParam;
+import com.herton.module.basicdata.member.domain.MemberCard;
+import com.herton.module.basicdata.member.domain.MemberCardRepository;
+import com.herton.module.basicdata.member.web.ChangePointsParam;
+import com.herton.module.basicdata.member.web.ChangeBalanceParam;
+import com.herton.module.basicdata.member.web.ExchangePointsToBalanceParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -132,6 +133,30 @@ public class MemberCardServiceImpl extends AbstractCrudService<MemberCard> imple
         memberCard.setPoints(memberCard.getPoints() + changePointsParam.getValue());
         memberCardRepository.save(memberCard);
         // TODO 增加积分变更明细
+    }
+
+    @Override
+    public void exchangePointsToBalance(String id, ExchangePointsToBalanceParam exchangePointsToBalanceParam) throws Exception {
+        if(StringUtils.isBlank(id)) {
+            throw new BusinessException("会员卡id不能为空");
+        }
+        if(exchangePointsToBalanceParam.getPoints() == null) {
+            throw new BusinessException("兑换积分不能为空");
+        }
+        if(exchangePointsToBalanceParam.getPoints() == 0) {
+            throw new BusinessException("兑换积分不能为0");
+        }
+        if(exchangePointsToBalanceParam.getBalance() == null) {
+            throw new BusinessException("转化储值不能为空");
+        }
+        if(exchangePointsToBalanceParam.getBalance() == 0) {
+            throw new BusinessException("转化储值不能为0");
+        }
+        MemberCard memberCard = memberCardRepository.findOne(id);
+        memberCard.setPoints(memberCard.getPoints() - exchangePointsToBalanceParam.getPoints());
+        memberCard.setBalance(new BigDecimal(memberCard.getBalance())
+                .add(new BigDecimal(exchangePointsToBalanceParam.getBalance())).doubleValue());
+        memberCardRepository.save(memberCard);
     }
 
     @Autowired

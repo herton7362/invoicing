@@ -1,11 +1,11 @@
-package com.herton.module.member.web;
+package com.herton.module.basicdata.member.web;
 
 import com.herton.common.AbstractCrudController;
 import com.herton.common.CrudService;
 import com.herton.common.utils.NumberUtils;
 import com.herton.common.utils.StringUtils;
-import com.herton.module.member.domain.Member;
-import com.herton.module.member.service.MemberService;
+import com.herton.module.basicdata.member.domain.Member;
+import com.herton.module.basicdata.member.service.MemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
