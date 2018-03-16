@@ -61,7 +61,10 @@ public class MemberCardServiceImpl extends AbstractCrudService<MemberCard> imple
     }
 
     @Override
-    public Integer getMemberCardCount(String memberId) {
+    public Integer getMemberCardCount(String memberId) throws Exception {
+        if(StringUtils.isBlank(memberId)) {
+            throw new BusinessException("会员id不能为空");
+        }
         Map<String, String[]> params = new HashMap<>();
         params.put("memberId", new String[]{memberId});
         return Long.valueOf(memberCardRepository.count(getSpecification(params))).intValue();
