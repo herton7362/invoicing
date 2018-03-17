@@ -91,32 +91,6 @@ public class MemberServiceImpl extends AbstractCrudService<Member> implements Me
         return memberCardService.getMemberCardCount(id);
     }
 
-    @Override
-    public void enable(String id) throws Exception {
-        if(StringUtils.isBlank(id)) {
-            throw new BusinessException("会员id不能为空");
-        }
-        Member member = memberRepository.findOne(id);
-        if(!member.getLogicallyDeleted()) {
-            return;
-        }
-        member.setLogicallyDeleted(false);
-        memberRepository.save(member);
-    }
-
-    @Override
-    public void disable(String id) throws Exception {
-        if(StringUtils.isBlank(id)) {
-            throw new BusinessException("会员id不能为空");
-        }
-        Member member = memberRepository.findOne(id);
-        if(member.getLogicallyDeleted()) {
-            return;
-        }
-        member.setLogicallyDeleted(true);
-        memberRepository.save(member);
-    }
-
     @Autowired
     public MemberServiceImpl(
             MemberRepository memberRepository,

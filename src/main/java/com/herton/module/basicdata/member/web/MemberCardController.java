@@ -22,26 +22,6 @@ public class MemberCardController extends AbstractCrudController<MemberCard> {
     }
 
     /**
-     * 启用
-     */
-    @ApiOperation(value="启用")
-    @RequestMapping(value = "/enable/{id}", method = RequestMethod.POST)
-    public ResponseEntity<?> enable(@PathVariable String id) throws Exception {
-        memberCardService.enable(id);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    /**
-     * 停用
-     */
-    @ApiOperation(value="停用")
-    @RequestMapping(value = "/disable/{id}", method = RequestMethod.POST)
-    public ResponseEntity<?> disable(@PathVariable String id) throws Exception {
-        memberCardService.disable(id);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    /**
      * 充值
      */
     @ApiOperation(value="充值")

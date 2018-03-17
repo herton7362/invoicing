@@ -50,4 +50,24 @@ public abstract class AbstractCrudController<T extends BaseEntity> extends Abstr
         getService().sort(ts);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    /**
+     * 启用
+     */
+    @ApiOperation(value="启用")
+    @RequestMapping(value = "/enable/{id}", method = RequestMethod.POST)
+    public ResponseEntity<T> enable(@PathVariable String id) throws Exception {
+        getService().enable(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * 停用
+     */
+    @ApiOperation(value="停用")
+    @RequestMapping(value = "/disable/{id}", method = RequestMethod.POST)
+    public ResponseEntity<T> disable(@PathVariable String id) throws Exception {
+        getService().disable(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

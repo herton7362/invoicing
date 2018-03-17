@@ -53,26 +53,6 @@ public class MemberController extends AbstractCrudController<Member> {
         return new ResponseEntity<>(memberService.getCardCount(id), HttpStatus.OK);
     }
 
-    /**
-     * 启用
-     */
-    @ApiOperation(value="启用")
-    @RequestMapping(value = "/enable/{id}", method = RequestMethod.POST)
-    public ResponseEntity<?> enable(@PathVariable String id) throws Exception {
-        memberService.enable(id);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    /**
-     * 停用
-     */
-    @ApiOperation(value="停用")
-    @RequestMapping(value = "/disable/{id}", method = RequestMethod.POST)
-    public ResponseEntity<?> disable(@PathVariable String id) throws Exception {
-        memberService.disable(id);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
     @Autowired
     public MemberController(MemberService memberService) {
         this.memberService = memberService;

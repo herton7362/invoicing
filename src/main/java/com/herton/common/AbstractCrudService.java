@@ -5,6 +5,7 @@ import com.herton.common.utils.StringUtils;
 import com.herton.entity.BaseEntity;
 import com.herton.exceptions.BusinessException;
 import com.herton.module.auth.UserThread;
+import com.herton.module.basicdata.member.domain.Member;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -247,5 +248,29 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
             t.setSortNumber(i);
             getRepository().save(t);
         }
+    }
+
+    public void enable(String id) throws Exception {
+        if(StringUtils.isBlank(id)) {
+            throw new BusinessException("id不能为空");
+        }
+        T t = getRepository().findOne(id);
+        if(!t.getLogicallyDeleted()) {
+            return;
+        }
+        t.setLogicallyDeleted(false);
+        getRepository().save(t);
+    }
+
+    public void disable(String id) throws Exception {
+        if(StringUtils.isBlank(id)) {
+            throw new BusinessException("id不能为空");
+        }
+        T t = getRepository().findOne(id);
+        if(t.getLogicallyDeleted()) {
+            return;
+        }
+        t.setLogicallyDeleted(true);
+        getRepository().save(t);
     }
 }
