@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel("修改期初金额")
 public class EditOpeningBalanceParam {
     @ApiModelProperty(value = "金额")
-    public Double openingBalance;
+    private Double openingBalance;
 
     public Double getOpeningBalance() {
         return openingBalance;
