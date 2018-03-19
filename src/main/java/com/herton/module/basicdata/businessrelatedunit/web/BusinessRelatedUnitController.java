@@ -31,6 +31,16 @@ public class BusinessRelatedUnitController extends AbstractCrudController<Busine
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    /**
+     * 设置信用额度
+     */
+    @ApiOperation(value="设置信用额度")
+    @RequestMapping(value = "/editCreditLine/{id}", method = RequestMethod.POST)
+    public ResponseEntity<?> editCreditLine(@PathVariable String id, @RequestBody EditCreditLineParam editCreditLineParam) throws Exception {
+        businessRelatedUnitService.editCreditLine(id, editCreditLineParam);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @Autowired
     public BusinessRelatedUnitController(BusinessRelatedUnitService businessRelatedUnitService) {
         this.businessRelatedUnitService = businessRelatedUnitService;

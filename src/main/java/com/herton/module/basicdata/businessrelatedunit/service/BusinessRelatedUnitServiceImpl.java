@@ -6,6 +6,7 @@ import com.herton.common.utils.StringUtils;
 import com.herton.exceptions.BusinessException;
 import com.herton.module.basicdata.businessrelatedunit.domain.BusinessRelatedUnit;
 import com.herton.module.basicdata.businessrelatedunit.domain.BusinessRelatedUnitRepository;
+import com.herton.module.basicdata.businessrelatedunit.web.EditCreditLineParam;
 import com.herton.module.basicdata.businessrelatedunit.web.EditReceivablePayableAmountParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,7 +28,7 @@ public class BusinessRelatedUnitServiceImpl extends AbstractCrudService<Business
         if(StringUtils.isBlank(id)) {
             throw new BusinessException("单位id不能为空");
         }
-        BusinessRelatedUnit businessRelatedUnit = new BusinessRelatedUnit();
+        BusinessRelatedUnit businessRelatedUnit = findOne(id);
         BigDecimal value = new BigDecimal(editReceivablePayableAmountParam.getOpeningReceivableAmount())
                 .subtract(new BigDecimal(businessRelatedUnit.getOpeningReceivableAmount()));
         businessRelatedUnit.setOpeningReceivableAmount(editReceivablePayableAmountParam.getOpeningReceivableAmount());
@@ -36,6 +37,20 @@ public class BusinessRelatedUnitServiceImpl extends AbstractCrudService<Business
                 .subtract(new BigDecimal(businessRelatedUnit.getOpeningPayableAmount()));
         businessRelatedUnit.setOpeningPayableAmount(editReceivablePayableAmountParam.getOpeningPayableAmount());
         businessRelatedUnit.setNowPayableAmount(new BigDecimal(businessRelatedUnit.getNowPayableAmount()).add(value).doubleValue());
+        businessRelatedUnitRepository.save(businessRelatedUnit);
+    }
+
+    @Override
+    public void editCreditLine(String id, EditCreditLineParam editCreditLineParam) throws Exception {
+        if(StringUtils.isBlank(id)) {
+            throw new BusinessException("单位id不能为空");
+        }
+        BusinessRelatedUnit businessRelatedUnit = findOne(id);
+        if(editCreditLineParam.getCreditLineEnable() && businessRelatedUnit.getNowReceivableAmount() > editCreditLineParam.getCreditLine()) {
+            throw new BusinessException("信用额度不能小于单位的应收账款" + businessRelatedUnit.getNowReceivableAmount());
+        }
+        businessRelatedUnit.setCreditLineEnable(editCreditLineParam.getCreditLineEnable());
+        businessRelatedUnit.setCreditLine(editCreditLineParam.getCreditLine());
         businessRelatedUnitRepository.save(businessRelatedUnit);
     }
 

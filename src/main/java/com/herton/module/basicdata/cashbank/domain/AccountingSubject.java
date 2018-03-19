@@ -29,10 +29,10 @@ public class AccountingSubject extends BaseEntity{
     private String remark;
     @ApiModelProperty(value = "期初余额")
     @Column(length = 11, precision = 13, scale = 2)
-    private Double openingBalance;
+    private Double openingBalance = 0D;
     @ApiModelProperty(value = "期末余额")
     @Column(length = 11, precision = 13, scale = 2)
-    private Double endingBalance;
+    private Double endingBalance = 0D;
     @ApiModelProperty(value = "会计科目类型")
     @Column(length = 20)
     @Enumerated(EnumType.STRING)

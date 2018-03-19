@@ -63,16 +63,16 @@ public class BusinessRelatedUnit extends BaseEntity{
     private String remark;
     @ApiModelProperty(value = "期初应付款")
     @Column(length = 11, precision = 13, scale = 2)
-    private Double openingPayableAmount;
+    private Double openingPayableAmount = 0D;
     @ApiModelProperty(value = "期初应收款")
     @Column(length = 11, precision = 13, scale = 2)
-    private Double openingReceivableAmount;
+    private Double openingReceivableAmount = 0D;
     @ApiModelProperty(value = "当前应付款")
     @Column(length = 11, precision = 13, scale = 2)
-    private Double nowPayableAmount;
+    private Double nowPayableAmount = 0D;
     @ApiModelProperty(value = "当前应收款")
     @Column(length = 11, precision = 13, scale = 2)
-    private Double nowReceivableAmount;
+    private Double nowReceivableAmount = 0D;
     @ApiModelProperty(value = "信用额度")
     @Column(length = 11, precision = 13, scale = 2)
     private Double creditLine;

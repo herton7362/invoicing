@@ -23,15 +23,6 @@ public class AccountingSubjectServiceImpl extends AbstractCrudService<Accounting
     }
 
     @Override
-    public AccountingSubject save(AccountingSubject accountingSubject) throws Exception {
-        if(StringUtils.isBlank(accountingSubject.getId())) {
-            accountingSubject.setEndingBalance(0D);
-            accountingSubject.setOpeningBalance(0D);
-        }
-        return super.save(accountingSubject);
-    }
-
-    @Override
     public void editOpeningBalance(String id, EditOpeningBalanceParam editOpeningBalanceParam) throws Exception {
         if(StringUtils.isBlank(id)) {
             throw new BusinessException("科目id不能为空");
