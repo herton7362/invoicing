@@ -8,14 +8,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 
 @Entity
-@ApiModel("商品属性组关联商品属性")
-public class GoodsPropertyGroupProperty extends BaseEntity {
+@ApiModel("商品属性组关联属性值")
+public class GoodsPropertyGroupPropertyValue extends BaseEntity {
     @ApiModelProperty(value = "属性组id")
     @Column(length = 36)
     private String goodsPropertyGroupId;
-    @ApiModelProperty(value = "属性id")
+    @ApiModelProperty(value = "属性值id")
     @Column(length = 36)
-    private String goodsPropertyId;
+    private String goodsPropertyValueId;
 
     public String getGoodsPropertyGroupId() {
         return goodsPropertyGroupId;
@@ -25,11 +25,11 @@ public class GoodsPropertyGroupProperty extends BaseEntity {
         this.goodsPropertyGroupId = goodsPropertyGroupId;
     }
 
-    public String getGoodsPropertyId() {
-        return goodsPropertyId;
+    public String getGoodsPropertyValueId() {
+        return goodsPropertyValueId;
     }
 
-    public void setGoodsPropertyId(String goodsPropertyId) {
-        this.goodsPropertyId = goodsPropertyId;
+    public void setGoodsPropertyValueId(String goodsPropertyValueId) {
+        this.goodsPropertyValueId = goodsPropertyValueId;
     }
 }
