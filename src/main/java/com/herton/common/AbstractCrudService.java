@@ -5,7 +5,6 @@ import com.herton.common.utils.StringUtils;
 import com.herton.entity.BaseEntity;
 import com.herton.exceptions.BusinessException;
 import com.herton.module.auth.UserThread;
-import com.herton.module.basicdata.member.domain.Member;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -137,7 +136,7 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
                     if(values.length == 1) {
                         predicate.add(criteriaBuilder.like(root.get(key), "%"+ values[0] +"%"));
                     } else {
-                        predicate.add(criteriaBuilder.in(root.get(key)).value(values));
+                        predicate.add(criteriaBuilder.in(root.get(key)).value(Arrays.asList(values)));
                     }
                 } else if(attribute.getJavaType().equals(Boolean.class)) {
                     predicate.add(criteriaBuilder.equal(root.get(key), Boolean.valueOf(values[0])));
