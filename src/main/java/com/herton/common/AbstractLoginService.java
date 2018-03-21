@@ -27,8 +27,6 @@ import java.util.regex.Pattern;
  * 提供登录、注册、找回密码、发送验证码等功能
  */
 public abstract class AbstractLoginService {
-    private TokenStore tokenStore;
-    private RestTemplate restTemplate;
     /**
      * 正则表达式：验证手机号
      */
@@ -70,13 +68,19 @@ public abstract class AbstractLoginService {
     /**
      * 登录
      *
-     * @param appId     app_id
-     * @param appSecret app_secret
+     * @param appId app id
+     * @param appSecret app secret
      * @param username  手机号码
      * @param password  密码
      * @return {@link OAuth2AccessToken} token
      */
     public ResponseEntity<OAuth2AccessToken> login(String appId, String appSecret, String username, String password) throws Exception {
+        if(StringUtils.isBlank(username)) {
+            throw new BusinessException("请输入用户名");
+        }
+        if(StringUtils.isBlank(password)) {
+            throw new BusinessException("请输入密码");
+        }
         Map<String, String> requestParameters = new HashMap<>();
         requestParameters.put("client_id", appId);
         requestParameters.put("client_secret", appSecret);
@@ -86,6 +90,15 @@ public abstract class AbstractLoginService {
         Principal principal = new UsernamePasswordAuthenticationToken(new User(appId, appSecret, Collections.emptyList()), null, null);
         return getTokenEndpoint().postAccessToken(principal, requestParameters);
     }
+
+    /**
+     * 登录
+     *
+     * @param username  手机号码
+     * @param password  密码
+     * @return {@link OAuth2AccessToken} token
+     */
+    public abstract ResponseEntity<OAuth2AccessToken> login(String username, String password) throws Exception;
 
     /**
      * 注册
@@ -169,51 +182,6 @@ public abstract class AbstractLoginService {
         requestParameters.put("grant_type", "client_credentials");
         Principal principal = new UsernamePasswordAuthenticationToken(new User(appId, appSecret, Collections.emptyList()), null, null);
         return getTokenEndpoint().postAccessToken(principal, requestParameters);
-    }
-
-    /**
-     * token登录 如果用户不存在则创建 用户
-     *
-     * @param appId     应用id
-     * @param appSecret 应用secret
-     * @param token     token
-     * @param username  用户名
-     * @return 登录成功信息
-     */
-    public ResponseEntity<OAuth2AccessToken> loginByToken(String appId, String appSecret, String token, String username) throws Exception {
-        tokenStore = SpringUtils.getBean(TokenStore.class);
-        restTemplate = SpringUtils.getBean(RestTemplate.class);
-        ResponseEntity<OAuth2AccessToken> responseEntity = restTemplate.getForEntity(
-                URI.create("http://www.dldjshop.com/token/" + token), OAuth2AccessToken.class);
-        OAuth2AccessToken oAuth2AccessToken = responseEntity.getBody();
-        if (oAuth2AccessToken == null) {
-            throw new BusinessException("token 不正确");
-        }
-        if(StringUtils.isBlank(username)) {
-            throw new BusinessException("username不能为空");
-        }
-        if (!Pattern.matches(REGEX_MOBILE, username)) {
-            throw new BusinessException(String.format("%s无效的手机号码", username));
-        }
-        BaseUser user = findUserByMobile(username);
-        CacheUtils.getInstance().set(username, "123456");
-        if (user == null || !"MEMBER".equals(user.getUserType())) {
-            register(username, "123456", "123456");
-        } else {
-            editPwd(username, "123456", "123456");
-        }
-        clearVerifyCode(username);
-        return login(appId, appSecret, username, "123456");
-    }
-
-    public OAuth2AccessToken readAccessToken(String token) {
-        tokenStore = SpringUtils.getBean(TokenStore.class);
-        return tokenStore.readAccessToken(token);
-    }
-
-    public OAuth2Authentication readAuthentication(String token) {
-        tokenStore = SpringUtils.getBean(TokenStore.class);
-        return tokenStore.readAuthentication(token);
     }
 }
 

@@ -39,15 +39,28 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
      */
     protected abstract PageRepository<T> getRepository();
 
+    private Map<String, String[]> manufactureQueryParam(Map<String, ?> param) {
+        Map<String, String[]> newParam = new HashMap<>();
+        param.forEach((key, entry) ->{
+            if(entry.getClass().isArray()) {
+                newParam.put(key, (String[]) entry);
+            } else {
+                newParam.put(key, new String[]{String.valueOf(entry)});
+            }
+        });
+        return newParam;
+    }
+
     @Override
-    public PageResult<T> findAll(PageRequest pageRequest, Map<String, String[]> param) throws Exception {
-        Page<T> page = getRepository().findAll(getSpecification(param), pageRequest);
+    public PageResult<T> findAll(PageRequest pageRequest, Map<String, ?> param) throws Exception {
+
+        Page<T> page = getRepository().findAll(getSpecification(manufactureQueryParam(param)), pageRequest);
         return new PageResult<>(page);
     }
 
     @Override
-    public List<T> findAll(Map<String, String[]> param) throws Exception {
-        return getRepository().findAll(getSpecification(param));
+    public List<T> findAll(Map<String, ?> param) throws Exception {
+        return getRepository().findAll(getSpecification(manufactureQueryParam(param)));
     }
 
     @Override
@@ -63,6 +76,11 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
     @Override
     public T save(T t) throws Exception {
         return getRepository().save(t);
+    }
+
+    @Override
+    public void delete(Iterable<? extends T> ts) throws Exception {
+        getRepository().delete(ts);
     }
 
     /**

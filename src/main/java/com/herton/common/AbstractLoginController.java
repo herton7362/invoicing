@@ -43,29 +43,6 @@ public abstract class AbstractLoginController {
     }
 
     /**
-     * token登录
-     */
-    @ApiOperation(value="token登录")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "appId", value = "app_id", dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "appSecret", value = "app_secret", dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "token", value = "token", dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "username", value = "手机号码", dataType = "String", paramType = "query")
-
-    })
-    @RequestMapping(value = "/token/login", method = {RequestMethod.POST})
-    public ResponseEntity<OAuth2AccessToken> loginByToken(
-            @RequestParam(value = "appId") String appId,
-            @RequestParam(value = "appSecret") String appSecret,
-            @RequestParam(value = "token") String token,
-            @RequestParam(value = "username") String username
-    ) throws Exception {
-        ResponseEntity<OAuth2AccessToken> responseEntity;
-        responseEntity = loginService.loginByToken(appId, appSecret, token, username);
-        return responseEntity;
-    }
-
-    /**
      * 修改密码
      */
     @ApiOperation(value="修改密码")
@@ -125,9 +102,7 @@ public abstract class AbstractLoginController {
     ) throws Exception {
         ResponseEntity<OAuth2AccessToken> responseEntity;
         try {
-            String appId = "tonr";
-            String appSecret = "secret";
-            responseEntity = loginService.login(appId, appSecret, username, password);
+            responseEntity = loginService.login(username, password);
         } catch (Exception e) {
             e.printStackTrace();
             throw new BusinessException(e.getMessage());
@@ -227,24 +202,6 @@ public abstract class AbstractLoginController {
     @RequestMapping(value = "/user/info", method = RequestMethod.GET)
     public ResponseEntity<BaseUser> getOne() throws Exception {
         return new ResponseEntity<>(UserThread.getInstance().get(), HttpStatus.OK);
-    }
-
-    /**
-     * 获取OAuth2AccessToken
-     */
-    @ApiOperation(value="获取OAuth2AccessToken")
-    @RequestMapping(value = "/token/{token}", method = RequestMethod.GET)
-    public ResponseEntity<OAuth2AccessToken> getToken(@PathVariable String token) throws Exception {
-        return new ResponseEntity<>(loginService.readAccessToken(token), HttpStatus.OK);
-    }
-
-    /**
-     * 获取OAuth2AccessToken
-     */
-    @ApiOperation(value="获取OAuth2AccessToken")
-    @RequestMapping(value = "/token/authentication/{token}", method = RequestMethod.GET)
-    public ResponseEntity<OAuth2Authentication> readAuthentication(@PathVariable String token) throws Exception {
-        return new ResponseEntity<>(loginService.readAuthentication(token), HttpStatus.OK);
     }
 
     public AbstractLoginController(AbstractLoginService loginService) {

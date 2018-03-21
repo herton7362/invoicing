@@ -13,14 +13,14 @@ public interface CrudService<T extends BaseEntity> {
      * @param param 查询条件
      * @return {@link PageResult} spring boot 分页类
      */
-    PageResult<T> findAll(PageRequest pageRequest, Map<String, String[]> param) throws Exception;
+    PageResult<T> findAll(PageRequest pageRequest, Map<String, ?> param) throws Exception;
 
     /**
      * 列表查询
      * @param param 查询条件
      * @return 实体列表
      */
-    List<T> findAll(Map<String, String[]> param) throws Exception;
+    List<T> findAll(Map<String, ?> param) throws Exception;
 
     /**
      * 查询一个
@@ -34,6 +34,12 @@ public interface CrudService<T extends BaseEntity> {
      * @param id 主键
      */
     void delete(String id) throws Exception;
+
+    /**
+     * 删除
+     * @param ts 待删除的列表
+     */
+    void delete(Iterable<? extends T> ts) throws Exception;
 
     /**
      * 新增或修改
