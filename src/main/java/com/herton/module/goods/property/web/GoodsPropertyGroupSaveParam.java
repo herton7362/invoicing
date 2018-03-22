@@ -6,26 +6,26 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
 
-@ApiModel("商品属性")
+@ApiModel("商品属性组")
 public class GoodsPropertyGroupSaveParam extends GoodsPropertyGroup {
     @ApiModelProperty(value = "商品属性id集合")
-    private List<String> groupPropertyIds;
+    private List<String> goodsPropertyIds;
     @ApiModelProperty(value = "商品属性值id集合")
-    private List<String> groupPropertyValueIds;
+    private List<String> goodsPropertyValueIds;
 
-    public List<String> getGroupPropertyIds() {
-        return groupPropertyIds;
+    public List<String> getGoodsPropertyIds() {
+        return goodsPropertyIds;
     }
 
-    public void setGroupPropertyIds(List<String> groupPropertyIds) {
-        this.groupPropertyIds = groupPropertyIds;
+    public void setGoodsPropertyIds(List<String> goodsPropertyIds) {
+        this.goodsPropertyIds = goodsPropertyIds;
     }
 
-    public List<String> getGroupPropertyValueIds() {
-        return groupPropertyValueIds;
+    public List<String> getGoodsPropertyValueIds() {
+        return goodsPropertyValueIds;
     }
 
-    public void setGroupPropertyValueIds(List<String> groupPropertyValueIds) {
-        this.groupPropertyValueIds = groupPropertyValueIds;
+    public void setGoodsPropertyValueIds(List<String> goodsPropertyValueIds) {
+        this.goodsPropertyValueIds = goodsPropertyValueIds;
     }
 }
