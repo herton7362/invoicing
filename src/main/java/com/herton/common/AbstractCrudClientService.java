@@ -40,7 +40,7 @@ public abstract class AbstractCrudClientService<T extends BaseEntity> implements
 
     @Override
     @SuppressWarnings("unchecked")
-    public PageResult<T> findAll(PageRequest pageRequest, Map<String, String[]> param) throws Exception {
+    public PageResult<T> findAll(PageRequest pageRequest, Map<String, ?> param) throws Exception {
         Map<String, String> newParam = new HashMap<>();
         newParam.put("currentPage", String.valueOf(pageRequest.getPageNumber()));
         newParam.put("pageSize", String.valueOf(pageRequest.getPageSize()));
@@ -53,7 +53,13 @@ public abstract class AbstractCrudClientService<T extends BaseEntity> implements
         });
         newParam.put("sort", String.join(",", sorts));
         newParam.put("order", String.join(",", orders));
-        param.forEach((k, v) -> newParam.put(k, v[0]));
+        param.forEach((k, v) -> {
+            if(v.getClass().isArray()) {
+                newParam.put(k, ((String[]) v)[0]);
+            } else {
+                newParam.put(k, String.valueOf(v));
+            }
+        });
         newParam.forEach((k, v)->params.add(k + "=" + v));
         ResponseEntity<PageResult> responseEntity = getOAuth2RestTemplate().getForEntity(
                 getDomainUri() + "?" + String.join("&", params),  PageResult.class);
@@ -62,10 +68,16 @@ public abstract class AbstractCrudClientService<T extends BaseEntity> implements
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<T> findAll(Map<String, String[]> param) throws Exception {
+    public List<T> findAll(Map<String, ?> param) throws Exception {
         Map<String, String> newParam = new HashMap<>();
         List<String> params = new ArrayList<>();
-        param.forEach((k, v) -> newParam.put(k, v[0]));
+        param.forEach((k, v) -> {
+            if(v.getClass().isArray()) {
+                newParam.put(k, ((String[]) v)[0]);
+            } else {
+                newParam.put(k, String.valueOf(v));
+            }
+        });
         newParam.forEach((k, v)->params.add(k + "=" + v));
         ResponseEntity<List> responseEntity = getOAuth2RestTemplate().getForEntity(
                 getDomainUri(),  List.class, newParam);

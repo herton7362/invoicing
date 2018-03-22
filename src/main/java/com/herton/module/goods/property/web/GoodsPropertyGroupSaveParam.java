@@ -9,23 +9,23 @@ import java.util.List;
 @ApiModel("商品属性")
 public class GoodsPropertyGroupSaveParam extends GoodsPropertyGroup {
     @ApiModelProperty(value = "商品属性id集合")
-    private List<String> groupPropertyId;
+    private List<String> groupPropertyIds;
     @ApiModelProperty(value = "商品属性值id集合")
-    private List<String> groupPropertyValueId;
+    private List<String> groupPropertyValueIds;
 
-    public List<String> getGroupPropertyId() {
-        return groupPropertyId;
+    public List<String> getGroupPropertyIds() {
+        return groupPropertyIds;
     }
 
-    public void setGroupPropertyId(List<String> groupPropertyId) {
-        this.groupPropertyId = groupPropertyId;
+    public void setGroupPropertyIds(List<String> groupPropertyIds) {
+        this.groupPropertyIds = groupPropertyIds;
     }
 
-    public List<String> getGroupPropertyValueId() {
-        return groupPropertyValueId;
+    public List<String> getGroupPropertyValueIds() {
+        return groupPropertyValueIds;
     }
 
-    public void setGroupPropertyValueId(List<String> groupPropertyValueId) {
-        this.groupPropertyValueId = groupPropertyValueId;
+    public void setGroupPropertyValueIds(List<String> groupPropertyValueIds) {
+        this.groupPropertyValueIds = groupPropertyValueIds;
     }
 }

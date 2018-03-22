@@ -18,19 +18,15 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "商品属组管理")
 @RestController
 @RequestMapping("/api/goodsPropertyGroup")
-public class GoodsPropertyGroupController extends AbstractCrudController<GoodsPropertyGroup> {
+public class GoodsPropertyGroupController {
     private final GoodsPropertyGroupService goodsPropertyGroupService;
-    @Override
-    protected CrudService<GoodsPropertyGroup> getService() {
-        return goodsPropertyGroupService;
-    }
 
     /**
      * 保存
      */
     @ApiOperation(value="保存")
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<GoodsPropertyGroup> save(@RequestBody GoodsPropertyGroupSaveParam goodsPropertyGroupSaveParam) throws Exception {
+    public ResponseEntity<?> save(@RequestBody GoodsPropertyGroupSaveParam goodsPropertyGroupSaveParam) throws Exception {
         goodsPropertyGroupService.save(goodsPropertyGroupSaveParam);
         return new ResponseEntity<>(HttpStatus.OK);
     }

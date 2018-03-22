@@ -43,17 +43,6 @@ public class OauthClientDetailsServiceImpl extends AbstractCrudService<OauthClie
         return super.save(oauthClientDetails);
     }
 
-    @Override
-    public PageResult<OauthClientDetails> findAll(PageRequest pageRequest, Map<String, String[]> param) throws Exception {
-        Page<OauthClientDetails> page = getRepository().findAll(getSpecificationForAllEntities(param), pageRequest);
-        return new PageResult<>(page);
-    }
-
-    @Override
-    public List<OauthClientDetails> findAll(Map<String, String[]> param) throws Exception {
-        return getRepository().findAll(getSpecificationForAllEntities(param));
-    }
-
     /**
      * 初始化超级管理员
      * @param clientId client id

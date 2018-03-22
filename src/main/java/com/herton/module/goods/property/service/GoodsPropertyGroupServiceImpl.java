@@ -35,7 +35,7 @@ public class GoodsPropertyGroupServiceImpl extends AbstractCrudService<GoodsProp
         Map<String, String> param = new HashMap<>();
         param.put("goodsPropertyGroupId", result.getId());
         goodsPropertyGroupPropertyService.delete(goodsPropertyGroupPropertyService.findAll(param));
-        List<String> GroupPropertyIds = goodsPropertyGroupSaveParam.getGroupPropertyId();
+        List<String> GroupPropertyIds = goodsPropertyGroupSaveParam.getGroupPropertyIds();
         GoodsPropertyGroupProperty goodsPropertyGroupProperty;
         for (String groupPropertyId : GroupPropertyIds) {
             goodsPropertyGroupProperty = new GoodsPropertyGroupProperty();
@@ -46,7 +46,7 @@ public class GoodsPropertyGroupServiceImpl extends AbstractCrudService<GoodsProp
         param.clear();
         param.put("goodsPropertyGroupId", result.getId());
         goodsPropertyGroupPropertyValueService.delete(goodsPropertyGroupPropertyValueService.findAll(param));
-        List<String> GroupPropertyValueIds = goodsPropertyGroupSaveParam.getGroupPropertyValueId();
+        List<String> GroupPropertyValueIds = goodsPropertyGroupSaveParam.getGroupPropertyValueIds();
         GoodsPropertyGroupPropertyValue goodsPropertyGroupPropertyValue;
         for (String groupPropertyValueId : GroupPropertyValueIds) {
             goodsPropertyGroupPropertyValue = new GoodsPropertyGroupPropertyValue();

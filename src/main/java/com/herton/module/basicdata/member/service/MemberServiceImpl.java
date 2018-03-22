@@ -30,16 +30,6 @@ public class MemberServiceImpl extends AbstractCrudService<Member> implements Me
         return memberRepository;
     }
 
-    @Override
-    public List<Member> findAll(Map<String, String[]> param) throws Exception {
-        return super.findAll(produceQueryParam(param));
-    }
-
-    @Override
-    public PageResult<Member> findAll(PageRequest pageRequest, Map<String, String[]> param) throws Exception {
-        return super.findAll(pageRequest, produceQueryParam(param));
-    }
-
     private Map<String, String[]> produceQueryParam(Map<String, String[]> param) throws Exception {
         Map<String, String[]> newParam = new HashMap<>();
         param.entrySet().forEach((stringEntry -> newParam.put(stringEntry.getKey(), stringEntry.getValue())));
