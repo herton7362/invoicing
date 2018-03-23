@@ -42,7 +42,7 @@ public class GoodsPropertyGroupResult extends GoodsPropertyGroup {
     }
 
     @ApiModel("商品属性")
-    public class GoodsPropertyResult extends GoodsProperty {
+    public static class GoodsPropertyResult extends GoodsProperty {
         private List<GoodsPropertyValueResult> goodsPropertyValueResults;
 
         public List<GoodsPropertyValueResult> getGoodsPropertyValueResults() {
@@ -55,7 +55,7 @@ public class GoodsPropertyGroupResult extends GoodsPropertyGroup {
     }
 
     @ApiModel("商品属性值")
-    public class GoodsPropertyValueResult extends GoodsPropertyValue {
+    public static class GoodsPropertyValueResult extends GoodsPropertyValue {
 
     }
 }

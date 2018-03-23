@@ -53,6 +53,28 @@ public class GoodsPropertyGroupController {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
+    /**
+     * 查询一个
+     */
+    @ApiOperation(value="查询一个")
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public ResponseEntity<GoodsPropertyGroupResult> getOne(@PathVariable String id) throws Exception {
+        return new ResponseEntity<>(goodsPropertyGroupService.findOneTranslated(id), HttpStatus.OK);
+    }
+
+    /**
+     * 删除
+     */
+    @ApiOperation(value="删除默认为逻辑删除")
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> delete(@PathVariable String id) throws Exception {
+        String[] ids = id.split(",");
+        for (String s : ids) {
+            goodsPropertyGroupService.delete(s);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @Autowired
     public GoodsPropertyGroupController(GoodsPropertyGroupService goodsPropertyGroupService) {
         this.goodsPropertyGroupService = goodsPropertyGroupService;

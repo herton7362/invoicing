@@ -31,4 +31,11 @@ public interface GoodsPropertyGroupService extends CrudService<GoodsPropertyGrou
      * @return 实体列表
      */
     List<GoodsPropertyGroupResult> findAllTranslated(Map<String, ?> param) throws Exception;
+
+    /**
+     * 根据id查询一个
+     * @param id 主键
+     * @return 实体
+     */
+    GoodsPropertyGroupResult findOneTranslated(String id) throws Exception;
 }

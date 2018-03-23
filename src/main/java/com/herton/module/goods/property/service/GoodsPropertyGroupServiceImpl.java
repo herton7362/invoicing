@@ -61,76 +61,111 @@ public class GoodsPropertyGroupServiceImpl extends AbstractCrudService<GoodsProp
     }
 
     @Override
-    public PageResult<GoodsPropertyGroupResult> findAllTranslated(PageRequest pageRequest, Map<String, ?> param) throws Exception {
+    public PageResult<GoodsPropertyGroupResult> findAllTranslated(PageRequest pageRequest,
+                                                                  Map<String, ?> param) throws Exception {
         PageResult<GoodsPropertyGroup> page = super.findAll(pageRequest, param);
         PageResult<GoodsPropertyGroupResult> pageResult = new PageResult<>();
         pageResult.setSize(page.getSize());
         pageResult.setTotalElements(page.getTotalElements());
-        pageResult.setContent(translateResult(page.getContent()));
+        pageResult.setContent(translateResults(page.getContent()));
         return pageResult;
     }
 
     @Override
     public List<GoodsPropertyGroupResult> findAllTranslated(Map<String, ?> param) throws Exception {
-        return translateResult(super.findAll(param));
+        return translateResults(super.findAll(param));
     }
 
-    private List<GoodsPropertyGroupResult> translateResult(List<GoodsPropertyGroup> goodsPropertyGroups) throws Exception {
-        List<GoodsPropertyGroupResult> goodsPropertyGroupResults = new ArrayList<>();
-        GoodsPropertyGroupResult goodsPropertyGroupResult;
-        GoodsProperty goodsProperty;
-        GoodsPropertyValue goodsPropertyValue;
-        Map<String, List<GoodsPropertyGroupResult.GoodsPropertyValueResult>> goodsPropertyValueResultMap;
+    @Override
+    public GoodsPropertyGroupResult findOneTranslated(String id) throws Exception {
+        GoodsPropertyGroup goodsPropertyGroup = super.findOne(id);
+        return this.translateResult(goodsPropertyGroup);
+    }
+
+    private List<String> findGoodsPropertyIds(String goodsPropertyGroupId) throws Exception {
         Map<String, String> param = new HashMap<>();
-        List<GoodsPropertyGroupResult.GoodsPropertyResult> goodsPropertyResults;
-        List<GoodsPropertyGroupProperty> goodsPropertyGroupProperties;
-        List<GoodsPropertyGroupPropertyValue> goodsPropertyGroupPropertyValues;
-        List<String> ids;
+        param.put("goodsPropertyGroupId", goodsPropertyGroupId);
+        List<GoodsPropertyGroupProperty> goodsPropertyGroupProperties = goodsPropertyGroupPropertyService.findAll(param);
+        List<String> ids = new ArrayList<>();
+        for (GoodsPropertyGroupProperty goodsPropertyGroupProperty : goodsPropertyGroupProperties) {
+            ids.add(goodsPropertyGroupProperty.getGoodsPropertyId());
+        }
+        return ids;
+    }
+
+    private List<String> findGoodsPropertyValueIds(String goodsPropertyGroupId) throws Exception {
+        Map<String, String> param = new HashMap<>();
+        param.put("goodsPropertyGroupId", goodsPropertyGroupId);
+        List<GoodsPropertyGroupPropertyValue> goodsPropertyGroupPropertyValues =
+                goodsPropertyGroupPropertyValueService.findAll(param);
+        List<String> ids = new ArrayList<>();
+        for (GoodsPropertyGroupPropertyValue goodsPropertyGroupPropertyValue : goodsPropertyGroupPropertyValues) {
+            ids.add(goodsPropertyGroupPropertyValue.getGoodsPropertyValueId());
+        }
+        return ids;
+    }
+
+    private List<GoodsPropertyGroupResult.GoodsPropertyResult> translateGoodsPropertyResults(
+            List<String> goodsPropertyIds) throws Exception {
+        GoodsProperty goodsProperty;
+        List<GoodsPropertyGroupResult.GoodsPropertyResult> goodsPropertyResults = new ArrayList<>();
+        for (String goodsPropertyId : goodsPropertyIds) {
+            goodsProperty =  goodsPropertyService.findOne(goodsPropertyId);
+            GoodsPropertyGroupResult.GoodsPropertyResult goodsPropertyResult = new GoodsPropertyGroupResult.GoodsPropertyResult();
+            BeanUtils.copyProperties(goodsProperty, goodsPropertyResult);
+            goodsPropertyResults.add(goodsPropertyResult);
+        }
+        return goodsPropertyResults;
+    }
+
+    private Map<String, List<GoodsPropertyGroupResult.GoodsPropertyValueResult>> translateGoodsPropertyValueResults(
+            List<String> goodsPropertyValueIds) throws Exception {
+        GoodsPropertyValue goodsPropertyValue;
+        Map<String, List<GoodsPropertyGroupResult.GoodsPropertyValueResult>> goodsPropertyValueResultMap = new HashMap<>();
+        for (String goodsPropertyValueId : goodsPropertyValueIds) {
+            goodsPropertyValue = goodsPropertyValueService.findOne(goodsPropertyValueId);
+            GoodsPropertyGroupResult.GoodsPropertyValueResult goodsPropertyValueResult =
+                    new GoodsPropertyGroupResult.GoodsPropertyValueResult();
+            BeanUtils.copyProperties(goodsPropertyValue, goodsPropertyValueResult);
+            if(!goodsPropertyValueResultMap.containsKey(goodsPropertyValueResult.getGoodsPropertyId())) {
+                goodsPropertyValueResultMap.put(goodsPropertyValueResult.getGoodsPropertyId(), new ArrayList<>());
+            }
+            goodsPropertyValueResultMap.get(goodsPropertyValueResult.getGoodsPropertyId()).add(goodsPropertyValueResult);
+        }
+        return goodsPropertyValueResultMap;
+    }
+
+    private GoodsPropertyGroupResult translateResult(GoodsPropertyGroup goodsPropertyGroup) throws Exception {
+        GoodsPropertyGroupResult goodsPropertyGroupResult = new GoodsPropertyGroupResult();
+        BeanUtils.copyProperties(goodsPropertyGroup, goodsPropertyGroupResult);
+        goodsPropertyGroupResult.setGoodsPropertyIds(this.findGoodsPropertyIds(goodsPropertyGroup.getId()));
+        goodsPropertyGroupResult.setGoodsPropertyValueIds(this.findGoodsPropertyValueIds(goodsPropertyGroup.getId()));
+        goodsPropertyGroupResult.setGoodsPropertyResults(this.translateGoodsPropertyResults(goodsPropertyGroupResult.getGoodsPropertyIds()));
+        Map<String, List<GoodsPropertyGroupResult.GoodsPropertyValueResult>> goodsPropertyValueResultMap =
+                this.translateGoodsPropertyValueResults(goodsPropertyGroupResult.getGoodsPropertyValueIds());
+        for (GoodsPropertyGroupResult.GoodsPropertyResult goodsPropertyResult : goodsPropertyGroupResult.getGoodsPropertyResults()) {
+            goodsPropertyResult.setGoodsPropertyValueResults(goodsPropertyValueResultMap.get(goodsPropertyResult.getId()));
+        }
+        return goodsPropertyGroupResult;
+    }
+
+    private List<GoodsPropertyGroupResult> translateResults(List<GoodsPropertyGroup> goodsPropertyGroups) throws Exception {
+        List<GoodsPropertyGroupResult> goodsPropertyGroupResults = new ArrayList<>();
         for (GoodsPropertyGroup goodsPropertyGroup : goodsPropertyGroups) {
-            goodsPropertyGroupResult = new GoodsPropertyGroupResult();
-            goodsPropertyResults = new ArrayList<>();
-            param.clear();
-            param.put("goodsPropertyGroupId", goodsPropertyGroup.getId());
-            BeanUtils.copyProperties(goodsPropertyGroup, goodsPropertyGroupResult);
-            goodsPropertyGroupProperties = goodsPropertyGroupPropertyService.findAll(param);
-            ids = new ArrayList<>();
-            for (GoodsPropertyGroupProperty goodsPropertyGroupProperty : goodsPropertyGroupProperties) {
-                ids.add(goodsPropertyGroupProperty.getGoodsPropertyId());
-            }
-            goodsPropertyGroupResult.setGoodsPropertyIds(ids);
-            param.clear();
-            param.put("goodsPropertyGroupId", goodsPropertyGroup.getId());
-            goodsPropertyGroupPropertyValues = goodsPropertyGroupPropertyValueService.findAll(param);
-            ids = new ArrayList<>();
-            for (GoodsPropertyGroupPropertyValue goodsPropertyGroupPropertyValue : goodsPropertyGroupPropertyValues) {
-                ids.add(goodsPropertyGroupPropertyValue.getGoodsPropertyValueId());
-            }
-            goodsPropertyGroupResult.setGoodsPropertyValueIds(ids);
-            goodsPropertyGroupResults.add(goodsPropertyGroupResult);
-            List<String> goodsPropertyIds = goodsPropertyGroupResult.getGoodsPropertyIds();
-            for (String goodsPropertyId : goodsPropertyIds) {
-                goodsProperty =  goodsPropertyService.findOne(goodsPropertyId);
-                GoodsPropertyGroupResult.GoodsPropertyResult goodsPropertyResult = goodsPropertyGroupResult.new GoodsPropertyResult();
-                BeanUtils.copyProperties(goodsProperty, goodsPropertyResult);
-                goodsPropertyResults.add(goodsPropertyResult);
-            }
-            goodsPropertyGroupResult.setGoodsPropertyResults(goodsPropertyResults);
-            List<String> goodsPropertyValueIds = goodsPropertyGroupResult.getGoodsPropertyValueIds();
-            goodsPropertyValueResultMap = new HashMap<>();
-            for (String goodsPropertyValueId : goodsPropertyValueIds) {
-                goodsPropertyValue = goodsPropertyValueService.findOne(goodsPropertyValueId);
-                GoodsPropertyGroupResult.GoodsPropertyValueResult goodsPropertyValueResult = goodsPropertyGroupResult.new GoodsPropertyValueResult();
-                BeanUtils.copyProperties(goodsPropertyValue, goodsPropertyValueResult);
-                if(!goodsPropertyValueResultMap.containsKey(goodsPropertyValueResult.getGoodsPropertyId())) {
-                    goodsPropertyValueResultMap.put(goodsPropertyValueResult.getGoodsPropertyId(), new ArrayList<>());
-                }
-                goodsPropertyValueResultMap.get(goodsPropertyValueResult.getGoodsPropertyId()).add(goodsPropertyValueResult);
-            }
-            for (GoodsPropertyGroupResult.GoodsPropertyResult goodsPropertyResult : goodsPropertyGroupResult.getGoodsPropertyResults()) {
-                goodsPropertyResult.setGoodsPropertyValueResults(goodsPropertyValueResultMap.get(goodsPropertyResult.getId()));
-            }
+            goodsPropertyGroupResults.add(this.translateResult(goodsPropertyGroup));
         }
         return goodsPropertyGroupResults;
+    }
+
+    @Override
+    public void delete(String id) throws Exception {
+        Map<String, String> param = new HashMap<>();
+        param.put("goodsPropertyGroupId", id);
+        goodsPropertyGroupPropertyService.delete(goodsPropertyGroupPropertyService.findAll(param));
+        param.clear();
+        param.put("goodsPropertyGroupId", id);
+        goodsPropertyGroupPropertyValueService.delete(goodsPropertyGroupPropertyValueService.findAll(param));
+        super.delete(id);
     }
 
     @Autowired
