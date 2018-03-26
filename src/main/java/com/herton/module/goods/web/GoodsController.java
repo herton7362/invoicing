@@ -27,7 +27,7 @@ public class GoodsController {
      * 保存
      */
     @ApiOperation(value="保存")
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> save(@RequestBody GoodsSaveParam goodsSaveParam) throws Exception {
         goodsService.save(goodsSaveParam);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -52,6 +52,28 @@ public class GoodsController {
         }
         List<GoodsResult> list = goodsService.findAllTranslated(param);
         return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    /**
+     * 查询一个
+     */
+    @ApiOperation(value="查询一个")
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public ResponseEntity<GoodsResult> getOne(@PathVariable String id) throws Exception {
+        return new ResponseEntity<>(goodsService.findOneTranslated(id), HttpStatus.OK);
+    }
+
+    /**
+     * 删除
+     */
+    @ApiOperation(value="删除默认为逻辑删除")
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> delete(@PathVariable String id) throws Exception {
+        String[] ids = id.split(",");
+        for (String s : ids) {
+            goodsService.delete(s);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Autowired

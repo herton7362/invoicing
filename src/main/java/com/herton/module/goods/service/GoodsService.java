@@ -19,11 +19,17 @@ public interface GoodsService extends CrudService<Goods> {
      * @param param 查询条件
      * @return {@link GoodsResult} spring boot 分页类
      */
-    PageResult<GoodsResult> findAllTranslated(PageRequest pageRequest, Map<String, String[]> param);
+    PageResult<GoodsResult> findAllTranslated(PageRequest pageRequest, Map<String, ?> param) throws Exception;
     /**
      * 查询，并且转译结果
      * @param param 查询条件
      * @return {@link GoodsResult} spring boot 分页类
      */
-    List<GoodsResult> findAllTranslated(Map<String, String[]> param);
+    List<GoodsResult> findAllTranslated(Map<String, ?> param) throws Exception;
+    /**
+     * 根据id查询一个
+     * @param id 主键
+     * @return 实体
+     */
+    GoodsResult findOneTranslated(String id) throws Exception;
 }

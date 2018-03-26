@@ -51,7 +51,7 @@ public class Goods extends BaseEntity {
     private Double costPrice;
     @ApiModelProperty(value = "备注")
     @Column(length = 200)
-    private Double remark;
+    private String remark;
     @ApiModelProperty(value = "属性组id")
     @Column(length = 36)
     private String goodsPropertyGroupId;
@@ -160,11 +160,11 @@ public class Goods extends BaseEntity {
         this.costPrice = costPrice;
     }
 
-    public Double getRemark() {
+    public String getRemark() {
         return remark;
     }
 
-    public void setRemark(Double remark) {
+    public void setRemark(String remark) {
         this.remark = remark;
     }
 
