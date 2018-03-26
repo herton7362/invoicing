@@ -1,8 +1,6 @@
 package com.herton.module.goods.web;
 
-import com.herton.module.goods.domain.Goods;
-import com.herton.module.goods.domain.GoodsImage;
-import com.herton.module.goods.domain.GoodsPrice;
+import com.herton.module.goods.domain.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -26,6 +24,8 @@ public class GoodsSaveParam extends Goods {
     private GoodsImageParam goodsAttached3Image;
     @ApiModelProperty(value = "商品附图4")
     private GoodsImageParam goodsAttached4Image;
+    @ApiModelProperty(value = "商品属性集合")
+    private List<GoodsGoodsPropertyParam> goodsGoodsProperties;
 
     public GoodsPriceParam getBasicGoodsPrice() {
         return basicGoodsPrice;
@@ -91,11 +91,32 @@ public class GoodsSaveParam extends Goods {
         this.goodsAttached4Image = goodsAttached4Image;
     }
 
+    public List<GoodsGoodsPropertyParam> getGoodsGoodsProperties() {
+        return goodsGoodsProperties;
+    }
+
+    public void setGoodsGoodsProperties(List<GoodsGoodsPropertyParam> goodsGoodsProperties) {
+        this.goodsGoodsProperties = goodsGoodsProperties;
+    }
+
     public static class GoodsPriceParam extends GoodsPrice {
 
     }
 
     public static class GoodsImageParam extends GoodsImage {
 
+    }
+
+    public static class GoodsGoodsPropertyParam extends GoodsGoodsProperty {
+        @ApiModelProperty(value = "商品属性值id集合")
+        private List<GoodsGoodsPropertyValue> goodsGoodsPropertyValues;
+
+        public List<GoodsGoodsPropertyValue> getGoodsGoodsPropertyValues() {
+            return goodsGoodsPropertyValues;
+        }
+
+        public void setGoodsGoodsPropertyValues(List<GoodsGoodsPropertyValue> goodsGoodsPropertyValues) {
+            this.goodsGoodsPropertyValues = goodsGoodsPropertyValues;
+        }
     }
 }

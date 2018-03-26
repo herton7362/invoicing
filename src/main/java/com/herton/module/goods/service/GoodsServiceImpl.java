@@ -5,10 +5,7 @@ import com.herton.common.PageRepository;
 import com.herton.common.PageResult;
 import com.herton.common.utils.StringUtils;
 import com.herton.exceptions.BusinessException;
-import com.herton.module.goods.domain.Goods;
-import com.herton.module.goods.domain.GoodsImage;
-import com.herton.module.goods.domain.GoodsPrice;
-import com.herton.module.goods.domain.GoodsRepository;
+import com.herton.module.goods.domain.*;
 import com.herton.module.goods.web.GoodsResult;
 import com.herton.module.goods.web.GoodsSaveParam;
 import org.springframework.beans.BeanUtils;
@@ -29,6 +26,8 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
     private final GoodsRepository goodsRepository;
     private final GoodsPriceService goodsPriceService;
     private final GoodsImageService goodsImageService;
+    private final GoodsGoodsPropertyService goodsGoodsPropertyService;
+    private final GoodsGoodsPropertyValueService goodsGoodsPropertyValueService;
     @Override
     protected PageRepository<Goods> getRepository() {
         return goodsRepository;
@@ -85,6 +84,21 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
         goodsImage.setGoodsId(goods.getId());
         goodsImage.setSortNumber(4);
         goodsImageService.save(goodsImage);
+        List<GoodsSaveParam.GoodsGoodsPropertyParam> goodsGoodsProperties = goodsSaveParam.getGoodsGoodsProperties();
+        GoodsGoodsProperty goodsGoodsProperty;
+        for (int i = 0; i < goodsGoodsProperties.size(); i++) {
+            goodsGoodsProperty = new GoodsGoodsProperty();
+            BeanUtils.copyProperties(goodsGoodsProperties.get(i), goodsGoodsProperty);
+            goodsGoodsProperty.setSortNumber(i);
+            goodsGoodsProperty.setGoodsId(goods.getId());
+            goodsGoodsPropertyService.save(goodsGoodsProperty);
+            List<GoodsGoodsPropertyValue> goodsGoodsPropertyValues = goodsGoodsProperties.get(i).getGoodsGoodsPropertyValues();
+            for (int j = 0; j < goodsGoodsPropertyValues.size(); j++) {
+                goodsGoodsPropertyValues.get(i).setSortNumber(j);
+                goodsGoodsPropertyValues.get(i).setGoodsGoodsPropertyId(goodsGoodsProperty.getId());
+                goodsGoodsPropertyValueService.save(goodsGoodsPropertyValues.get(i));
+            }
+        }
     }
 
     @Override
@@ -168,10 +182,14 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
     public GoodsServiceImpl(
             GoodsRepository goodsRepository,
             GoodsPriceService goodsPriceService,
-            GoodsImageService goodsImageService
+            GoodsImageService goodsImageService,
+            GoodsGoodsPropertyService goodsGoodsPropertyService,
+            GoodsGoodsPropertyValueService goodsGoodsPropertyValueService
     ) {
         this.goodsRepository = goodsRepository;
         this.goodsPriceService = goodsPriceService;
         this.goodsImageService = goodsImageService;
+        this.goodsGoodsPropertyService = goodsGoodsPropertyService;
+        this.goodsGoodsPropertyValueService = goodsGoodsPropertyValueService;
     }
 }
