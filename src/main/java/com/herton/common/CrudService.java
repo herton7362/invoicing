@@ -27,7 +27,7 @@ public interface CrudService<T extends BaseEntity> {
      * @param id 主键
      * @return 实体
      */
-    T findOne(String id) throws Exception;
+    <C extends T> C findOne(String id) throws Exception;
 
     /**
      * 删除

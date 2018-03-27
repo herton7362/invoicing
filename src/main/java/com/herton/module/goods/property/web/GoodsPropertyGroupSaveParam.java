@@ -1,6 +1,9 @@
 package com.herton.module.goods.property.web;
 
 import com.herton.module.goods.property.domain.GoodsPropertyGroup;
+import com.herton.module.goods.property.domain.GoodsPropertyGroupProperty;
+import com.herton.module.goods.property.domain.GoodsPropertyGroupPropertyValue;
+import com.herton.module.goods.property.domain.GoodsPropertyValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -8,24 +11,26 @@ import java.util.List;
 
 @ApiModel("商品属性组")
 public class GoodsPropertyGroupSaveParam extends GoodsPropertyGroup {
-    @ApiModelProperty(value = "商品属性id集合")
-    private List<String> goodsPropertyIds;
-    @ApiModelProperty(value = "商品属性值id集合")
-    private List<String> goodsPropertyValueIds;
+    @ApiModelProperty(value = "商品属性集合")
+    private List<GoodsPropertyGroupPropertyParam> goodsPropertyGroupProperties;
 
-    public List<String> getGoodsPropertyIds() {
-        return goodsPropertyIds;
+    public List<GoodsPropertyGroupPropertyParam> getGoodsPropertyGroupProperties() {
+        return goodsPropertyGroupProperties;
     }
 
-    public void setGoodsPropertyIds(List<String> goodsPropertyIds) {
-        this.goodsPropertyIds = goodsPropertyIds;
+    public void setGoodsPropertyGroupProperties(List<GoodsPropertyGroupPropertyParam> goodsPropertyGroupProperties) {
+        this.goodsPropertyGroupProperties = goodsPropertyGroupProperties;
     }
 
-    public List<String> getGoodsPropertyValueIds() {
-        return goodsPropertyValueIds;
-    }
+    public static class GoodsPropertyGroupPropertyParam extends GoodsPropertyGroupProperty {
+        private List<GoodsPropertyGroupPropertyValue> goodsPropertyGroupPropertyValues;
 
-    public void setGoodsPropertyValueIds(List<String> goodsPropertyValueIds) {
-        this.goodsPropertyValueIds = goodsPropertyValueIds;
+        public List<GoodsPropertyGroupPropertyValue> getGoodsPropertyGroupPropertyValues() {
+            return goodsPropertyGroupPropertyValues;
+        }
+
+        public void setGoodsPropertyGroupPropertyValues(List<GoodsPropertyGroupPropertyValue> goodsPropertyGroupPropertyValues) {
+            this.goodsPropertyGroupPropertyValues = goodsPropertyGroupPropertyValues;
+        }
     }
 }

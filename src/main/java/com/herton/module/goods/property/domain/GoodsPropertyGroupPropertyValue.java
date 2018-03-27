@@ -13,6 +13,9 @@ public class GoodsPropertyGroupPropertyValue extends BaseEntity {
     @ApiModelProperty(value = "属性组id")
     @Column(length = 36)
     private String goodsPropertyGroupId;
+    @ApiModelProperty(value = "属性组关联属性id")
+    @Column(length = 36)
+    private String goodsPropertyGroupPropertyId;
     @ApiModelProperty(value = "属性值id")
     @Column(length = 36)
     private String goodsPropertyValueId;
@@ -23,6 +26,14 @@ public class GoodsPropertyGroupPropertyValue extends BaseEntity {
 
     public void setGoodsPropertyGroupId(String goodsPropertyGroupId) {
         this.goodsPropertyGroupId = goodsPropertyGroupId;
+    }
+
+    public String getGoodsPropertyGroupPropertyId() {
+        return goodsPropertyGroupPropertyId;
+    }
+
+    public void setGoodsPropertyGroupPropertyId(String goodsPropertyGroupPropertyId) {
+        this.goodsPropertyGroupPropertyId = goodsPropertyGroupPropertyId;
     }
 
     public String getGoodsPropertyValueId() {

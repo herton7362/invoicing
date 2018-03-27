@@ -3,6 +3,7 @@ package com.herton.module.goods.property.service;
 import com.herton.common.AbstractCrudService;
 import com.herton.common.PageRepository;
 import com.herton.common.PageResult;
+import com.herton.common.utils.StringUtils;
 import com.herton.module.goods.property.domain.*;
 import com.herton.module.goods.property.web.GoodsPropertyGroupResult;
 import com.herton.module.goods.property.web.GoodsPropertyGroupSaveParam;
@@ -13,10 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @Transactional
@@ -36,27 +34,65 @@ public class GoodsPropertyGroupServiceImpl extends AbstractCrudService<GoodsProp
         GoodsPropertyGroup goodsPropertyGroup = new GoodsPropertyGroup();
         BeanUtils.copyProperties(goodsPropertyGroupSaveParam, goodsPropertyGroup);
         GoodsPropertyGroup result = goodsPropertyGroupRepository.save(goodsPropertyGroup);
-        Map<String, String> param = new HashMap<>();
-        param.put("goodsPropertyGroupId", result.getId());
-        goodsPropertyGroupPropertyService.delete(goodsPropertyGroupPropertyService.findAll(param));
-        List<String> goodsPropertyIds = goodsPropertyGroupSaveParam.getGoodsPropertyIds();
+
+        List<GoodsPropertyGroupSaveParam.GoodsPropertyGroupPropertyParam> goodsPropertyGroupPropertyParams =
+                goodsPropertyGroupSaveParam.getGoodsPropertyGroupProperties();
+        this.deleteUnusedGroupProperties(result.getId(), goodsPropertyGroupPropertyParams);
         GoodsPropertyGroupProperty goodsPropertyGroupProperty;
-        for (String groupPropertyId : goodsPropertyIds) {
-            goodsPropertyGroupProperty = new GoodsPropertyGroupProperty();
-            goodsPropertyGroupProperty.setGoodsPropertyGroupId(result.getId());
-            goodsPropertyGroupProperty.setGoodsPropertyId(groupPropertyId);
-            goodsPropertyGroupPropertyService.save(goodsPropertyGroupProperty);
-        }
-        param.clear();
-        param.put("goodsPropertyGroupId", result.getId());
-        goodsPropertyGroupPropertyValueService.delete(goodsPropertyGroupPropertyValueService.findAll(param));
-        List<String> goodsPropertyValueIds = goodsPropertyGroupSaveParam.getGoodsPropertyValueIds();
+        List<GoodsPropertyGroupPropertyValue> goodsPropertyGroupPropertyValues;
+        GoodsPropertyGroupSaveParam.GoodsPropertyGroupPropertyParam goodsPropertyGroupPropertyParam;
         GoodsPropertyGroupPropertyValue goodsPropertyGroupPropertyValue;
-        for (String groupPropertyValueId : goodsPropertyValueIds) {
-            goodsPropertyGroupPropertyValue = new GoodsPropertyGroupPropertyValue();
-            goodsPropertyGroupPropertyValue.setGoodsPropertyGroupId(result.getId());
-            goodsPropertyGroupPropertyValue.setGoodsPropertyValueId(groupPropertyValueId);
-            goodsPropertyGroupPropertyValueService.save(goodsPropertyGroupPropertyValue);
+        for (int i = 0; i < goodsPropertyGroupPropertyParams.size(); i++) {
+            goodsPropertyGroupPropertyParam = goodsPropertyGroupPropertyParams.get(i);
+            goodsPropertyGroupProperty = new GoodsPropertyGroupProperty();
+            BeanUtils.copyProperties(goodsPropertyGroupPropertyParam, goodsPropertyGroupProperty);
+            goodsPropertyGroupProperty.setGoodsPropertyGroupId(result.getId());
+            goodsPropertyGroupProperty.setSortNumber(i);
+            goodsPropertyGroupPropertyService.save(goodsPropertyGroupProperty);
+
+            goodsPropertyGroupPropertyValues = goodsPropertyGroupPropertyParam.getGoodsPropertyGroupPropertyValues();
+            this.deleteUnusedGroupPropertyValues(goodsPropertyGroupProperty.getId(), goodsPropertyGroupPropertyValues);
+            for (int j = 0; j < goodsPropertyGroupPropertyValues.size(); j++) {
+                goodsPropertyGroupPropertyValue = goodsPropertyGroupPropertyValues.get(j);
+                goodsPropertyGroupPropertyValue.setGoodsPropertyGroupId(result.getId());
+                goodsPropertyGroupPropertyValue.setGoodsPropertyGroupPropertyId(goodsPropertyGroupProperty.getId());
+                goodsPropertyGroupPropertyValue.setSortNumber(j);
+                goodsPropertyGroupPropertyValueService.save(goodsPropertyGroupPropertyValue);
+            }
+        }
+
+    }
+
+    private void deleteUnusedGroupProperties(String goodsPropertyGroupId,
+                              List<GoodsPropertyGroupSaveParam.GoodsPropertyGroupPropertyParam> goodsPropertyGroupPropertyParams) throws Exception {
+        Map<String, String> param = new HashMap<>();
+        param.put("goodsPropertyGroupId", goodsPropertyGroupId);
+        List<GoodsPropertyGroupProperty> goodsPropertyGroupProperties = goodsPropertyGroupPropertyService.findAll(param);
+        Set<String> oldIds = new HashSet<>();
+        Set<String> newIds = new HashSet<>();
+        goodsPropertyGroupProperties.forEach(goodsPropertyGroupProperty -> oldIds.add(goodsPropertyGroupProperty.getId()));
+        goodsPropertyGroupPropertyParams.forEach(goodsPropertyGroupPropertyParam -> newIds.add(goodsPropertyGroupPropertyParam.getId()));
+        oldIds.removeAll(newIds);
+        for (String id : oldIds) {
+            goodsPropertyGroupPropertyService.delete(id);
+            param.clear();
+            param.put("goodsPropertyGroupPropertyId", id);
+            goodsPropertyGroupPropertyValueService.delete(goodsPropertyGroupPropertyValueService.findAll(param));
+        }
+    }
+
+    private void deleteUnusedGroupPropertyValues(String goodsPropertyGroupPropertyId,
+                                                 List<GoodsPropertyGroupPropertyValue> goodsPropertyGroupPropertyValues) throws Exception {
+        Map<String, String> param = new HashMap<>();
+        param.put("goodsPropertyGroupPropertyId", goodsPropertyGroupPropertyId);
+        List<GoodsPropertyGroupPropertyValue> goodsPropertyGroupPropertyValues1 = goodsPropertyGroupPropertyValueService.findAll(param);
+        Set<String> oldIds = new HashSet<>();
+        Set<String> newIds = new HashSet<>();
+        goodsPropertyGroupPropertyValues1.forEach(goodsPropertyGroupPropertyValue -> oldIds.add(goodsPropertyGroupPropertyValue.getId()));
+        goodsPropertyGroupPropertyValues.forEach(goodsPropertyGroupPropertyValue -> newIds.add(goodsPropertyGroupPropertyValue.getId()));
+        oldIds.removeAll(newIds);
+        for (String id : oldIds) {
+            goodsPropertyGroupPropertyValueService.delete(id);
         }
     }
 
