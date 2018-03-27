@@ -52,9 +52,6 @@ public class Goods extends BaseEntity {
     @ApiModelProperty(value = "备注")
     @Column(length = 200)
     private String remark;
-    @ApiModelProperty(value = "属性组id")
-    @Column(length = 36)
-    private String goodsPropertyGroupId;
 
     public String getName() {
         return name;
@@ -166,13 +163,5 @@ public class Goods extends BaseEntity {
 
     public void setRemark(String remark) {
         this.remark = remark;
-    }
-
-    public String getGoodsPropertyGroupId() {
-        return goodsPropertyGroupId;
-    }
-
-    public void setGoodsPropertyGroupId(String goodsPropertyGroupId) {
-        this.goodsPropertyGroupId = goodsPropertyGroupId;
     }
 }
