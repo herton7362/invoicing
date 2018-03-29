@@ -53,7 +53,6 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
 
     @Override
     public PageResult<T> findAll(PageRequest pageRequest, Map<String, ?> param) throws Exception {
-
         Page<T> page = getRepository().findAll(getSpecification(manufactureQueryParam(param)), pageRequest);
         return new PageResult<>(page);
     }
@@ -296,5 +295,10 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
         }
         t.setLogicallyDeleted(true);
         getRepository().save(t);
+    }
+
+    @Override
+    public Long count(Map<String, ?> param) throws Exception {
+        return getRepository().count(getSpecification(manufactureQueryParam(param)));
     }
 }

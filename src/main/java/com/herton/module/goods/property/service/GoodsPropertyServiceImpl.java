@@ -3,9 +3,11 @@ package com.herton.module.goods.property.service;
 import com.herton.common.AbstractCrudService;
 import com.herton.common.PageRepository;
 import com.herton.common.PageResult;
+import com.herton.exceptions.BusinessException;
 import com.herton.module.goods.property.domain.GoodsProperty;
 import com.herton.module.goods.property.domain.GoodsPropertyRepository;
 import com.herton.module.goods.property.web.GoodsPropertyResult;
+import com.herton.module.goods.service.GoodsGoodsPropertyService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +25,7 @@ public class GoodsPropertyServiceImpl extends AbstractCrudService<GoodsProperty>
     private final GoodsPropertyRepository goodsPropertyRepository;
     private final GoodsPropertyValueService goodsPropertyValueService;
     private final GoodsPropertyCategoryService goodsPropertyCategoryService;
+    private final GoodsGoodsPropertyService goodsGoodsPropertyService;
     @Override
     protected PageRepository<GoodsProperty> getRepository() {
         return goodsPropertyRepository;
@@ -66,14 +69,46 @@ public class GoodsPropertyServiceImpl extends AbstractCrudService<GoodsProperty>
         return this.translateResult(super.findOne(id));
     }
 
+    @Override
+    public void delete(String id) throws Exception {
+        this.checkUsed(id);
+        this.deleteGoodsPropertyValue(id);
+        super.delete(id);
+    }
+
+    @Override
+    public void delete(Iterable<? extends GoodsProperty> goodsProperties) throws Exception {
+        for (GoodsProperty goodsProperty : goodsProperties) {
+            this.checkUsed(goodsProperty.getId());
+        }
+        super.delete(goodsProperties);
+    }
+
+    private void deleteGoodsPropertyValue(String id) throws Exception {
+        Map<String, String> param = new HashMap<>();
+        param.put("goodsPropertyId", id);
+        goodsPropertyValueService.delete(goodsPropertyValueService.findAll(param));
+    }
+
+    private void checkUsed(String id) throws Exception {
+        Map<String, String> param = new HashMap<>();
+        param.put("goodsPropertyId", id);
+        Long count = goodsGoodsPropertyService.count(param);
+        if(count > 0) {
+            throw new BusinessException("当前属性已经被商品使用，不能删除");
+        }
+    }
+
     @Autowired
     public GoodsPropertyServiceImpl(
             GoodsPropertyRepository goodsPropertyRepository,
             GoodsPropertyValueService goodsPropertyValueService,
-            GoodsPropertyCategoryService goodsPropertyCategoryService
+            GoodsPropertyCategoryService goodsPropertyCategoryService,
+            GoodsGoodsPropertyService goodsGoodsPropertyService
     ) {
         this.goodsPropertyRepository = goodsPropertyRepository;
         this.goodsPropertyValueService = goodsPropertyValueService;
         this.goodsPropertyCategoryService = goodsPropertyCategoryService;
+        this.goodsGoodsPropertyService = goodsGoodsPropertyService;
     }
 }

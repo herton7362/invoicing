@@ -10,6 +10,9 @@ import javax.persistence.Entity;
 @Entity
 @ApiModel("商品")
 public class Goods extends BaseEntity {
+    @ApiModelProperty(value = "分类id")
+    @Column(length = 36)
+    private String goodsCategoryId;
     @ApiModelProperty(value = "名称")
     @Column(length = 200)
     private String name;
@@ -52,6 +55,14 @@ public class Goods extends BaseEntity {
     @ApiModelProperty(value = "备注")
     @Column(length = 200)
     private String remark;
+
+    public String getGoodsCategoryId() {
+        return goodsCategoryId;
+    }
+
+    public void setGoodsCategoryId(String goodsCategoryId) {
+        this.goodsCategoryId = goodsCategoryId;
+    }
 
     public String getName() {
         return name;

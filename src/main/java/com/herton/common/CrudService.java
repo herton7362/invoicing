@@ -65,4 +65,11 @@ public interface CrudService<T extends BaseEntity> {
      * @param id 主键
      */
     void disable(String id) throws Exception;
+
+    /**
+     * 获取数量
+     * @param param 查询条件
+     * @return 数量
+     */
+    Long count(Map<String, ?> param) throws Exception;
 }
