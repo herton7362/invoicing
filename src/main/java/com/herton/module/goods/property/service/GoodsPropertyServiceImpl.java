@@ -80,6 +80,7 @@ public class GoodsPropertyServiceImpl extends AbstractCrudService<GoodsProperty>
     public void delete(Iterable<? extends GoodsProperty> goodsProperties) throws Exception {
         for (GoodsProperty goodsProperty : goodsProperties) {
             this.checkUsed(goodsProperty.getId());
+            this.deleteGoodsPropertyValue(goodsProperty.getId());
         }
         super.delete(goodsProperties);
     }
