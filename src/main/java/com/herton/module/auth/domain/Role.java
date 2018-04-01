@@ -20,6 +20,12 @@ public class Role extends BaseEntity {
     @ApiModelProperty(value = "角色名称")
     @Column(length = 50)
     private String name;
+    @ApiModelProperty(value = "图标")
+    @Column(length = 50)
+    private String icon;
+    @ApiModelProperty(value = "角色名称")
+    @Column(length = 200)
+    private String remark;
     @ManyToMany
     @JsonIgnore
     @JoinTable(name="role_modules",joinColumns={@JoinColumn(name="role_id")},inverseJoinColumns={@JoinColumn(name="module_id")})
@@ -32,6 +38,22 @@ public class Role extends BaseEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
     public List<Module> getModules() {
