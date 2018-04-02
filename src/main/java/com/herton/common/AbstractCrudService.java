@@ -53,13 +53,13 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
 
     @Override
     public PageResult<T> findAll(PageRequest pageRequest, Map<String, ?> param) throws Exception {
-        Page<T> page = getRepository().findAll(getSpecification(manufactureQueryParam(param)), pageRequest);
+        Page<T> page = getRepository().findAll(getSpecification(param), pageRequest);
         return new PageResult<>(page);
     }
 
     @Override
     public List<T> findAll(Map<String, ?> param) throws Exception {
-        return getRepository().findAll(getSpecification(manufactureQueryParam(param)));
+        return getRepository().findAll(getSpecification(param));
     }
 
     @Override
@@ -87,7 +87,7 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
      * @param param 用户传入的查询条件
      * @return {@link Specification}
      */
-    protected Specification<T> getSpecification(Map<String, String[]> param) {
+    protected Specification<T> getSpecification(Map<String, ?> param) {
         return new SimpleSpecification(param, showAllEntities);
     }
 
@@ -96,7 +96,7 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
      * @param param 用户传入的查询条件
      * @return {@link Specification}
      */
-    protected Specification<T> getSpecificationForAllEntities(Map<String, String[]> param) {
+    protected Specification<T> getSpecificationForAllEntities(Map<String, ?> param) {
         return new SimpleSpecification(param, true);
     }
 
@@ -109,13 +109,13 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
      * 5、当属性类型为数字时并且value为两个是则用between判断
      */
     @SuppressWarnings("unchecked")
-    class SimpleSpecification implements Specification<T> {
-        Map<String, String[]> params;
-        String currentKey;
-        Attribute currentAttribute;
-        Boolean allEntities;
-        SimpleSpecification(Map<String, String[]> params, Boolean allEntities) {
-            this.params = params;
+    protected class SimpleSpecification implements Specification<T> {
+        protected Map<String, String[]> params;
+        protected String currentKey;
+        protected Attribute currentAttribute;
+        protected Boolean allEntities;
+        public SimpleSpecification(Map<String, ?> params, Boolean allEntities) {
+            this.params = manufactureQueryParam(params);
             this.allEntities = allEntities;
         }
         @Override
