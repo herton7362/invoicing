@@ -6,10 +6,12 @@ import com.herton.common.PageResult;
 import com.herton.common.utils.StringUtils;
 import com.herton.exceptions.BusinessException;
 import com.herton.module.goods.domain.*;
+import com.herton.module.goods.sku.service.GoodsSkuService;
 import com.herton.module.goods.web.GoodsResult;
 import com.herton.module.goods.web.GoodsSaveParam;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
@@ -25,6 +27,7 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
     private final GoodsImageService goodsImageService;
     private final GoodsGoodsPropertyService goodsGoodsPropertyService;
     private final GoodsGoodsPropertyValueService goodsGoodsPropertyValueService;
+    private final GoodsSkuService goodsSkuService;
     @Override
     protected PageRepository<Goods> getRepository() {
         return goodsRepository;
@@ -84,6 +87,8 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
         List<GoodsSaveParam.GoodsGoodsPropertyParam> goodsGoodsProperties = goodsSaveParam.getGoodsGoodsProperties();
         this.deleteUnusedGoodsProperties(goods.getId(), goodsGoodsProperties);
         GoodsGoodsProperty goodsGoodsProperty;
+        List<List<String>> goodsPropertyValueIdsList = new ArrayList<>();
+        List<String> goodsPropertyValueIds;
         for (int i = 0; i < goodsGoodsProperties.size(); i++) {
             goodsGoodsProperty = new GoodsGoodsProperty();
             BeanUtils.copyProperties(goodsGoodsProperties.get(i), goodsGoodsProperty);
@@ -92,12 +97,16 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
             goodsGoodsPropertyService.save(goodsGoodsProperty);
             List<GoodsGoodsPropertyValue> goodsGoodsPropertyValues = goodsGoodsProperties.get(i).getGoodsGoodsPropertyValues();
             this.deleteUnusedGoodsPropertyValues(goodsGoodsProperty.getId(), goodsGoodsPropertyValues);
+            goodsPropertyValueIds = new ArrayList<>();
             for (int j = 0; j < goodsGoodsPropertyValues.size(); j++) {
                 goodsGoodsPropertyValues.get(j).setSortNumber(j);
                 goodsGoodsPropertyValues.get(j).setGoodsGoodsPropertyId(goodsGoodsProperty.getId());
                 goodsGoodsPropertyValueService.save(goodsGoodsPropertyValues.get(j));
+                goodsPropertyValueIds.add(goodsGoodsPropertyValues.get(j).getGoodsPropertyValueId());
             }
+            goodsPropertyValueIdsList.add(goodsPropertyValueIds);
         }
+        goodsSkuService.refreshGoodsSkuByRaw(goods.getId(), goodsPropertyValueIdsList);
     }
 
     private void deleteUnusedGoodsProperties(String goodsId,
@@ -177,10 +186,16 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
         Map<String, String> param = new HashMap<>();
         param.put("goodsId", id);
         goodsPriceService.delete(goodsPriceService.findAll(param));
-        param.clear();
-        param.put("goodsId", id);
         goodsImageService.delete(goodsImageService.findAll(param));
+        goodsSkuService.delete(goodsSkuService.findAll(param));
         super.delete(id);
+    }
+
+    @Override
+    public void delete(Iterable<? extends Goods> goodses) throws Exception {
+        for (Goods goodes : goodses) {
+            super.delete(goodes.getId());
+        }
     }
 
     private GoodsResult translateResult(Goods goods) throws Exception {
@@ -241,18 +256,21 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
         return goodsResults;
     }
 
+    @Lazy
     @Autowired
     public GoodsServiceImpl(
             GoodsRepository goodsRepository,
             GoodsPriceService goodsPriceService,
             GoodsImageService goodsImageService,
             GoodsGoodsPropertyService goodsGoodsPropertyService,
-            GoodsGoodsPropertyValueService goodsGoodsPropertyValueService
+            GoodsGoodsPropertyValueService goodsGoodsPropertyValueService,
+            GoodsSkuService goodsSkuService
     ) {
         this.goodsRepository = goodsRepository;
         this.goodsPriceService = goodsPriceService;
         this.goodsImageService = goodsImageService;
         this.goodsGoodsPropertyService = goodsGoodsPropertyService;
         this.goodsGoodsPropertyValueService = goodsGoodsPropertyValueService;
+        this.goodsSkuService = goodsSkuService;
     }
 }
