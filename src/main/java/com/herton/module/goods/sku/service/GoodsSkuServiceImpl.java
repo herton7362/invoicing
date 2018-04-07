@@ -3,6 +3,7 @@ package com.herton.module.goods.sku.service;
 import com.herton.common.AbstractCrudService;
 import com.herton.common.PageRepository;
 import com.herton.common.PageResult;
+import com.herton.module.goods.property.domain.GoodsPropertyValue;
 import com.herton.module.goods.property.service.GoodsPropertyValueService;
 import com.herton.module.goods.service.GoodsService;
 import com.herton.module.goods.sku.domain.GoodsSku;
@@ -31,12 +32,17 @@ public class GoodsSkuServiceImpl extends AbstractCrudService<GoodsSku> implement
     @Override
     public void refreshGoodsSkuByRaw(String goodsId, List<List<String>> goodsPropertyValueIdsList) throws Exception {
         List<List<String>> result = new ArrayList<>();
-        recursiveGoodsPropertyValueIdsList(0, goodsPropertyValueIdsList, null, result);
-        List<String> goodsPropertyValueIdsSet = new ArrayList<>();
-        for (List<String> strings : result) {
-            goodsPropertyValueIdsSet.add(String.join(",", strings));
+        List<String> goodsPropertyValueIds = new ArrayList<>();
+        if(goodsPropertyValueIdsList != null && goodsPropertyValueIdsList.size() > 0) {
+            recursiveGoodsPropertyValueIdsList(0, goodsPropertyValueIdsList, null, result);
+            for (List<String> strings : result) {
+                goodsPropertyValueIds.add(String.join(",", strings));
+            }
+        } else {
+            goodsPropertyValueIds.add(null);
         }
-        refreshGoodsSkuByFormatted(goodsId, goodsPropertyValueIdsSet);
+
+        refreshGoodsSkuByFormatted(goodsId, goodsPropertyValueIds);
     }
 
     private void recursiveGoodsPropertyValueIdsList(int index,
@@ -110,10 +116,15 @@ public class GoodsSkuServiceImpl extends AbstractCrudService<GoodsSku> implement
     private GoodsSkuResult translateResult(GoodsSku goodsSku) throws Exception {
         GoodsSkuResult goodsSkuResult = new GoodsSkuResult();
         BeanUtils.copyProperties(goodsSku, goodsSkuResult);
-        goodsSkuResult.setGoods(goodsService.findOne(goodsSku.getGoodsId()));
-        Map<String, String[]> param = new HashMap<>();
-        param.put("id", goodsSku.getGoodsPropertyValueIds().split(","));
-        goodsSkuResult.setGoodsPropertyValues(goodsPropertyValueService.findAll(param));
+        goodsSkuResult.setGoods(goodsService.findOneTranslated(goodsSku.getGoodsId()));
+        if(goodsSku.getGoodsPropertyValueIds() != null) {
+            String[] valueIds = goodsSku.getGoodsPropertyValueIds().split(",");
+            List<GoodsPropertyValue> goodsPropertyValues = new ArrayList<>();
+            for (String valueId : valueIds) {
+                goodsPropertyValues.add(goodsPropertyValueService.findOne(valueId));
+            }
+            goodsSkuResult.setGoodsPropertyValues(goodsPropertyValues);
+        }
         return goodsSkuResult;
     }
 

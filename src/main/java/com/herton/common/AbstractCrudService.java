@@ -1,5 +1,6 @@
 package com.herton.common;
 
+import com.herton.common.utils.CacheUtils;
 import com.herton.common.utils.SpringUtils;
 import com.herton.common.utils.StringUtils;
 import com.herton.entity.BaseEntity;
@@ -30,6 +31,7 @@ import java.util.*;
  * @param <T> 增删改查的实体
  */
 public abstract class AbstractCrudService<T extends BaseEntity> implements CrudService<T> {
+    private final CacheUtils cache = CacheUtils.getInstance();
     @Value("${service.showAllEntities}")
     private Boolean showAllEntities;
 
@@ -63,23 +65,35 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public T findOne(String id) throws Exception {
-        return getRepository().findOne(id);
+        if(cache.get(id) != null) {
+            return (T) cache.get(id);
+        }
+        T t = getRepository().findOne(id);
+        cache.set(id, t);
+        return t;
     }
 
     @Override
     public void delete(String id) throws Exception {
         getRepository().delete(id);
+        cache.remove(id);
     }
 
     @Override
     public T save(T t) throws Exception {
-        return getRepository().save(t);
+        t = getRepository().save(t);
+        cache.set(t.getId(), t);
+        return t;
     }
 
     @Override
     public void delete(Iterable<? extends T> ts) throws Exception {
         getRepository().delete(ts);
+        for (T t : ts) {
+            cache.remove(t.getId());
+        }
     }
 
     /**

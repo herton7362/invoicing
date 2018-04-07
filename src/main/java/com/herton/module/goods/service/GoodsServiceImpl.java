@@ -3,6 +3,7 @@ package com.herton.module.goods.service;
 import com.herton.common.AbstractCrudService;
 import com.herton.common.PageRepository;
 import com.herton.common.PageResult;
+import com.herton.common.utils.CacheUtils;
 import com.herton.common.utils.StringUtils;
 import com.herton.exceptions.BusinessException;
 import com.herton.module.goods.domain.*;
@@ -28,9 +29,14 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
     private final GoodsGoodsPropertyService goodsGoodsPropertyService;
     private final GoodsGoodsPropertyValueService goodsGoodsPropertyValueService;
     private final GoodsSkuService goodsSkuService;
+    private final CacheUtils cache = CacheUtils.getInstance();
     @Override
     protected PageRepository<Goods> getRepository() {
         return goodsRepository;
+    }
+
+    private String concatTranslatedKey(String id) {
+        return id + "_translated";
     }
 
     @Override
@@ -107,6 +113,8 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
             goodsPropertyValueIdsList.add(goodsPropertyValueIds);
         }
         goodsSkuService.refreshGoodsSkuByRaw(goods.getId(), goodsPropertyValueIdsList);
+        cache.set(goods.getId(), goods);
+        cache.set(concatTranslatedKey(goods.getId()), findOneTranslated(goods.getId()));
     }
 
     private void deleteUnusedGoodsProperties(String goodsId,
@@ -177,8 +185,13 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
 
     @Override
     public GoodsResult findOneTranslated(String id) throws Exception {
+        if(cache.get(concatTranslatedKey(id)) != null) {
+            return (GoodsResult) cache.get(concatTranslatedKey(id));
+        }
         Goods goods = super.findOne(id);
-        return translateResult(goods);
+        GoodsResult goodsResult = translateResult(goods);
+        cache.set(concatTranslatedKey(id), goodsResult);
+        return goodsResult;
     }
 
     @Override
@@ -189,12 +202,14 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
         goodsImageService.delete(goodsImageService.findAll(param));
         goodsSkuService.delete(goodsSkuService.findAll(param));
         super.delete(id);
+        cache.remove(concatTranslatedKey(id));
+        cache.remove(id);
     }
 
     @Override
     public void delete(Iterable<? extends Goods> goodses) throws Exception {
-        for (Goods goodes : goodses) {
-            super.delete(goodes.getId());
+        for (Goods goods : goodses) {
+            delete(goods.getId());
         }
     }
 

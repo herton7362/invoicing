@@ -1,13 +1,11 @@
 package com.herton.module.basicdata.store.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.herton.entity.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import java.util.Date;
 
 @Entity
 @ApiModel("门店")
