@@ -116,7 +116,7 @@ public class GoodsSkuServiceImpl extends AbstractCrudService<GoodsSku> implement
     private GoodsSkuResult translateResult(GoodsSku goodsSku) throws Exception {
         GoodsSkuResult goodsSkuResult = new GoodsSkuResult();
         BeanUtils.copyProperties(goodsSku, goodsSkuResult);
-        goodsSkuResult.setGoods(goodsService.findOneTranslated(goodsSku.getGoodsId()));
+        goodsSkuResult.setGoods(goodsService.findOne(goodsSku.getGoodsId()));
         if(goodsSku.getGoodsPropertyValueIds() != null) {
             String[] valueIds = goodsSku.getGoodsPropertyValueIds().split(",");
             List<GoodsPropertyValue> goodsPropertyValues = new ArrayList<>();

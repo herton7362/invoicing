@@ -35,10 +35,6 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
         return goodsRepository;
     }
 
-    private String concatTranslatedKey(String id) {
-        return id + "_translated";
-    }
-
     @Override
     public void save(GoodsSaveParam goodsSaveParam) throws Exception {
         if(StringUtils.isBlank(goodsSaveParam.getName())) {
@@ -114,7 +110,6 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
         }
         goodsSkuService.refreshGoodsSkuByRaw(goods.getId(), goodsPropertyValueIdsList);
         cache.set(goods.getId(), goods);
-        cache.set(concatTranslatedKey(goods.getId()), findOneTranslated(goods.getId()));
     }
 
     private void deleteUnusedGoodsProperties(String goodsId,
@@ -185,13 +180,8 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
 
     @Override
     public GoodsResult findOneTranslated(String id) throws Exception {
-        if(cache.get(concatTranslatedKey(id)) != null) {
-            return (GoodsResult) cache.get(concatTranslatedKey(id));
-        }
         Goods goods = super.findOne(id);
-        GoodsResult goodsResult = translateResult(goods);
-        cache.set(concatTranslatedKey(id), goodsResult);
-        return goodsResult;
+        return translateResult(goods);
     }
 
     @Override
@@ -202,8 +192,6 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
         goodsImageService.delete(goodsImageService.findAll(param));
         goodsSkuService.delete(goodsSkuService.findAll(param));
         super.delete(id);
-        cache.remove(concatTranslatedKey(id));
-        cache.remove(id);
     }
 
     @Override
