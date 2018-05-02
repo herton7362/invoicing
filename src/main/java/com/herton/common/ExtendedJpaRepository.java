@@ -33,10 +33,15 @@ public class ExtendedJpaRepository<T extends BaseEntity> extends SimpleJpaReposi
             if(user != null) {
                 entity.setCreateUserId(user.getId());
             }
-            if(StringUtils.isEmpty(entity.getClientId())) {
-                entity.setClientId(UserThread.getInstance().getClientId());
-            }
         }
+
+        if(entity.getCreateUserId() == null || entity.getCreatedDate() == null) {
+            T old = findOne(entity.getId());
+            entity.setCreateUserId(old.getCreateUserId());
+            entity.setCreatedDate(old.getCreatedDate());
+        }
+
+        entity.setClientId(UserThread.getInstance().getClientId());
 
         entity.setSortNumber(entity.getSortNumber() == null?0: entity.getSortNumber());
         if(entity.getLogicallyDeleted() == null) {

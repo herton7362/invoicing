@@ -1,7 +1,7 @@
 package com.herton.kits.wechat;
 
 import com.herton.common.utils.*;
-import com.herton.exceptions.BusinessException;
+import com.herton.exceptions.InvalidParamException;
 import com.herton.kits.wechat.config.annotation.builder.WeChatPayConfig;
 import com.herton.kits.wechat.config.annotation.configuration.WeChatAPIConfigurer;
 import org.json.JSONObject;
@@ -225,7 +225,7 @@ public class WeChatAPIImpl implements WeChatAPI {
         JSONObject jsonObject = new JSONObject(result);
         if(jsonObject.has("errcode") && !"0".equals(String.valueOf(jsonObject.get("errcode")))) {
             LOG.error("微信通讯出现异常，errcode:{},errmsg:{}", jsonObject.get("errcode"), jsonObject.get("errmsg"));
-            throw new BusinessException("微信通讯出现异常，请联系管理员");
+            throw new InvalidParamException("微信通讯出现异常，请联系管理员");
         }
         return jsonObject;
     }

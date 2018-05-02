@@ -3,7 +3,7 @@ package com.herton.module.goods.property.service;
 import com.herton.common.AbstractCrudService;
 import com.herton.common.PageRepository;
 import com.herton.common.PageResult;
-import com.herton.exceptions.BusinessException;
+import com.herton.exceptions.InvalidParamException;
 import com.herton.module.goods.property.domain.GoodsProperty;
 import com.herton.module.goods.property.domain.GoodsPropertyRepository;
 import com.herton.module.goods.property.web.GoodsPropertyResult;
@@ -96,7 +96,7 @@ public class GoodsPropertyServiceImpl extends AbstractCrudService<GoodsProperty>
         param.put("goodsPropertyId", id);
         Long count = goodsGoodsPropertyService.count(param);
         if(count > 0) {
-            throw new BusinessException("当前属性已经被商品使用，不能删除");
+            throw new InvalidParamException("当前属性已经被商品使用，不能删除");
         }
     }
 

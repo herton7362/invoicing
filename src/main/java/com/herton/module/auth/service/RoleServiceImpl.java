@@ -3,7 +3,7 @@ package com.herton.module.auth.service;
 import com.herton.common.AbstractCrudService;
 import com.herton.common.PageRepository;
 import com.herton.common.PageResult;
-import com.herton.exceptions.BusinessException;
+import com.herton.exceptions.InvalidParamException;
 import com.herton.module.auth.domain.Module;
 import com.herton.module.auth.domain.Role;
 import com.herton.module.auth.domain.RoleRepository;
@@ -33,7 +33,7 @@ public class RoleServiceImpl extends AbstractCrudService<Role> implements RoleSe
     @Override
     public void authorize(String roleId, List<String> moduleIds) throws Exception {
         if(StringUtils.isBlank(roleId)) {
-            throw new BusinessException("roleId is required");
+            throw new InvalidParamException("roleId is required");
         }
         Role role = roleRepository.findOne(roleId);
         List<Module> modules = new ArrayList<>(moduleIds.size());
@@ -97,7 +97,7 @@ public class RoleServiceImpl extends AbstractCrudService<Role> implements RoleSe
     private void checkUsed(String id) throws Exception {
         int count = roleRepository.getStaffAccountMount(id);
         if(count > 0) {
-            throw new BusinessException("有员工归属于当前角色，请先删除员工");
+            throw new InvalidParamException("有员工归属于当前角色，请先删除员工");
         }
     }
 

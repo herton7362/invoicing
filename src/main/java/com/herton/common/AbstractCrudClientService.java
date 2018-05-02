@@ -2,7 +2,7 @@ package com.herton.common;
 
 import com.herton.common.utils.StringUtils;
 import com.herton.entity.BaseEntity;
-import com.herton.exceptions.BusinessException;
+import com.herton.exceptions.InvalidParamException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
@@ -109,7 +109,7 @@ public abstract class AbstractCrudClientService<T extends BaseEntity> implements
         T t;
         for (int i = 0; i < ts.size(); i++) {
             if(StringUtils.isBlank(ts.get(i).getId())) {
-                throw new BusinessException("参数不正确，缺失主键");
+                throw new InvalidParamException("参数不正确，缺失主键");
             }
             t = findOne(ts.get(i).getId());
             t.setSortNumber(i);

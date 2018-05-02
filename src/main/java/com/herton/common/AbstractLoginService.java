@@ -1,24 +1,17 @@
 package com.herton.common;
 
 import com.herton.common.utils.CacheUtils;
-import com.herton.common.utils.SpringUtils;
-import com.herton.common.utils.StringUtils;
 import com.herton.entity.BaseUser;
-import com.herton.exceptions.BusinessException;
+import com.herton.exceptions.InvalidParamException;
 import com.herton.kits.notification.Notification;
 import com.herton.kits.notification.message.SmsVerifyCodeMessage;
-import com.herton.module.auth.UserThread;
 import com.herton.module.auth.domain.Admin;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint;
-import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
 import java.security.Principal;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -43,7 +36,7 @@ public abstract class AbstractLoginService {
      */
     public void sendVerifyCode(String mobile) throws Exception {
         if (!Pattern.matches(REGEX_MOBILE, mobile)) {
-            throw new BusinessException(String.format("%s无效的手机号码", mobile));
+            throw new InvalidParamException(String.format("%s无效的手机号码", mobile));
         }
         BaseUser admin = new Admin();
         admin.setLoginName(mobile);
@@ -64,32 +57,6 @@ public abstract class AbstractLoginService {
      * @param password 密码
      */
     public abstract void editPwd(String mobile, String code, String password) throws Exception;
-
-    /**
-     * 登录
-     *
-     * @param appId app id
-     * @param appSecret app secret
-     * @param username  手机号码
-     * @param password  密码
-     * @return {@link OAuth2AccessToken} token
-     */
-    public ResponseEntity<OAuth2AccessToken> login(String appId, String appSecret, String username, String password) throws Exception {
-        if(StringUtils.isBlank(username)) {
-            throw new BusinessException("请输入用户名");
-        }
-        if(StringUtils.isBlank(password)) {
-            throw new BusinessException("请输入密码");
-        }
-        Map<String, String> requestParameters = new HashMap<>();
-        requestParameters.put("client_id", appId);
-        requestParameters.put("client_secret", appSecret);
-        requestParameters.put("grant_type", "password");
-        requestParameters.put("username", username);
-        requestParameters.put("password", password);
-        Principal principal = new UsernamePasswordAuthenticationToken(new User(appId, appSecret, Collections.emptyList()), null, null);
-        return getTokenEndpoint().postAccessToken(principal, requestParameters);
-    }
 
     /**
      * 登录
@@ -155,18 +122,9 @@ public abstract class AbstractLoginService {
      * 刷新token
      *
      * @param appId        app_id
-     * @param appSecret    app_secret
      * @param refreshToken refresh_token
      */
-    public ResponseEntity<OAuth2AccessToken> refreshToken(String appId, String appSecret, String refreshToken) throws Exception {
-        Map<String, String> requestParameters = new HashMap<>();
-        requestParameters.put("client_id", appId);
-        requestParameters.put("client_secret", appSecret);
-        requestParameters.put("grant_type", "refresh_token");
-        requestParameters.put("refresh_token", refreshToken);
-        Principal principal = new UsernamePasswordAuthenticationToken(new User(appId, appSecret, Collections.emptyList()), null, null);
-        return getTokenEndpoint().postAccessToken(principal, requestParameters);
-    }
+    public abstract ResponseEntity<OAuth2AccessToken> refreshToken(String appId, String refreshToken) throws Exception;
 
     /**
      * 获取token

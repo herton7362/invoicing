@@ -3,7 +3,7 @@ package com.herton.module.auth;
 import com.herton.common.AbstractLoginService;
 import com.herton.common.utils.StringUtils;
 import com.herton.entity.BaseUser;
-import com.herton.exceptions.BusinessException;
+import com.herton.exceptions.InvalidParamException;
 import com.herton.kits.Kits;
 import com.herton.kits.notification.Notification;
 import com.herton.module.auth.domain.OauthClientDetails;
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint;
 import org.springframework.stereotype.Component;
@@ -47,20 +46,20 @@ public class LoginServiceImpl extends AbstractLoginService {
     @Override
     public ResponseEntity<OAuth2AccessToken> login(String username, String password) throws Exception {
         if(StringUtils.isBlank(username)) {
-            throw new BusinessException("请输入用户名");
+            throw new InvalidParamException("请输入用户名");
         }
         if(StringUtils.isBlank(password)) {
-            throw new BusinessException("请输入密码");
+            throw new InvalidParamException("请输入密码");
         }
         String[] usernameAndClientId = username.split("@");
         if(usernameAndClientId.length == 1) {
-            throw new BusinessException("请使用 xxx@xxx 的方式作为用户名登录");
+            throw new InvalidParamException("请使用 xxx@xxx 的方式作为用户名登录");
         }
         username = usernameAndClientId[0];
         String appId = usernameAndClientId[1];
         OauthClientDetails oauthClientDetails = oauthClientDetailsService.findOneByClientId(appId);
         if(oauthClientDetails == null) {
-            throw new BusinessException("商户【" + appId + "】不存在");
+            throw new InvalidParamException("商户【" + appId + "】不存在");
         }
         Map<String, String> requestParameters = new HashMap<>();
         requestParameters.put("client_id", appId);
@@ -68,6 +67,26 @@ public class LoginServiceImpl extends AbstractLoginService {
         requestParameters.put("grant_type", "password");
         requestParameters.put("username", username);
         requestParameters.put("password", password);
+        Principal principal = new UsernamePasswordAuthenticationToken(new User(appId, oauthClientDetails.getClientSecret(), Collections.emptyList()), null, null);
+        return getTokenEndpoint().postAccessToken(principal, requestParameters);
+    }
+
+    /**
+     * 刷新token
+     *
+     * @param appId        app_id
+     * @param refreshToken refresh_token
+     */
+    public ResponseEntity<OAuth2AccessToken> refreshToken(String appId, String refreshToken) throws Exception {
+        Map<String, String> requestParameters = new HashMap<>();
+        OauthClientDetails oauthClientDetails = oauthClientDetailsService.findOneByClientId(appId);
+        if(oauthClientDetails == null) {
+            throw new InvalidParamException("商户【" + appId + "】不存在");
+        }
+        requestParameters.put("client_id", appId);
+        requestParameters.put("client_secret", oauthClientDetails.getClientSecret());
+        requestParameters.put("grant_type", "refresh_token");
+        requestParameters.put("refresh_token", refreshToken);
         Principal principal = new UsernamePasswordAuthenticationToken(new User(appId, oauthClientDetails.getClientSecret(), Collections.emptyList()), null, null);
         return getTokenEndpoint().postAccessToken(principal, requestParameters);
     }

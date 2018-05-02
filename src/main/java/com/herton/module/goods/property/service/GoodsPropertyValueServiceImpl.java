@@ -2,8 +2,7 @@ package com.herton.module.goods.property.service;
 
 import com.herton.common.AbstractCrudService;
 import com.herton.common.PageRepository;
-import com.herton.exceptions.BusinessException;
-import com.herton.module.goods.domain.GoodsGoodsPropertyValue;
+import com.herton.exceptions.InvalidParamException;
 import com.herton.module.goods.property.domain.GoodsPropertyValue;
 import com.herton.module.goods.property.domain.GoodsPropertyValueRepository;
 import com.herton.module.goods.service.GoodsGoodsPropertyValueService;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Component
@@ -47,7 +45,7 @@ public class GoodsPropertyValueServiceImpl extends AbstractCrudService<GoodsProp
         param.put("goodsPropertyValueId", id);
         Long count = goodsGoodsPropertyValueService.count(param);
         if(count > 0) {
-            throw new BusinessException("当前属性已经被商品使用，不能删除");
+            throw new InvalidParamException("当前属性已经被商品使用，不能删除");
         }
     }
 

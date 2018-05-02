@@ -22,7 +22,7 @@ public interface GoodsSkuService extends CrudService<GoodsSku> {
     /**
      * 刷新商品sku，如果sku未被使用则删除，如果被占用则改为停用
      * @param goodsId 商品id
-     * @param goodsPropertyValueIdsSet 商品属性组合id集合，用逗号分隔 如：红色，M码
+     * @param goodsPropertyValueIdsList 商品属性组合id集合，用逗号分隔 如：红色，M码
      * @throws Exception
      */
     void refreshGoodsSkuByFormatted(String goodsId, List<String> goodsPropertyValueIdsList) throws Exception;
@@ -41,4 +41,11 @@ public interface GoodsSkuService extends CrudService<GoodsSku> {
      * @return {@link GoodsSkuResult} spring boot 分页类
      */
     List<GoodsSkuResult> findAllTranslated(Map<String, ?> param) throws Exception;
+
+    /**
+     * 根据id查询一个
+     * @param id 主键
+     * @return 实体
+     */
+    GoodsSkuResult findOneTranslated(String id) throws Exception;
 }

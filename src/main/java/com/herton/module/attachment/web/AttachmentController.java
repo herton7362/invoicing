@@ -2,7 +2,7 @@ package com.herton.module.attachment.web;
 
 import com.herton.common.AbstractCrudController;
 import com.herton.common.CrudService;
-import com.herton.exceptions.BusinessException;
+import com.herton.exceptions.InvalidParamException;
 import com.herton.module.attachment.domain.Attachment;
 import com.herton.module.attachment.service.AttachmentService;
 import com.herton.module.attachment.service.AttachmentServiceImpl;
@@ -42,7 +42,7 @@ public class AttachmentController extends AbstractCrudController<Attachment> {
             temp.delete();
         } catch (DataIntegrityViolationException e) {
             e.printStackTrace();
-            throw new BusinessException("当前附件已经被使用，需要先删除关联数据");
+            throw new InvalidParamException("当前附件已经被使用，需要先删除关联数据");
         }
         return responseEntity;
     }

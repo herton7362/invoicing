@@ -113,6 +113,11 @@ public class GoodsSkuServiceImpl extends AbstractCrudService<GoodsSku> implement
         return translateResults(super.findAll(param));
     }
 
+    @Override
+    public GoodsSkuResult findOneTranslated(String id) throws Exception {
+        return translateResult(super.findOne(id));
+    }
+
     private GoodsSkuResult translateResult(GoodsSku goodsSku) throws Exception {
         GoodsSkuResult goodsSkuResult = new GoodsSkuResult();
         BeanUtils.copyProperties(goodsSku, goodsSkuResult);

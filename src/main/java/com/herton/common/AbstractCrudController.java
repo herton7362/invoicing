@@ -25,7 +25,7 @@ public abstract class AbstractCrudController<T extends BaseEntity> extends Abstr
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<T> save(@RequestBody T t) throws Exception {
         t = getService().save(t);
-        return new ResponseEntity<>(t, HttpStatus.OK);
+        return new ResponseEntity<>(t, HttpStatus.CREATED);
     }
 
     /**
@@ -38,7 +38,7 @@ public abstract class AbstractCrudController<T extends BaseEntity> extends Abstr
         for (String s : ids) {
             getService().delete(s);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     /**
@@ -48,7 +48,7 @@ public abstract class AbstractCrudController<T extends BaseEntity> extends Abstr
     @RequestMapping(value = "/sort", method = RequestMethod.POST)
     public ResponseEntity<T> sort(@RequestBody List<T> ts) throws Exception {
         getService().sort(ts);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     /**
@@ -58,7 +58,7 @@ public abstract class AbstractCrudController<T extends BaseEntity> extends Abstr
     @RequestMapping(value = "/enable/{id}", method = RequestMethod.POST)
     public ResponseEntity<T> enable(@PathVariable String id) throws Exception {
         getService().enable(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     /**
@@ -68,6 +68,6 @@ public abstract class AbstractCrudController<T extends BaseEntity> extends Abstr
     @RequestMapping(value = "/disable/{id}", method = RequestMethod.POST)
     public ResponseEntity<T> disable(@PathVariable String id) throws Exception {
         getService().disable(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

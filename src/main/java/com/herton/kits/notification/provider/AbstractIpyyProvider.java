@@ -1,6 +1,6 @@
 package com.herton.kits.notification.provider;
 
-import com.herton.exceptions.BusinessException;
+import com.herton.exceptions.InvalidParamException;
 import com.herton.kits.notification.NotificationProvider;
 import com.herton.kits.notification.message.NotificationMessage;
 import org.apache.commons.logging.Log;
@@ -48,7 +48,7 @@ abstract class AbstractIpyyProvider<B extends NotificationMessage> implements No
 
         EntityUtils.consume(entity);
         if(!"Success".equals(returnstatus)) {
-            throw new BusinessException("短信发送失败请联系管理员");
+            throw new InvalidParamException("短信发送失败请联系管理员");
         }
     }
 

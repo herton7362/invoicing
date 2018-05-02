@@ -6,6 +6,8 @@ import com.herton.common.utils.StringUtils;
 import com.herton.entity.BaseUser;
 import com.herton.module.auth.UserThread;
 import com.herton.module.auth.domain.AdminRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.method.P;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -22,7 +24,11 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         adminRepository = SpringUtils.getBean(AdminRepository.class);
         tokenStore = SpringUtils.getBean(TokenStore.class);
-        String accessToken = request.getParameter("access_token");
+        String authorization = request.getHeader("Authorization");
+        String accessToken = null;
+        if(StringUtils.isNotBlank(authorization)) {
+            accessToken = authorization.split(" ")[1];
+        }
         UserThread.getInstance().setAccessToken(accessToken);
         UserThread.getInstance().setIpAddress(NetworkUtils.getIpAddress(request));
         if(StringUtils.isNotBlank(accessToken)) {
@@ -55,13 +61,6 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
             UserThread.getInstance().setClientId(null);
             UserThread.getInstance().setAccessToken(null);
         }
-        setHeaders(response);
         return true;
-    }
-
-    private void setHeaders(HttpServletResponse response) {
-        response.setHeader("Access-Control-Allow-Origin","*");
-        response.setHeader("Access-Control-Allow-Methods","GET, POST, PUT, DELETE");
-        response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     }
 }

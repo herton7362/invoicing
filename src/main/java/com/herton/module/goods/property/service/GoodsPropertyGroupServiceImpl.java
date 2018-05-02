@@ -33,34 +33,35 @@ public class GoodsPropertyGroupServiceImpl extends AbstractCrudService<GoodsProp
     public void save(GoodsPropertyGroupSaveParam goodsPropertyGroupSaveParam) throws Exception {
         GoodsPropertyGroup goodsPropertyGroup = new GoodsPropertyGroup();
         BeanUtils.copyProperties(goodsPropertyGroupSaveParam, goodsPropertyGroup);
-        GoodsPropertyGroup result = goodsPropertyGroupRepository.save(goodsPropertyGroup);
+        GoodsPropertyGroup result = super.save(goodsPropertyGroup);
 
         List<GoodsPropertyGroupSaveParam.GoodsPropertyGroupPropertyParam> goodsPropertyGroupPropertyParams =
                 goodsPropertyGroupSaveParam.getGoodsPropertyGroupProperties();
-        this.deleteUnusedGroupProperties(result.getId(), goodsPropertyGroupPropertyParams);
-        GoodsPropertyGroupProperty goodsPropertyGroupProperty;
-        List<GoodsPropertyGroupPropertyValue> goodsPropertyGroupPropertyValues;
-        GoodsPropertyGroupSaveParam.GoodsPropertyGroupPropertyParam goodsPropertyGroupPropertyParam;
-        GoodsPropertyGroupPropertyValue goodsPropertyGroupPropertyValue;
-        for (int i = 0; i < goodsPropertyGroupPropertyParams.size(); i++) {
-            goodsPropertyGroupPropertyParam = goodsPropertyGroupPropertyParams.get(i);
-            goodsPropertyGroupProperty = new GoodsPropertyGroupProperty();
-            BeanUtils.copyProperties(goodsPropertyGroupPropertyParam, goodsPropertyGroupProperty);
-            goodsPropertyGroupProperty.setGoodsPropertyGroupId(result.getId());
-            goodsPropertyGroupProperty.setSortNumber(i);
-            goodsPropertyGroupPropertyService.save(goodsPropertyGroupProperty);
+        if(goodsPropertyGroupPropertyParams != null) {
+            this.deleteUnusedGroupProperties(result.getId(), goodsPropertyGroupPropertyParams);
+            GoodsPropertyGroupProperty goodsPropertyGroupProperty;
+            List<GoodsPropertyGroupPropertyValue> goodsPropertyGroupPropertyValues;
+            GoodsPropertyGroupSaveParam.GoodsPropertyGroupPropertyParam goodsPropertyGroupPropertyParam;
+            GoodsPropertyGroupPropertyValue goodsPropertyGroupPropertyValue;
+            for (int i = 0; i < goodsPropertyGroupPropertyParams.size(); i++) {
+                goodsPropertyGroupPropertyParam = goodsPropertyGroupPropertyParams.get(i);
+                goodsPropertyGroupProperty = new GoodsPropertyGroupProperty();
+                BeanUtils.copyProperties(goodsPropertyGroupPropertyParam, goodsPropertyGroupProperty);
+                goodsPropertyGroupProperty.setGoodsPropertyGroupId(result.getId());
+                goodsPropertyGroupProperty.setSortNumber(i);
+                goodsPropertyGroupPropertyService.save(goodsPropertyGroupProperty);
 
-            goodsPropertyGroupPropertyValues = goodsPropertyGroupPropertyParam.getGoodsPropertyGroupPropertyValues();
-            this.deleteUnusedGroupPropertyValues(goodsPropertyGroupProperty.getId(), result.getId(), goodsPropertyGroupPropertyValues);
-            for (int j = 0; j < goodsPropertyGroupPropertyValues.size(); j++) {
-                goodsPropertyGroupPropertyValue = goodsPropertyGroupPropertyValues.get(j);
-                goodsPropertyGroupPropertyValue.setGoodsPropertyGroupId(result.getId());
-                goodsPropertyGroupPropertyValue.setGoodsPropertyGroupPropertyId(goodsPropertyGroupProperty.getId());
-                goodsPropertyGroupPropertyValue.setSortNumber(j);
-                goodsPropertyGroupPropertyValueService.save(goodsPropertyGroupPropertyValue);
+                goodsPropertyGroupPropertyValues = goodsPropertyGroupPropertyParam.getGoodsPropertyGroupPropertyValues();
+                this.deleteUnusedGroupPropertyValues(goodsPropertyGroupProperty.getId(), result.getId(), goodsPropertyGroupPropertyValues);
+                for (int j = 0; j < goodsPropertyGroupPropertyValues.size(); j++) {
+                    goodsPropertyGroupPropertyValue = goodsPropertyGroupPropertyValues.get(j);
+                    goodsPropertyGroupPropertyValue.setGoodsPropertyGroupId(result.getId());
+                    goodsPropertyGroupPropertyValue.setGoodsPropertyGroupPropertyId(goodsPropertyGroupProperty.getId());
+                    goodsPropertyGroupPropertyValue.setSortNumber(j);
+                    goodsPropertyGroupPropertyValueService.save(goodsPropertyGroupPropertyValue);
+                }
             }
         }
-
     }
 
     private void deleteUnusedGroupProperties(String goodsPropertyGroupId,

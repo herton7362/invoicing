@@ -2,19 +2,15 @@ package com.herton.module.auth.service;
 
 import com.herton.common.AbstractCrudService;
 import com.herton.common.PageRepository;
-import com.herton.common.PageResult;
 import com.herton.common.utils.StringUtils;
-import com.herton.exceptions.BusinessException;
+import com.herton.exceptions.InvalidParamException;
 import com.herton.module.auth.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Component
 @Transactional
@@ -32,10 +28,10 @@ public class OauthClientDetailsServiceImpl extends AbstractCrudService<OauthClie
     @Override
     public OauthClientDetails save(OauthClientDetails oauthClientDetails) throws Exception {
         if(StringUtils.isBlank(oauthClientDetails.getClientId())) {
-            throw new BusinessException("client id is null");
+            throw new InvalidParamException("client id is null");
         }
         if(StringUtils.isBlank(oauthClientDetails.getClientSecret())) {
-            throw new BusinessException("client secret is null");
+            throw new InvalidParamException("client secret is null");
         }
         if(StringUtils.isBlank(oauthClientDetails.getId())) {
             initSuperAdmin(oauthClientDetails.getClientId());

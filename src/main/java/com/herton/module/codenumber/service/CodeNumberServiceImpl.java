@@ -2,8 +2,7 @@ package com.herton.module.codenumber.service;
 
 import com.herton.common.AbstractCrudService;
 import com.herton.common.PageRepository;
-import com.herton.common.utils.StringUtils;
-import com.herton.exceptions.BusinessException;
+import com.herton.exceptions.InvalidParamException;
 import com.herton.module.codenumber.domain.CodeNumber;
 import com.herton.module.codenumber.domain.CodeNumberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,15 +26,12 @@ public class CodeNumberServiceImpl extends AbstractCrudService<CodeNumber> imple
     }
 
     @Override
-    public CodeNumber generateNextCode(String businessType) throws Exception {
-        if(StringUtils.isBlank(businessType)) {
-            throw new BusinessException("业务类型不能为空");
-        }
-        if(CodeNumber.BusinessType.valueOf(businessType) == null) {
-            throw new BusinessException("业务类型不正确");
+    public CodeNumber generateNextCode(CodeNumber.BusinessType businessType) throws Exception {
+        if(businessType == null) {
+            throw new InvalidParamException("业务类型不能为空");
         }
         Map<String, String> param = new HashMap<>();
-        param.put("businessType", businessType);
+        param.put("businessType", businessType.name());
         List<CodeNumber> codeNumbers = findAll(param);
         CodeNumber codeNumber;
         if(codeNumbers != null && !codeNumbers.isEmpty()) {
@@ -52,22 +48,20 @@ public class CodeNumberServiceImpl extends AbstractCrudService<CodeNumber> imple
             return codeNumber;
         } else {
             codeNumber = new CodeNumber();
-            codeNumber.setBusinessType(CodeNumber.BusinessType.valueOf(businessType));
+            codeNumber.setBusinessType(businessType);
             codeNumber.setNextCode(String.format("%03d", 1));
+            codeNumberRepository.save(codeNumber);
             return codeNumber;
         }
     }
 
     @Override
-    public String getCodeByBusinessType(String businessType) throws Exception {
-        if(StringUtils.isBlank(businessType)) {
-            throw new BusinessException("业务类型不能为空");
-        }
-        if(CodeNumber.BusinessType.valueOf(businessType) == null) {
-            throw new BusinessException("业务类型不正确");
+    public String getCodeByBusinessType(CodeNumber.BusinessType businessType) throws Exception {
+        if(businessType == null) {
+            throw new InvalidParamException("业务类型不能为空");
         }
         Map<String, String> param = new HashMap<>();
-        param.put("businessType", businessType);
+        param.put("businessType", businessType.name());
         List<CodeNumber> codeNumbers = findAll(param);
         if(codeNumbers != null && !codeNumbers.isEmpty()) {
             return formatCode(codeNumbers.get(0));

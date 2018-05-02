@@ -7,16 +7,21 @@ import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.util.Date;
 
 @Entity
 @ApiModel("采购订单")
 public class PurchaseOrder extends BaseEntity {
+    @ApiModelProperty(value = "订单号")
+    @Column(length = 36)
+    private String orderNumber;
     @ApiModelProperty(value = "经手人")
     @Column(length = 36)
     private String operator;
-    @ApiModelProperty(value = "数据创建时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "GMT+8")
+    @ApiModelProperty(value = "交货日期")
+    @JsonFormat(pattern = "yyyy-MM-dd", locale = "zh", timezone = "GMT+8")
     private Date deliveryDate;
     @ApiModelProperty(value = "摘要")
     @Column(length = 500)
@@ -30,6 +35,18 @@ public class PurchaseOrder extends BaseEntity {
     @ApiModelProperty(value = "供应商id")
     @Column(length = 36)
     private String businessRelatedUnitId;
+    @ApiModelProperty(value = "订单状态")
+    @Column(length = 20)
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
+
+    public String getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
+    }
 
     public String getOperator() {
         return operator;
@@ -77,5 +94,25 @@ public class PurchaseOrder extends BaseEntity {
 
     public void setBusinessRelatedUnitId(String businessRelatedUnitId) {
         this.businessRelatedUnitId = businessRelatedUnitId;
+    }
+
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
+    }
+
+    public enum OrderStatus {
+        UN_DELIVERED("等待收货"),
+        FINISHED("已完成");
+        private String displayName;
+        OrderStatus(String displayName) {
+            this.displayName = displayName;
+        }
+        public String getDisplayName() {
+            return displayName;
+        }
     }
 }

@@ -4,7 +4,7 @@ import com.herton.common.utils.CacheUtils;
 import com.herton.common.utils.SpringUtils;
 import com.herton.common.utils.StringUtils;
 import com.herton.entity.BaseEntity;
-import com.herton.exceptions.BusinessException;
+import com.herton.exceptions.InvalidParamException;
 import com.herton.module.auth.UserThread;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -279,7 +279,7 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
         T t;
         for (int i = 0; i < ts.size(); i++) {
             if(StringUtils.isBlank(ts.get(i).getId())) {
-                throw new BusinessException("参数不正确，缺失主键");
+                throw new InvalidParamException("参数不正确，缺失主键");
             }
             t = getRepository().findOne(ts.get(i).getId());
             t.setSortNumber(i);
@@ -289,7 +289,7 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
 
     public void enable(String id) throws Exception {
         if(StringUtils.isBlank(id)) {
-            throw new BusinessException("id不能为空");
+            throw new InvalidParamException("id不能为空");
         }
         T t = getRepository().findOne(id);
         if(!t.getLogicallyDeleted()) {
@@ -301,7 +301,7 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
 
     public void disable(String id) throws Exception {
         if(StringUtils.isBlank(id)) {
-            throw new BusinessException("id不能为空");
+            throw new InvalidParamException("id不能为空");
         }
         T t = getRepository().findOne(id);
         if(t.getLogicallyDeleted()) {

@@ -5,7 +5,7 @@ import com.herton.common.PageRepository;
 import com.herton.common.PageResult;
 import com.herton.common.utils.CacheUtils;
 import com.herton.common.utils.StringUtils;
-import com.herton.exceptions.BusinessException;
+import com.herton.exceptions.InvalidParamException;
 import com.herton.module.goods.domain.*;
 import com.herton.module.goods.sku.service.GoodsSkuService;
 import com.herton.module.goods.web.GoodsResult;
@@ -18,6 +18,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.*;
 
 @Component
@@ -38,10 +42,10 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
     @Override
     public void save(GoodsSaveParam goodsSaveParam) throws Exception {
         if(StringUtils.isBlank(goodsSaveParam.getName())) {
-            throw new BusinessException("商品名称不能为空");
+            throw new InvalidParamException("商品名称不能为空");
         }
         if(StringUtils.isBlank(goodsSaveParam.getCode())) {
-            throw new BusinessException("商品编码不能为空");
+            throw new InvalidParamException("商品编码不能为空");
         }
         Goods goods = new Goods();
         BeanUtils.copyProperties(goodsSaveParam, goods);
@@ -109,7 +113,6 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
             goodsPropertyValueIdsList.add(goodsPropertyValueIds);
         }
         goodsSkuService.refreshGoodsSkuByRaw(goods.getId(), goodsPropertyValueIdsList);
-        cache.set(goods.getId(), goods);
     }
 
     private void deleteUnusedGoodsProperties(String goodsId,
@@ -165,7 +168,7 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
 
     @Override
     public PageResult<GoodsResult> findAllTranslated(PageRequest pageRequest, Map<String, ?> param) throws Exception {
-        PageResult<Goods> page = super.findAll(pageRequest, param);
+        PageResult<Goods> page = new PageResult<>(getRepository().findAll(new GoodsSpecification(param), pageRequest));
         PageResult<GoodsResult> pageResult = new PageResult<>();
         pageResult.setSize(page.getSize());
         pageResult.setTotalElements(page.getTotalElements());
@@ -257,6 +260,32 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
             goodsResults.add(this.translateResult(goods));
         }
         return goodsResults;
+    }
+
+    class GoodsSpecification extends SimpleSpecification {
+
+        GoodsSpecification(Map<String, ?> params) {
+            super(params, false);
+        }
+
+        @Override
+        public Predicate toPredicate(Root<Goods> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+            Predicate predicate = super.toPredicate(root, criteriaQuery, criteriaBuilder);
+            List<Predicate> predicates = new ArrayList<>();
+            if(params.containsKey("quickSearch")) {
+                String[] value = params.get("quickSearch");
+                predicates.add(criteriaBuilder.like(root.get("name"), "%"+ value[0] +"%"));
+                predicates.add(criteriaBuilder.like(root.get("code"), "%"+ value[0] +"%"));
+                predicates.add(criteriaBuilder.like(root.get("shortname"), "%"+ value[0] +"%"));
+                predicates.add(criteriaBuilder.like(root.get("pinyin"), "%"+ value[0] +"%"));
+                predicates.add(criteriaBuilder.like(root.get("remark"), "%"+ value[0] +"%"));
+                Predicate predicateTemp = criteriaBuilder.or(predicates.toArray(new Predicate[]{}));
+                predicates.clear();
+                predicates.add(predicateTemp);
+            }
+            predicates.add(predicate);
+            return criteriaBuilder.and(predicates.toArray(new Predicate[]{}));
+        }
     }
 
     @Lazy

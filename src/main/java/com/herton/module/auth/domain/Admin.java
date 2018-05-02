@@ -18,6 +18,9 @@ public class Admin extends BaseUser {
     @ApiModelProperty(required = true, value = "姓名")
     @Column(length = 20)
     private String name;
+    @ApiModelProperty(required = true, value = "头像")
+    @Column(length = 200)
+    private String avatar;
     @ApiModelProperty(required = true, value = "角色")
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name="admin_roles",joinColumns={@JoinColumn(name="admin_id")},inverseJoinColumns={@JoinColumn(name="role_id")})
@@ -33,6 +36,14 @@ public class Admin extends BaseUser {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public List<Role> getRoles() {

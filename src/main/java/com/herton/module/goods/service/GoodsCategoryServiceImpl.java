@@ -2,10 +2,9 @@ package com.herton.module.goods.service;
 
 import com.herton.common.AbstractCrudService;
 import com.herton.common.PageRepository;
-import com.herton.exceptions.BusinessException;
+import com.herton.exceptions.InvalidParamException;
 import com.herton.module.goods.domain.GoodsCategory;
 import com.herton.module.goods.domain.GoodsCategoryRepository;
-import com.herton.module.goods.property.domain.GoodsProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,13 +41,13 @@ public class GoodsCategoryServiceImpl extends AbstractCrudService<GoodsCategory>
         param.put("goodsCategoryId", id);
         Long count = goodsService.count(param);
         if(count > 0) {
-            throw new BusinessException("当前类别已经被商品使用，不能删除");
+            throw new InvalidParamException("当前类别已经被商品使用，不能删除");
         }
         param.clear();
         param.put("parentId", id);
         count = count(param);
         if(count > 0) {
-            throw new BusinessException("请先删除当前类别的子类别");
+            throw new InvalidParamException("请先删除当前类别的子类别");
         }
     }
 

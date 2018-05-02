@@ -1,19 +1,17 @@
 package com.herton.common;
 
 import com.herton.entity.BaseUser;
-import com.herton.exceptions.BusinessException;
+import com.herton.exceptions.InvalidParamException;
 import com.herton.module.auth.UserThread;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import com.herton.module.auth.domain.Admin;
+import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 /**
  * 提供登录注册等服务
@@ -71,70 +69,45 @@ public abstract class AbstractLoginController {
             @ApiImplicitParam(name = "appSecret", value = "app_secret", dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "refreshToken", value = "refresh_token", dataType = "String", paramType = "query")
     })
-    @RequestMapping(value = "/refresh/token", method = RequestMethod.POST)
-    public ResponseEntity<OAuth2AccessToken> refreshToken(
-            @RequestParam(value = "appId") String appId,
-            @RequestParam(value = "appSecret") String appSecret,
-            @RequestParam(value = "refreshToken") String refreshToken
+    @RequestMapping(value = "/refresh/token", method = RequestMethod.GET)
+    public ResponseEntity<TokenResult> refreshToken(
+            @RequestHeader(value = "appId") String appId,
+            @RequestHeader(value = "refreshToken") String refreshToken
     ) throws Exception {
-        ResponseEntity<OAuth2AccessToken> responseEntity;
+        TokenResult tokenResult = new TokenResult();
         try {
-            responseEntity = loginService.refreshToken(appId, appSecret, refreshToken);
+            ResponseEntity<OAuth2AccessToken> responseEntity = loginService.refreshToken(appId, refreshToken);
+            OAuth2AccessToken oAuth2AccessToken = responseEntity.getBody();
+            tokenResult.setStatus(TokenResult.Status.ok);
+            tokenResult.setAccessToken(oAuth2AccessToken.getValue());
+            tokenResult.setRefreshToken(oAuth2AccessToken.getRefreshToken().getValue());
+            tokenResult.setExpiresIn(oAuth2AccessToken.getExpiresIn());
         } catch (Exception e) {
             e.printStackTrace();
-            throw new BusinessException(e.getMessage());
+            throw new InvalidParamException(e.getMessage());
         }
-        return responseEntity;
+        return new ResponseEntity<>(tokenResult, HttpStatus.OK);
     }
 
     /**
      * 登录
      */
     @ApiOperation(value="登录")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "username", value = "手机号码", dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "password", value = "密码", dataType = "String", paramType = "query")
-    })
     @RequestMapping(value = "/admin/login", method = {RequestMethod.POST})
-    public ResponseEntity<OAuth2AccessToken> login(
-            @RequestParam(value = "username") String username,
-            @RequestParam(value = "password") String password
-    ) throws Exception {
-        ResponseEntity<OAuth2AccessToken> responseEntity;
+    public ResponseEntity<TokenResult> login(@RequestBody LoginParam loginParam) throws Exception {
+        TokenResult tokenResult = new TokenResult();
+        tokenResult.setType(loginParam.getType());
         try {
-            responseEntity = loginService.login(username, password);
+            ResponseEntity<OAuth2AccessToken> loginEntity = loginService.login(loginParam.getUsername(), loginParam.getPassword());
+            OAuth2AccessToken oAuth2AccessToken = loginEntity.getBody();
+            tokenResult.setStatus(TokenResult.Status.ok);
+            tokenResult.setAccessToken(oAuth2AccessToken.getValue());
+            tokenResult.setRefreshToken(oAuth2AccessToken.getRefreshToken().getValue());
+            tokenResult.setExpiresIn(oAuth2AccessToken.getExpiresIn());
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new BusinessException(e.getMessage());
+            tokenResult.setStatus(TokenResult.Status.error);
         }
-        return responseEntity;
-    }
-
-    /**
-     * 登录
-     */
-    @ApiOperation(value="登录")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "appId", value = "app_id", dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "appSecret", value = "app_secret", dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "username", value = "手机号码", dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "password", value = "密码", dataType = "String", paramType = "query")
-    })
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<OAuth2AccessToken> login(
-            @RequestParam(value = "appId") String appId,
-            @RequestParam(value = "appSecret") String appSecret,
-            @RequestParam(value = "username") String username,
-            @RequestParam(value = "password") String password
-    ) throws Exception {
-        ResponseEntity<OAuth2AccessToken> responseEntity;
-        try {
-            responseEntity = loginService.login(appId, appSecret, username, password);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new BusinessException(e.getMessage());
-        }
-        return responseEntity;
+        return new ResponseEntity<>(tokenResult, HttpStatus.OK);
     }
 
     /**
@@ -157,29 +130,6 @@ public abstract class AbstractLoginController {
     }
 
     /**
-     * 获取token
-     */
-    @ApiOperation(value="获取token")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "appId", value = "app_id", dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "appSecret", value = "app_secret", dataType = "String", paramType = "query")
-    })
-    @RequestMapping(value = "/login/code", method = RequestMethod.POST)
-    public ResponseEntity<?> loginByCode(
-            @RequestParam(value = "appId") String appId,
-            @RequestParam(value = "appSecret") String appSecret
-    ) throws Exception {
-        ResponseEntity<OAuth2AccessToken> responseEntity;
-        try {
-            responseEntity =   loginService.getAccessToken(appId, appSecret);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new BusinessException(e.getMessage());
-        }
-        return responseEntity;
-    }
-
-    /**
      * 验证码校验
      */
     @ApiOperation(value="验证码校验")
@@ -198,10 +148,119 @@ public abstract class AbstractLoginController {
     /**
      * 查询登录用户
      */
+    @Deprecated
     @ApiOperation(value="查询登录用户")
     @RequestMapping(value = "/user/info", method = RequestMethod.GET)
     public ResponseEntity<BaseUser> getOne() throws Exception {
-        return new ResponseEntity<>(UserThread.getInstance().get(), HttpStatus.OK);
+        BaseUser user = UserThread.getInstance().get();
+        if(user == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    /**
+     * 查询登录用户
+     */
+    @ApiOperation(value="查询登录用户")
+    @RequestMapping(value = "/currentUser", method = RequestMethod.GET)
+    public ResponseEntity<BaseUser> currentUser() throws Exception {
+        BaseUser user = UserThread.getInstance().get();
+        if(user == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @ApiModel(value = "登录参数")
+    public static class LoginParam {
+        @ApiModelProperty(required = true, value = "账号")
+        private String username;
+        @ApiModelProperty(required = true, value = "密码")
+        private String password;
+        @ApiModelProperty(required = true, value = "登录方式 (account, mobile)")
+        private String type;
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+    }
+
+    @ApiModel(value = "登录结果")
+    public static class TokenResult {
+        @ApiModelProperty(value = "状态（ok，error）")
+        @Enumerated(EnumType.STRING)
+        private Status status;
+        private String accessToken;
+        private String refreshToken;
+        private Integer expiresIn;
+        @ApiModelProperty(required = true, value = "登录方式 (account, mobile)")
+        private String type;
+
+        public Status getStatus() {
+            return status;
+        }
+
+        public void setStatus(Status status) {
+            this.status = status;
+        }
+
+        public String getAccessToken() {
+            return accessToken;
+        }
+
+        public void setAccessToken(String accessToken) {
+            this.accessToken = accessToken;
+        }
+
+        public String getRefreshToken() {
+            return refreshToken;
+        }
+
+        public void setRefreshToken(String refreshToken) {
+            this.refreshToken = refreshToken;
+        }
+
+        public Integer getExpiresIn() {
+            return expiresIn;
+        }
+
+        public void setExpiresIn(Integer expiresIn) {
+            this.expiresIn = expiresIn;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public enum Status {
+            ok,
+            error
+        }
     }
 
     public AbstractLoginController(AbstractLoginService loginService) {

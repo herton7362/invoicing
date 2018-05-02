@@ -1,5 +1,6 @@
 package com.herton.module.codenumber.web;
 
+import com.herton.module.codenumber.domain.CodeNumber;
 import com.herton.module.codenumber.service.CodeNumberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,7 +24,8 @@ public class CodeNumberController {
     @ApiOperation(value="根据业务获取编号")
     @RequestMapping(value = "/type/{businessType}", method = RequestMethod.GET)
     public ResponseEntity<String> generateCode(@PathVariable String businessType) throws Exception {
-        return new ResponseEntity<>(codeNumberService.getCodeByBusinessType(businessType), HttpStatus.OK);
+        return new ResponseEntity<>(
+                codeNumberService.getCodeByBusinessType(CodeNumber.BusinessType.valueOf(businessType)), HttpStatus.OK);
     }
 
     @Autowired

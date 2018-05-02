@@ -2,16 +2,13 @@ package com.herton.module.basicdata.member.service;
 
 import com.herton.common.AbstractCrudService;
 import com.herton.common.PageRepository;
-import com.herton.common.PageResult;
 import com.herton.common.utils.NumberUtils;
 import com.herton.common.utils.StringUtils;
-import com.herton.exceptions.BusinessException;
+import com.herton.exceptions.InvalidParamException;
 import com.herton.module.basicdata.member.domain.Member;
 import com.herton.module.basicdata.member.domain.MemberCard;
 import com.herton.module.basicdata.member.domain.MemberRepository;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,7 +57,7 @@ public class MemberServiceImpl extends AbstractCrudService<Member> implements Me
     @Override
     public Double getBalance(String id) throws Exception {
         if(StringUtils.isBlank(id)) {
-            throw new BusinessException("会员id不能为空");
+            throw new InvalidParamException("会员id不能为空");
         }
         return memberCardService.getMemberTotalBalance(id);
     }
@@ -68,7 +65,7 @@ public class MemberServiceImpl extends AbstractCrudService<Member> implements Me
     @Override
     public Integer getPoints(String id) throws Exception {
         if(StringUtils.isBlank(id)) {
-            throw new BusinessException("会员id不能为空");
+            throw new InvalidParamException("会员id不能为空");
         }
         return memberCardService.getMemberTotalPoints(id);
     }
@@ -76,7 +73,7 @@ public class MemberServiceImpl extends AbstractCrudService<Member> implements Me
     @Override
     public Integer getCardCount(String id) throws Exception {
         if(StringUtils.isBlank(id)) {
-            throw new BusinessException("会员id不能为空");
+            throw new InvalidParamException("会员id不能为空");
         }
         return memberCardService.getMemberCardCount(id);
     }

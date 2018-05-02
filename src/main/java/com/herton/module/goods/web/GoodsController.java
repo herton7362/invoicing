@@ -3,6 +3,7 @@ package com.herton.module.goods.web;
 import com.herton.common.PageParam;
 import com.herton.common.PageResult;
 import com.herton.module.auth.domain.Admin;
+import com.herton.module.goods.domain.Goods;
 import com.herton.module.goods.property.web.GoodsPropertyGroupResult;
 import com.herton.module.goods.service.GoodsService;
 import io.swagger.annotations.Api;
@@ -74,6 +75,26 @@ public class GoodsController {
             goodsService.delete(s);
         }
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * 启用
+     */
+    @ApiOperation(value="启用")
+    @RequestMapping(value = "/enable/{id}", method = RequestMethod.POST)
+    public ResponseEntity<Goods> enable(@PathVariable String id) throws Exception {
+        goodsService.enable(id);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    /**
+     * 停用
+     */
+    @ApiOperation(value="停用")
+    @RequestMapping(value = "/disable/{id}", method = RequestMethod.POST)
+    public ResponseEntity<Goods> disable(@PathVariable String id) throws Exception {
+        goodsService.disable(id);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Autowired

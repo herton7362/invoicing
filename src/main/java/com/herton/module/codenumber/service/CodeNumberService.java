@@ -9,12 +9,12 @@ public interface CodeNumberService extends CrudService<CodeNumber> {
      * @param businessType 业务类型
      * @return 编号类
      */
-    CodeNumber generateNextCode(String businessType) throws Exception;
+    CodeNumber generateNextCode(CodeNumber.BusinessType businessType) throws Exception;
 
     /**
      * 获取编号
      * @param businessType 业务类型
      * @return 编号
      */
-    String getCodeByBusinessType(String businessType) throws Exception;
+    String getCodeByBusinessType(CodeNumber.BusinessType businessType) throws Exception;
 }
