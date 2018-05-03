@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 
 @Entity
 @ApiModel("商品属性")
-public class Attribute extends BaseEntity {
+public class GoodsAttribute extends BaseEntity {
     @ApiModelProperty(value = "商品类型id")
     @Column(length = 36)
     private String goodsTypeId;
@@ -18,7 +18,7 @@ public class Attribute extends BaseEntity {
     private String name;
     @ApiModelProperty(value = "属性值，用逗号分隔")
     @Column(length = 500)
-    private String values;
+    private String attrValues;
 
     public String getGoodsTypeId() {
         return goodsTypeId;
@@ -36,11 +36,11 @@ public class Attribute extends BaseEntity {
         this.name = name;
     }
 
-    public String getValues() {
-        return values;
+    public String getAttrValues() {
+        return attrValues;
     }
 
-    public void setValues(String values) {
-        this.values = values;
+    public void setAttrValues(String attrValues) {
+        this.attrValues = attrValues;
     }
 }
