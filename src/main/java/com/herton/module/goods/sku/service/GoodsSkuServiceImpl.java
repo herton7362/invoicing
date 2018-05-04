@@ -3,8 +3,6 @@ package com.herton.module.goods.sku.service;
 import com.herton.common.AbstractCrudService;
 import com.herton.common.PageRepository;
 import com.herton.common.PageResult;
-import com.herton.module.goods.property.domain.GoodsPropertyValue;
-import com.herton.module.goods.property.service.GoodsPropertyValueService;
 import com.herton.module.goods.service.GoodsService;
 import com.herton.module.goods.sku.domain.GoodsSku;
 import com.herton.module.goods.sku.domain.GoodsSkuRepository;
@@ -23,7 +21,6 @@ import java.util.*;
 public class GoodsSkuServiceImpl extends AbstractCrudService<GoodsSku> implements GoodsSkuService {
     private final GoodsSkuRepository goodsSkuRepository;
     private final GoodsService goodsService;
-    private final GoodsPropertyValueService goodsPropertyValueService;
     @Override
     protected PageRepository<GoodsSku> getRepository() {
         return goodsSkuRepository;
@@ -122,14 +119,6 @@ public class GoodsSkuServiceImpl extends AbstractCrudService<GoodsSku> implement
         GoodsSkuResult goodsSkuResult = new GoodsSkuResult();
         BeanUtils.copyProperties(goodsSku, goodsSkuResult);
         goodsSkuResult.setGoods(goodsService.findOne(goodsSku.getGoodsId()));
-        if(goodsSku.getGoodsPropertyValueIds() != null) {
-            String[] valueIds = goodsSku.getGoodsPropertyValueIds().split(",");
-            List<GoodsPropertyValue> goodsPropertyValues = new ArrayList<>();
-            for (String valueId : valueIds) {
-                goodsPropertyValues.add(goodsPropertyValueService.findOne(valueId));
-            }
-            goodsSkuResult.setGoodsPropertyValues(goodsPropertyValues);
-        }
         return goodsSkuResult;
     }
 
@@ -167,11 +156,9 @@ public class GoodsSkuServiceImpl extends AbstractCrudService<GoodsSku> implement
     @Autowired
     public GoodsSkuServiceImpl(
             GoodsSkuRepository goodsSkuRepository,
-            GoodsService goodsService,
-            GoodsPropertyValueService goodsPropertyValueService
+            GoodsService goodsService
     ) {
         this.goodsSkuRepository = goodsSkuRepository;
         this.goodsService = goodsService;
-        this.goodsPropertyValueService = goodsPropertyValueService;
     }
 }

@@ -4,7 +4,6 @@ import com.herton.common.PageParam;
 import com.herton.common.PageResult;
 import com.herton.module.auth.domain.Admin;
 import com.herton.module.goods.domain.Goods;
-import com.herton.module.goods.property.web.GoodsPropertyGroupResult;
 import com.herton.module.goods.service.GoodsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

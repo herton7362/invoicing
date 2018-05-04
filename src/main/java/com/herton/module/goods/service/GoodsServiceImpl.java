@@ -30,8 +30,6 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
     private final GoodsRepository goodsRepository;
     private final GoodsPriceService goodsPriceService;
     private final GoodsImageService goodsImageService;
-    private final GoodsGoodsPropertyService goodsGoodsPropertyService;
-    private final GoodsGoodsPropertyValueService goodsGoodsPropertyValueService;
     private final GoodsSkuService goodsSkuService;
     private final CacheUtils cache = CacheUtils.getInstance();
     @Override
@@ -90,80 +88,6 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
         goodsImage.setGoodsId(goods.getId());
         goodsImage.setSortNumber(4);
         goodsImageService.save(goodsImage);
-        List<GoodsSaveParam.GoodsGoodsPropertyParam> goodsGoodsProperties = goodsSaveParam.getGoodsGoodsProperties();
-        this.deleteUnusedGoodsProperties(goods.getId(), goodsGoodsProperties);
-        GoodsGoodsProperty goodsGoodsProperty;
-        List<List<String>> goodsPropertyValueIdsList = new ArrayList<>();
-        List<String> goodsPropertyValueIds;
-        for (int i = 0; i < goodsGoodsProperties.size(); i++) {
-            goodsGoodsProperty = new GoodsGoodsProperty();
-            BeanUtils.copyProperties(goodsGoodsProperties.get(i), goodsGoodsProperty);
-            goodsGoodsProperty.setSortNumber(i);
-            goodsGoodsProperty.setGoodsId(goods.getId());
-            goodsGoodsPropertyService.save(goodsGoodsProperty);
-            List<GoodsGoodsPropertyValue> goodsGoodsPropertyValues = goodsGoodsProperties.get(i).getGoodsGoodsPropertyValues();
-            this.deleteUnusedGoodsPropertyValues(goodsGoodsProperty.getId(), goodsGoodsPropertyValues);
-            goodsPropertyValueIds = new ArrayList<>();
-            for (int j = 0; j < goodsGoodsPropertyValues.size(); j++) {
-                goodsGoodsPropertyValues.get(j).setSortNumber(j);
-                goodsGoodsPropertyValues.get(j).setGoodsGoodsPropertyId(goodsGoodsProperty.getId());
-                goodsGoodsPropertyValueService.save(goodsGoodsPropertyValues.get(j));
-                goodsPropertyValueIds.add(goodsGoodsPropertyValues.get(j).getGoodsPropertyValueId());
-            }
-            goodsPropertyValueIdsList.add(goodsPropertyValueIds);
-        }
-        goodsSkuService.refreshGoodsSkuByRaw(goods.getId(), goodsPropertyValueIdsList);
-    }
-
-    private void deleteUnusedGoodsProperties(String goodsId,
-                                             List<GoodsSaveParam.GoodsGoodsPropertyParam> goodsGoodsPropertyParams) throws Exception {
-        Map<String, String> param = new HashMap<>();
-        param.put("goodsId", goodsId);
-        List<GoodsGoodsProperty> goodsGoodsProperties = goodsGoodsPropertyService.findAll(param);
-        Set<String> oldIds = new HashSet<>();
-        Set<String> newIds = new HashSet<>();
-        Map<String, GoodsSaveParam.GoodsGoodsPropertyParam> goodsGoodsPropertyParamMap = new HashMap<>();
-        goodsGoodsProperties.forEach(goodsGoodsProperty -> oldIds.add(goodsGoodsProperty.getGoodsPropertyId()));
-        goodsGoodsPropertyParams.forEach(goodsGoodsPropertyParam -> {
-            newIds.add(goodsGoodsPropertyParam.getGoodsPropertyId());
-            goodsGoodsPropertyParamMap.put(goodsGoodsPropertyParam.getGoodsPropertyId(), goodsGoodsPropertyParam);
-        });
-
-        oldIds.removeAll(newIds);
-        for (GoodsGoodsProperty goodsGoodsProperty : goodsGoodsProperties) {
-            if(oldIds.contains(goodsGoodsProperty.getGoodsPropertyId())) {
-                goodsGoodsPropertyService.delete(goodsGoodsProperty.getId());
-                param.clear();
-                param.put("goodsGoodsPropertyId", goodsGoodsProperty.getId());
-                goodsGoodsPropertyValueService.delete(goodsGoodsPropertyValueService.findAll(param));
-            } else {
-                BeanUtils.copyProperties(goodsGoodsProperty, goodsGoodsPropertyParamMap.get(goodsGoodsProperty.getGoodsPropertyId()));
-            }
-        }
-    }
-
-    private void deleteUnusedGoodsPropertyValues(String goodsGoodsPropertyId,
-                                                 List<GoodsGoodsPropertyValue> goodsGoodsPropertyValues) throws Exception {
-        Map<String, String> param = new HashMap<>();
-        param.put("goodsGoodsPropertyId", goodsGoodsPropertyId);
-        List<GoodsGoodsPropertyValue> goodsGoodsPropertyValues1 = goodsGoodsPropertyValueService.findAll(param);
-        Set<String> oldIds = new HashSet<>();
-        Set<String> newIds = new HashSet<>();
-        Map<String, GoodsGoodsPropertyValue> goodsGoodsPropertyValueMap = new HashMap<>();
-        goodsGoodsPropertyValues1.forEach(goodsGoodsPropertyValue -> oldIds.add(goodsGoodsPropertyValue.getGoodsPropertyValueId()));
-        goodsGoodsPropertyValues.forEach(goodsGoodsPropertyValue -> {
-            newIds.add(goodsGoodsPropertyValue.getGoodsPropertyValueId());
-            goodsGoodsPropertyValueMap.put(goodsGoodsPropertyValue.getGoodsPropertyValueId(), goodsGoodsPropertyValue);
-        });
-        oldIds.removeAll(newIds);
-        for (GoodsGoodsPropertyValue goodsGoodsPropertyValue : goodsGoodsPropertyValues1) {
-            if(oldIds.contains(goodsGoodsPropertyValue.getGoodsPropertyValueId())) {
-                goodsGoodsPropertyValueService.delete(goodsGoodsPropertyValue.getId());
-            } else {
-                BeanUtils.copyProperties(goodsGoodsPropertyValue,
-                        goodsGoodsPropertyValueMap.get(goodsGoodsPropertyValue.getGoodsPropertyValueId()));
-            }
-        }
     }
 
     @Override
@@ -239,18 +163,6 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
         BeanUtils.copyProperties(goodsImages.get(4), goodsImageResult);
         goodsResult.setGoodsAttached4Image(goodsImageResult);
 
-        List<GoodsGoodsProperty> goodsGoodsProperties = goodsGoodsPropertyService.findAll(param);
-        List<GoodsResult.GoodsGoodsPropertyResult> goodsGoodsPropertyResults = new ArrayList<>();
-        GoodsResult.GoodsGoodsPropertyResult goodsGoodsPropertyResult;
-        for (GoodsGoodsProperty goodsGoodsProperty : goodsGoodsProperties) {
-            goodsGoodsPropertyResult = new GoodsResult.GoodsGoodsPropertyResult();
-            BeanUtils.copyProperties(goodsGoodsProperty, goodsGoodsPropertyResult);
-            param.clear();
-            param.put("goodsGoodsPropertyId", goodsGoodsProperty.getId());
-            goodsGoodsPropertyResult.setGoodsGoodsPropertyValues(goodsGoodsPropertyValueService.findAll(param));
-            goodsGoodsPropertyResults.add(goodsGoodsPropertyResult);
-        }
-        goodsResult.setGoodsGoodsProperties(goodsGoodsPropertyResults);
         return goodsResult;
     }
 
@@ -294,15 +206,11 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
             GoodsRepository goodsRepository,
             GoodsPriceService goodsPriceService,
             GoodsImageService goodsImageService,
-            GoodsGoodsPropertyService goodsGoodsPropertyService,
-            GoodsGoodsPropertyValueService goodsGoodsPropertyValueService,
             GoodsSkuService goodsSkuService
     ) {
         this.goodsRepository = goodsRepository;
         this.goodsPriceService = goodsPriceService;
         this.goodsImageService = goodsImageService;
-        this.goodsGoodsPropertyService = goodsGoodsPropertyService;
-        this.goodsGoodsPropertyValueService = goodsGoodsPropertyValueService;
         this.goodsSkuService = goodsSkuService;
     }
 }

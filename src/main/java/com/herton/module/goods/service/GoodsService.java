@@ -3,7 +3,6 @@ package com.herton.module.goods.service;
 import com.herton.common.CrudService;
 import com.herton.common.PageResult;
 import com.herton.module.goods.domain.Goods;
-import com.herton.module.goods.property.web.GoodsPropertyGroupResult;
 import com.herton.module.goods.web.GoodsResult;
 import com.herton.module.goods.web.GoodsSaveParam;
 import org.springframework.data.domain.PageRequest;

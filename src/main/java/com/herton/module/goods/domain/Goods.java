@@ -13,6 +13,9 @@ public class Goods extends BaseEntity {
     @ApiModelProperty(value = "分类id")
     @Column(length = 36)
     private String goodsCategoryId;
+    @ApiModelProperty(value = "条码")
+    @Column(length = 200)
+    private String barcode;
     @ApiModelProperty(value = "名称")
     @Column(length = 200)
     private String name;
@@ -62,6 +65,14 @@ public class Goods extends BaseEntity {
 
     public void setGoodsCategoryId(String goodsCategoryId) {
         this.goodsCategoryId = goodsCategoryId;
+    }
+
+    public String getBarcode() {
+        return barcode;
+    }
+
+    public void setBarcode(String barcode) {
+        this.barcode = barcode;
     }
 
     public String getName() {
