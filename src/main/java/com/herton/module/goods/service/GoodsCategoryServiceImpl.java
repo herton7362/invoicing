@@ -2,15 +2,16 @@ package com.herton.module.goods.service;
 
 import com.herton.common.AbstractCrudService;
 import com.herton.common.PageRepository;
+import com.herton.common.PageResult;
 import com.herton.exceptions.InvalidParamException;
 import com.herton.module.goods.domain.GoodsCategory;
 import com.herton.module.goods.domain.GoodsCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @Transactional
@@ -20,6 +21,45 @@ public class GoodsCategoryServiceImpl extends AbstractCrudService<GoodsCategory>
     @Override
     protected PageRepository<GoodsCategory> getRepository() {
         return goodsCategoryRepository;
+    }
+
+    @Override
+    public List<GoodsCategory> findAll(Map<String, ?> param) throws Exception {
+        List<GoodsCategory> list = super.findAll(param);
+        if(param.containsKey("cascadeParent")) {
+            cascadeParent(list);
+        }
+        return list;
+    }
+
+    private void cascadeParent(List<GoodsCategory> list) throws Exception {
+        Set<String> parentIds = new HashSet<>();
+
+        list.forEach(item -> {
+            if(list.stream().noneMatch(i -> i.getId().equals(item.getParentId())))
+                parentIds.add(item.getParentId());
+        });
+        List<GoodsCategory> newList = new ArrayList<>();
+        for (String parentId : parentIds) {
+            if(parentId != null)
+                newList.add(findOne(parentId));
+        }
+        if(newList.isEmpty()) {
+            return;
+        }
+        list.addAll(newList);
+        cascadeParent(newList);
+    }
+
+    @Override
+    public PageResult<GoodsCategory> findAll(PageRequest pageRequest, Map<String, ?> param) throws Exception {
+        PageResult<GoodsCategory> pageResult = super.findAll(pageRequest, param);
+        if(param.containsKey("cascadeParent")) {
+            List<GoodsCategory> list = new ArrayList<>(pageResult.getContent());
+            cascadeParent(list);
+            pageResult.setContent(list);
+        }
+        return pageResult;
     }
 
     @Override
