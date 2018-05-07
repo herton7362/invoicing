@@ -3,6 +3,7 @@ package com.herton.module.goods.service;
 import com.herton.common.AbstractCrudService;
 import com.herton.common.PageRepository;
 import com.herton.common.PageResult;
+import com.herton.common.utils.StringUtils;
 import com.herton.exceptions.InvalidParamException;
 import com.herton.module.goods.domain.GoodsCategory;
 import com.herton.module.goods.domain.GoodsCategoryRepository;
@@ -29,6 +30,12 @@ public class GoodsCategoryServiceImpl extends AbstractCrudService<GoodsCategory>
         if(param.containsKey("cascadeParent")) {
             cascadeParent(list);
         }
+        if(param.containsKey("extraData")) {
+            String extraData = ((String[])param.get("extraData"))[0];
+            if(StringUtils.isNotBlank(extraData)) {
+                addExtraData(list, extraData);
+            }
+        }
         return list;
     }
 
@@ -51,12 +58,24 @@ public class GoodsCategoryServiceImpl extends AbstractCrudService<GoodsCategory>
         cascadeParent(newList);
     }
 
+    private void addExtraData(List<GoodsCategory> list, String extraData) throws Exception {
+        if(!list.stream().anyMatch(data->data.getId().equals(extraData))) {
+            list.add(findOne(extraData));
+        }
+    }
+
     @Override
     public PageResult<GoodsCategory> findAll(PageRequest pageRequest, Map<String, ?> param) throws Exception {
         PageResult<GoodsCategory> pageResult = super.findAll(pageRequest, param);
         if(param.containsKey("cascadeParent")) {
             List<GoodsCategory> list = new ArrayList<>(pageResult.getContent());
             cascadeParent(list);
+            if(param.containsKey("extraData")) {
+                String extraData = ((String[])param.get("extraData"))[0];
+                if(StringUtils.isNotBlank(extraData)) {
+                    addExtraData(list, extraData);
+                }
+            }
             pageResult.setContent(list);
         }
         return pageResult;
