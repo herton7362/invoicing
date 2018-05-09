@@ -3,7 +3,6 @@ package com.herton.module.goods.type.service;
 import com.herton.common.AbstractCrudService;
 import com.herton.common.PageRepository;
 import com.herton.common.PageResult;
-import com.herton.module.goods.type.domain.GoodsAttribute;
 import com.herton.module.goods.type.domain.GoodsType;
 import com.herton.module.goods.type.domain.GoodsTypeRepository;
 import com.herton.module.goods.type.web.GoodsTypeResult;
@@ -22,7 +21,7 @@ import java.util.Map;
 @Transactional
 public class GoodsTypeServiceImpl extends AbstractCrudService<GoodsType> implements GoodsTypeService {
     private final GoodsTypeRepository goodsTypeRepository;
-    private final GoodsAttributeService goodsAttributeService;
+    private final GoodsTypeAttributeService goodsTypeAttributeService;
     @Override
     protected PageRepository<GoodsType> getRepository() {
         return goodsTypeRepository;
@@ -48,7 +47,7 @@ public class GoodsTypeServiceImpl extends AbstractCrudService<GoodsType> impleme
         Map<String, String> param = new HashMap<>();
         param.put("goodsTypeId", goodsType.getId());
         BeanUtils.copyProperties(goodsType, goodsTypeResult);
-        goodsTypeResult.setGoodsAttributes(goodsAttributeService.findAll(param));
+        goodsTypeResult.setGoodsTypeAttributes(goodsTypeAttributeService.findAll(param));
         return goodsTypeResult;
     }
 
@@ -63,9 +62,9 @@ public class GoodsTypeServiceImpl extends AbstractCrudService<GoodsType> impleme
     @Autowired
     public GoodsTypeServiceImpl(
             GoodsTypeRepository goodsTypeRepository,
-            GoodsAttributeService goodsAttributeService
+            GoodsTypeAttributeService goodsTypeAttributeService
     ) {
         this.goodsTypeRepository = goodsTypeRepository;
-        this.goodsAttributeService = goodsAttributeService;
+        this.goodsTypeAttributeService = goodsTypeAttributeService;
     }
 }

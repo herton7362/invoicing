@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 
 @Entity
 @ApiModel("商品属性")
-public class GoodsAttribute extends BaseEntity {
+public class GoodsTypeAttribute extends BaseEntity {
     @ApiModelProperty(value = "商品类型id")
     @Column(length = 36)
     private String goodsTypeId;

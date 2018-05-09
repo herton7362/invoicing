@@ -31,6 +31,9 @@ public class Goods extends BaseEntity {
     @ApiModelProperty(value = "品牌id")
     @Column(length = 36)
     private String brandId;
+    @ApiModelProperty(value = "商品类型id")
+    @Column(length = 36)
+    private String goodsTypeId;
     @ApiModelProperty(value = "产地")
     @Column(length = 50)
     private String madeAddress;
@@ -55,6 +58,9 @@ public class Goods extends BaseEntity {
     @ApiModelProperty(value = "参考成本价（基本单位）")
     @Column(length = 11, scale = 2, precision = 13)
     private Double costPrice;
+    @ApiModelProperty(value = "库存数量")
+    @Column(length = 11, scale = 2, precision = 13)
+    private Double stockNumber;
     @ApiModelProperty(value = "备注")
     @Column(length = 200)
     private String remark;
@@ -113,6 +119,14 @@ public class Goods extends BaseEntity {
 
     public void setBrandId(String brandId) {
         this.brandId = brandId;
+    }
+
+    public String getGoodsTypeId() {
+        return goodsTypeId;
+    }
+
+    public void setGoodsTypeId(String goodsTypeId) {
+        this.goodsTypeId = goodsTypeId;
     }
 
     public String getMadeAddress() {
@@ -177,6 +191,14 @@ public class Goods extends BaseEntity {
 
     public void setCostPrice(Double costPrice) {
         this.costPrice = costPrice;
+    }
+
+    public Double getStockNumber() {
+        return stockNumber;
+    }
+
+    public void setStockNumber(Double stockNumber) {
+        this.stockNumber = stockNumber;
     }
 
     public String getRemark() {
