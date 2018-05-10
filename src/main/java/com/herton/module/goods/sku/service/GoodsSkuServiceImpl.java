@@ -71,8 +71,8 @@ public class GoodsSkuServiceImpl extends AbstractCrudService<GoodsSku> implement
         Set<String> oldGoodsPropertyValueIdsSet = new HashSet<>();
         Map<String, String> propertyValueSkuIdMap = new HashMap<>();
         for (GoodsSku skus : goodsSkus) {
-            oldGoodsPropertyValueIdsSet.add(skus.getGoodsPropertyValueIds());
-            propertyValueSkuIdMap.put(skus.getGoodsPropertyValueIds(), skus.getId());
+            oldGoodsPropertyValueIdsSet.add(skus.getGoodsAttributeIds());
+            propertyValueSkuIdMap.put(skus.getGoodsAttributeIds(), skus.getId());
         }
 
         Set<String> temp = new HashSet<>();
@@ -89,7 +89,7 @@ public class GoodsSkuServiceImpl extends AbstractCrudService<GoodsSku> implement
         for (int i = 0, l = goodsPropertyValueIdsList.size(); i < l; i++) {
             goodsSku = new GoodsSku();
             goodsSku.setGoodsId(goodsId);
-            goodsSku.setGoodsPropertyValueIds(goodsPropertyValueIdsList.get(i));
+            goodsSku.setGoodsAttributeIds(goodsPropertyValueIdsList.get(i));
             goodsSku.setSortNumber(i);
             save(goodsSku);
         }

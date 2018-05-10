@@ -21,7 +21,7 @@ public class GoodsSku extends BaseEntity {
     private String code;
     @ApiModelProperty(value = "属性值id（逗号分隔）")
     @Column(length = 2000)
-    private String goodsPropertyValueIds;
+    private String goodsAttributeIds;
     @ApiModelProperty(value = "上次进货价")
     @Column(length = 11, scale = 2, precision = 13)
     private Double lastPurchasePrice;
@@ -50,12 +50,12 @@ public class GoodsSku extends BaseEntity {
         this.code = code;
     }
 
-    public String getGoodsPropertyValueIds() {
-        return goodsPropertyValueIds;
+    public String getGoodsAttributeIds() {
+        return goodsAttributeIds;
     }
 
-    public void setGoodsPropertyValueIds(String goodsPropertyValueIds) {
-        this.goodsPropertyValueIds = goodsPropertyValueIds;
+    public void setGoodsAttributeIds(String goodsAttributeIds) {
+        this.goodsAttributeIds = goodsAttributeIds;
     }
 
     public Double getLastPurchasePrice() {
