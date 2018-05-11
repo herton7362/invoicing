@@ -7,10 +7,13 @@ import com.herton.common.PageResult;
 import com.herton.module.goods.type.domain.GoodsType;
 import com.herton.module.goods.type.service.GoodsTypeService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +40,13 @@ public class GoodsTypeController extends AbstractCrudController<GoodsType> {
         }
         List<GoodsTypeResult> list = goodsTypeService.findAllTranslated(param);
         return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    /**
+     * 查询一个
+     */
+    public ResponseEntity<GoodsTypeResult> getOne(@PathVariable String id) throws Exception {
+        return new ResponseEntity<>(goodsTypeService.getOneTranslated(id), HttpStatus.OK);
     }
 
     @Autowired

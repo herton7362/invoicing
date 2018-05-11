@@ -5,6 +5,7 @@ import com.herton.common.PageResult;
 import com.herton.module.goods.type.domain.GoodsType;
 import com.herton.module.goods.type.web.GoodsTypeResult;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -24,4 +25,11 @@ public interface GoodsTypeService extends CrudService<GoodsType> {
      * @return 结果
      */
     List<GoodsTypeResult> findAllTranslated(Map<String, String[]> param) throws Exception;
+
+    /**
+     * 查询一个
+     * @param id 主键
+     * @return 结果
+     */
+    GoodsTypeResult getOneTranslated(String id) throws Exception;
 }

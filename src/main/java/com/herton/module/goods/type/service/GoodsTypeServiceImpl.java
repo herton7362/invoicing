@@ -42,6 +42,11 @@ public class GoodsTypeServiceImpl extends AbstractCrudService<GoodsType> impleme
         return translateResults(super.findAll(param));
     }
 
+    @Override
+    public GoodsTypeResult getOneTranslated(String id) throws Exception {
+        return translateResult(super.findOne(id));
+    }
+
     private GoodsTypeResult translateResult(GoodsType goodsType) throws Exception {
         GoodsTypeResult goodsTypeResult = new GoodsTypeResult();
         Map<String, String> param = new HashMap<>();
