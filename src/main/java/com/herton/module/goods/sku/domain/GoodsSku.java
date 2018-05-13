@@ -25,6 +25,9 @@ public class GoodsSku extends BaseEntity {
     @ApiModelProperty(value = "上次进货价")
     @Column(length = 11, scale = 2, precision = 13)
     private Double lastPurchasePrice;
+    @ApiModelProperty(value = "库存数量")
+    @Column(length = 11, scale = 2, precision = 13)
+    private Double stockNumber;
 
     public String getGoodsId() {
         return goodsId;
@@ -64,5 +67,13 @@ public class GoodsSku extends BaseEntity {
 
     public void setLastPurchasePrice(Double lastPurchasePrice) {
         this.lastPurchasePrice = lastPurchasePrice;
+    }
+
+    public Double getStockNumber() {
+        return stockNumber;
+    }
+
+    public void setStockNumber(Double stockNumber) {
+        this.stockNumber = stockNumber;
     }
 }
