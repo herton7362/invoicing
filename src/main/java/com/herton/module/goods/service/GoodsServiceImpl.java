@@ -23,6 +23,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @Transactional
@@ -31,7 +32,7 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
     private final GoodsPriceService goodsPriceService;
     private final GoodsImageService goodsImageService;
     private final GoodsSkuService goodsSkuService;
-    private final CacheUtils cache = CacheUtils.getInstance();
+    private final GoodsAttributeService goodsAttributeService;
     @Override
     protected PageRepository<Goods> getRepository() {
         return goodsRepository;
@@ -47,6 +48,12 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
         }
         Goods goods = new Goods();
         BeanUtils.copyProperties(goodsSaveParam, goods);
+        Boolean isCreate = true;
+        Goods old = null;
+        if(StringUtils.isNotBlank(goodsSaveParam.getId())) {
+            old = findOne(goodsSaveParam.getId());
+            isCreate = false;
+        }
         super.save(goods);
         GoodsPrice goodsPrice = new GoodsPrice();
         BeanUtils.copyProperties(goodsSaveParam.getBasicGoodsPrice(), goodsPrice);
@@ -88,6 +95,49 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
         goodsImage.setGoodsId(goods.getId());
         goodsImage.setSortNumber(4);
         goodsImageService.save(goodsImage);
+
+        List<GoodsAttribute> goodsAttributes = goodsSaveParam.getGoodsAttributes();
+        if(isCreate) {
+            for (GoodsAttribute goodsAttribute : goodsAttributes) {
+                goodsAttribute.setGoodsId(goods.getId());
+                goodsAttributeService.save(goodsAttribute);
+            }
+        } else {
+            Map<String, String> params = new HashMap<>();
+            params.put("goodsId", goods.getId());
+            List<GoodsAttribute> oldGoodsAttributes = goodsAttributeService.findAll(params);
+
+            oldGoodsAttributes
+                    .stream()
+                    .filter(goodsAttribute -> goodsAttributes
+                            .stream()
+                            .noneMatch(attr ->
+                                    attr.getGoodsTypeAttributeId().equals(goodsAttribute.getGoodsTypeAttributeId())
+                                            && attr.getGoodsTypeAttributeValue().equals(goodsAttribute.getGoodsTypeAttributeValue())
+                            ))
+                    .forEach(goodsAttribute -> {
+                        try {
+                            goodsAttributeService.delete(goodsAttribute.getId());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+
+            goodsAttributes.stream().filter(goodsAttribute -> oldGoodsAttributes
+                    .stream()
+                    .noneMatch(attr ->
+                            attr.getGoodsTypeAttributeId().equals(goodsAttribute.getGoodsTypeAttributeId())
+                                    && attr.getGoodsTypeAttributeValue().equals(goodsAttribute.getGoodsTypeAttributeValue())
+                    ))
+                    .forEach(goodsAttribute -> {
+                        try {
+                            goodsAttribute.setGoodsId(goods.getId());
+                            goodsAttributeService.save(goodsAttribute);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+        }
     }
 
     @Override
@@ -162,7 +212,7 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
         goodsImageResult = new GoodsResult.GoodsImageResult();
         BeanUtils.copyProperties(goodsImages.get(4), goodsImageResult);
         goodsResult.setGoodsAttached4Image(goodsImageResult);
-
+        goodsResult.setGoodsAttributes(goodsAttributeService.findAll(param));
         return goodsResult;
     }
 
@@ -206,11 +256,13 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
             GoodsRepository goodsRepository,
             GoodsPriceService goodsPriceService,
             GoodsImageService goodsImageService,
-            GoodsSkuService goodsSkuService
+            GoodsSkuService goodsSkuService,
+            GoodsAttributeService goodsAttributeService
     ) {
         this.goodsRepository = goodsRepository;
         this.goodsPriceService = goodsPriceService;
         this.goodsImageService = goodsImageService;
         this.goodsSkuService = goodsSkuService;
+        this.goodsAttributeService = goodsAttributeService;
     }
 }

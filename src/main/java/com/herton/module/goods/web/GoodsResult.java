@@ -1,6 +1,7 @@
 package com.herton.module.goods.web;
 
 import com.herton.module.goods.domain.*;
+import com.herton.module.goods.sku.domain.GoodsSku;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -24,6 +25,10 @@ public class GoodsResult extends Goods {
     private GoodsImageResult goodsAttached3Image;
     @ApiModelProperty(value = "商品附图4")
     private GoodsImageResult goodsAttached4Image;
+    @ApiModelProperty(value = "商品属性")
+    private List<GoodsAttribute> goodsAttributes;
+    @ApiModelProperty(value = "商品sku")
+    private List<GoodsSkuParam> goodsSkus;
 
     public GoodsPriceResult getBasicGoodsPrice() {
         return basicGoodsPrice;
@@ -89,11 +94,41 @@ public class GoodsResult extends Goods {
         this.goodsAttached4Image = goodsAttached4Image;
     }
 
+    public List<GoodsAttribute> getGoodsAttributes() {
+        return goodsAttributes;
+    }
+
+    public void setGoodsAttributes(List<GoodsAttribute> goodsAttributes) {
+        this.goodsAttributes = goodsAttributes;
+    }
+
+    public List<GoodsSkuParam> getGoodsSkus() {
+        return goodsSkus;
+    }
+
+    public void setGoodsSkus(List<GoodsSkuParam> goodsSkus) {
+        this.goodsSkus = goodsSkus;
+    }
+
     public static class GoodsPriceResult extends GoodsPrice {
 
     }
 
     public static class GoodsImageResult extends GoodsImage {
 
+    }
+
+    @ApiModel("商品sku")
+    public static class GoodsSkuParam extends GoodsSku {
+        @ApiModelProperty("商品属性值，用逗号分隔")
+        private String goodsAttributeValues;
+
+        public String getGoodsAttributeValues() {
+            return goodsAttributeValues;
+        }
+
+        public void setGoodsAttributeValues(String goodsAttributeValues) {
+            this.goodsAttributeValues = goodsAttributeValues;
+        }
     }
 }
