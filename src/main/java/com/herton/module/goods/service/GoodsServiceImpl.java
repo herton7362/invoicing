@@ -7,6 +7,7 @@ import com.herton.common.utils.CacheUtils;
 import com.herton.common.utils.StringUtils;
 import com.herton.exceptions.InvalidParamException;
 import com.herton.module.goods.domain.*;
+import com.herton.module.goods.sku.domain.GoodsSku;
 import com.herton.module.goods.sku.service.GoodsSkuService;
 import com.herton.module.goods.web.GoodsResult;
 import com.herton.module.goods.web.GoodsSaveParam;
@@ -48,65 +49,80 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
         }
         Goods goods = new Goods();
         BeanUtils.copyProperties(goodsSaveParam, goods);
-        Boolean isCreate = true;
-        Goods old = null;
-        if(StringUtils.isNotBlank(goodsSaveParam.getId())) {
-            old = findOne(goodsSaveParam.getId());
-            isCreate = false;
-        }
         super.save(goods);
+        savePrice(goods.getId(), goodsSaveParam);
+        saveImage(goods.getId(), goodsSaveParam);
+        List<GoodsAttribute> goodsAttributes = saveAtrributes(goods.getId(), goodsSaveParam);
+        saveSkus(goods.getId(), goodsSaveParam, goodsAttributes);
+    }
+
+    private void savePrice(String goodsId, GoodsSaveParam goodsSaveParam) throws Exception {
         GoodsPrice goodsPrice = new GoodsPrice();
         BeanUtils.copyProperties(goodsSaveParam.getBasicGoodsPrice(), goodsPrice);
         goodsPrice.setSortNumber(0);
-        goodsPrice.setGoodsId(goods.getId());
+        goodsPrice.setGoodsId(goodsId);
         goodsPriceService.save(goodsPrice);
         GoodsPrice assistGoodsPrice1 = new GoodsPrice();
         BeanUtils.copyProperties(goodsSaveParam.getAssistGoodsPrice1(), assistGoodsPrice1);
         assistGoodsPrice1.setSortNumber(1);
-        assistGoodsPrice1.setGoodsId(goods.getId());
+        assistGoodsPrice1.setGoodsId(goodsId);
         goodsPriceService.save(assistGoodsPrice1);
         GoodsPrice assistGoodsPrice2 = new GoodsPrice();
         BeanUtils.copyProperties(goodsSaveParam.getAssistGoodsPrice2(), assistGoodsPrice2);
         assistGoodsPrice2.setSortNumber(1);
-        assistGoodsPrice2.setGoodsId(goods.getId());
+        assistGoodsPrice2.setGoodsId(goodsId);
         goodsPriceService.save(assistGoodsPrice2);
+    }
+
+    private void saveImage(String goodsId, GoodsSaveParam goodsSaveParam) throws Exception {
         GoodsImage goodsImage = new GoodsImage();
         BeanUtils.copyProperties(goodsSaveParam.getGoodsCoverImage(), goodsImage);
-        goodsImage.setGoodsId(goods.getId());
+        goodsImage.setGoodsId(goodsId);
         goodsImage.setSortNumber(0);
         goodsImageService.save(goodsImage);
         goodsImage = new GoodsImage();
         BeanUtils.copyProperties(goodsSaveParam.getGoodsAttached1Image(), goodsImage);
-        goodsImage.setGoodsId(goods.getId());
+        goodsImage.setGoodsId(goodsId);
         goodsImage.setSortNumber(1);
         goodsImageService.save(goodsImage);
         goodsImage = new GoodsImage();
         BeanUtils.copyProperties(goodsSaveParam.getGoodsAttached2Image(), goodsImage);
-        goodsImage.setGoodsId(goods.getId());
+        goodsImage.setGoodsId(goodsId);
         goodsImage.setSortNumber(2);
         goodsImageService.save(goodsImage);
         goodsImage = new GoodsImage();
         BeanUtils.copyProperties(goodsSaveParam.getGoodsAttached3Image(), goodsImage);
-        goodsImage.setGoodsId(goods.getId());
+        goodsImage.setGoodsId(goodsId);
         goodsImage.setSortNumber(3);
         goodsImageService.save(goodsImage);
         goodsImage = new GoodsImage();
         BeanUtils.copyProperties(goodsSaveParam.getGoodsAttached4Image(), goodsImage);
-        goodsImage.setGoodsId(goods.getId());
+        goodsImage.setGoodsId(goodsId);
         goodsImage.setSortNumber(4);
         goodsImageService.save(goodsImage);
+    }
 
+    private List<GoodsAttribute> saveAtrributes(String goodsId, GoodsSaveParam goodsSaveParam) throws Exception {
         List<GoodsAttribute> goodsAttributes = goodsSaveParam.getGoodsAttributes();
+        Boolean isCreate = true;
+        Goods old = null;
+        List<GoodsAttribute> newGoodsAttributes = new ArrayList<>();
+        if(StringUtils.isNotBlank(goodsSaveParam.getId())) {
+            old = findOne(goodsSaveParam.getId());
+            isCreate = false;
+        }
         if(isCreate) {
             for (GoodsAttribute goodsAttribute : goodsAttributes) {
-                goodsAttribute.setGoodsId(goods.getId());
+                goodsAttribute.setGoodsId(goodsId);
                 goodsAttributeService.save(goodsAttribute);
+                newGoodsAttributes.add(goodsAttribute);
             }
         } else {
             Map<String, String> params = new HashMap<>();
-            params.put("goodsId", goods.getId());
+            params.put("goodsId", goodsId);
             List<GoodsAttribute> oldGoodsAttributes = goodsAttributeService.findAll(params);
 
+            newGoodsAttributes.addAll(oldGoodsAttributes);
             oldGoodsAttributes
                     .stream()
                     .filter(goodsAttribute -> goodsAttributes
@@ -117,6 +133,7 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
                             ))
                     .forEach(goodsAttribute -> {
                         try {
+                            newGoodsAttributes.remove(goodsAttribute);
                             goodsAttributeService.delete(goodsAttribute.getId());
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -131,8 +148,68 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
                     ))
                     .forEach(goodsAttribute -> {
                         try {
-                            goodsAttribute.setGoodsId(goods.getId());
+                            goodsAttribute.setGoodsId(goodsId);
                             goodsAttributeService.save(goodsAttribute);
+                            newGoodsAttributes.add(goodsAttribute);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+        }
+        return newGoodsAttributes;
+    }
+
+    private void saveSkus(String goodsId, GoodsSaveParam goodsSaveParam, List<GoodsAttribute> goodsAttributes) throws Exception {
+        List<GoodsSaveParam.GoodsSkuParam> goodsSkuParams = goodsSaveParam.getGoodsSkus();
+        List<GoodsSku> goodsSkus = new ArrayList<>();
+        goodsSkuParams.forEach(goodsSkuParam -> {
+            GoodsSku goodsSku = new GoodsSku();
+            BeanUtils.copyProperties(goodsSkuParam, goodsSku);
+            String[] values = goodsSkuParam.getGoodsAttributeValues().split(",");
+            List<String> valueList = Arrays.asList(values);
+            List<String> goodsAttributeIds  = goodsAttributes
+                    .stream()
+                    .filter(goodsAttribute -> valueList.contains(goodsAttribute.getGoodsTypeAttributeValue()))
+                    .map(goodsAttribute -> goodsAttribute.getId())
+                    .collect(Collectors.toList());
+            goodsSku.setGoodsAttributeIds(String.join(",", goodsAttributeIds));
+            goodsSkus.add(goodsSku);
+        });
+        Boolean isCreate = true;
+        Goods old = null;
+        if(StringUtils.isNotBlank(goodsSaveParam.getId())) {
+            old = findOne(goodsSaveParam.getId());
+            isCreate = false;
+        }
+        if(isCreate) {
+            for (GoodsSku goodsSku : goodsSkus) {
+                goodsSku.setGoodsId(goodsId);
+                goodsSkuService.save(goodsSku);
+            }
+        } else {
+            Map<String, String> params = new HashMap<>();
+            params.put("goodsId", goodsId);
+            List<GoodsSku> oldGoodsSkus = goodsSkuService.findAll(params);
+            oldGoodsSkus
+                    .stream()
+                    .filter(goodsSku -> goodsSkus
+                            .stream()
+                            .noneMatch(sku ->goodsSku.getGoodsAttributeIds().equals(sku.getGoodsAttributeIds())))
+                    .forEach(goodsSku -> {
+                        try {
+                            goodsSkuService.delete(goodsSku.getId());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+
+            goodsSkus.stream().filter(goodsSku -> oldGoodsSkus
+                    .stream()
+                    .noneMatch(sku ->goodsSku.getGoodsAttributeIds().equals(sku.getGoodsAttributeIds())))
+                    .forEach(goodsSku -> {
+                        try {
+                            goodsSku.setGoodsId(goodsId);
+                            goodsSkuService.save(goodsSku);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
