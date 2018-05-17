@@ -120,15 +120,15 @@ public class GoodsSaveParam extends Goods {
 
     @ApiModel("商品sku")
     public static class GoodsSkuParam extends GoodsSku {
-        @ApiModelProperty("商品属性值，用逗号分隔")
-        private String goodsAttributeValues;
+        @ApiModelProperty("商品属性值，用逗号分隔 例 attrId:红色")
+        private String goodsAttributes;
 
-        public String getGoodsAttributeValues() {
-            return goodsAttributeValues;
+        public String getGoodsAttributes() {
+            return goodsAttributes;
         }
 
-        public void setGoodsAttributeValues(String goodsAttributeValues) {
-            this.goodsAttributeValues = goodsAttributeValues;
+        public void setGoodsAttributes(String goodsAttributes) {
+            this.goodsAttributes = goodsAttributes;
         }
     }
 }

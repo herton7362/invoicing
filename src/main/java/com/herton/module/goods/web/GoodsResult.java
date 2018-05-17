@@ -28,7 +28,7 @@ public class GoodsResult extends Goods {
     @ApiModelProperty(value = "商品属性")
     private List<GoodsAttribute> goodsAttributes;
     @ApiModelProperty(value = "商品sku")
-    private List<GoodsSkuParam> goodsSkus;
+    private List<GoodsSkuResult> goodsSkus;
 
     public GoodsPriceResult getBasicGoodsPrice() {
         return basicGoodsPrice;
@@ -102,11 +102,11 @@ public class GoodsResult extends Goods {
         this.goodsAttributes = goodsAttributes;
     }
 
-    public List<GoodsSkuParam> getGoodsSkus() {
+    public List<GoodsSkuResult> getGoodsSkus() {
         return goodsSkus;
     }
 
-    public void setGoodsSkus(List<GoodsSkuParam> goodsSkus) {
+    public void setGoodsSkus(List<GoodsSkuResult> goodsSkus) {
         this.goodsSkus = goodsSkus;
     }
 
@@ -119,16 +119,16 @@ public class GoodsResult extends Goods {
     }
 
     @ApiModel("商品sku")
-    public static class GoodsSkuParam extends GoodsSku {
+    public static class GoodsSkuResult extends GoodsSku {
         @ApiModelProperty("商品属性值，用逗号分隔")
-        private String goodsAttributeValues;
+        private String goodsAttributes;
 
-        public String getGoodsAttributeValues() {
-            return goodsAttributeValues;
+        public String getGoodsAttributes() {
+            return goodsAttributes;
         }
 
-        public void setGoodsAttributeValues(String goodsAttributeValues) {
-            this.goodsAttributeValues = goodsAttributeValues;
+        public void setGoodsAttributes(String goodsAttributes) {
+            this.goodsAttributes = goodsAttributes;
         }
     }
 }

@@ -165,11 +165,14 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
         goodsSkuParams.forEach(goodsSkuParam -> {
             GoodsSku goodsSku = new GoodsSku();
             BeanUtils.copyProperties(goodsSkuParam, goodsSku);
-            String[] values = goodsSkuParam.getGoodsAttributeValues().split(",");
-            List<String> valueList = Arrays.asList(values);
+            String[] attrs = goodsSkuParam.getGoodsAttributes().split(",");
+            List<String> attrList = Arrays.asList(attrs);
             List<String> goodsAttributeIds  = goodsAttributes
                     .stream()
-                    .filter(goodsAttribute -> valueList.contains(goodsAttribute.getGoodsTypeAttributeValue()))
+                    .filter(goodsAttribute -> attrList
+                            .stream()
+                            .anyMatch(attr -> goodsAttribute.getGoodsTypeAttributeId().equals(attr.split(":")[0])
+                                    && goodsAttribute.getGoodsTypeAttributeValue().equals(attr.split(":")[1])))
                     .map(goodsAttribute -> goodsAttribute.getId())
                     .collect(Collectors.toList());
             goodsSku.setGoodsAttributeIds(String.join(",", goodsAttributeIds));
@@ -194,7 +197,15 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
                     .stream()
                     .filter(goodsSku -> goodsSkus
                             .stream()
-                            .noneMatch(sku ->goodsSku.getGoodsAttributeIds().equals(sku.getGoodsAttributeIds())))
+                            .noneMatch(sku -> {
+                                String[] attrIds1 = goodsSku.getGoodsAttributeIds().split(",");
+                                String[] attrIds2 = sku.getGoodsAttributeIds().split(",");
+                                List<String> attrIdList1 = Arrays.asList(attrIds1);
+                                List<String> attrIdList2 = Arrays.asList(attrIds2);
+                                return attrIdList1
+                                        .stream()
+                                        .allMatch(attrId -> attrIdList2.contains(attrId));
+                            }))
                     .forEach(goodsSku -> {
                         try {
                             goodsSkuService.delete(goodsSku.getId());
@@ -203,18 +214,37 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
                         }
                     });
 
-            goodsSkus.stream().filter(goodsSku -> oldGoodsSkus
-                    .stream()
-                    .noneMatch(sku ->goodsSku.getGoodsAttributeIds().equals(sku.getGoodsAttributeIds())))
-                    .forEach(goodsSku -> {
-                        try {
-                            goodsSku.setGoodsId(goodsId);
-                            goodsSkuService.save(goodsSku);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    });
+            for (GoodsSku goodsSku : goodsSkus) {
+                GoodsSku oldGoodsSku = oldGoodsSkus
+                        .stream()
+                        .filter(sku -> {
+                            String[] attrIds1 = goodsSku.getGoodsAttributeIds().split(",");
+                            String[] attrIds2 = sku.getGoodsAttributeIds().split(",");
+                            List<String> attrIdList1 = Arrays.asList(attrIds1);
+                            List<String> attrIdList2 = Arrays.asList(attrIds2);
+                            return attrIdList1
+                                    .stream()
+                                    .allMatch(attrId -> attrIdList2.contains(attrId));
+                        })
+                        .findFirst()
+                        .get();
+
+                if(oldGoodsSku != null) {
+                    oldGoodsSku.setBarcode(goodsSku.getBarcode());
+                    oldGoodsSku.setLastPurchasePrice(goodsSku.getLastPurchasePrice());
+                    oldGoodsSku.setCode(goodsSku.getCode());
+                    oldGoodsSku.setStockNumber(goodsSku.getStockNumber());
+                    goodsSkuService.save(goodsSku);
+                } else {
+                    goodsSku.setGoodsId(goodsId);
+                    goodsSkuService.save(goodsSku);
+                }
+            }
         }
+    }
+
+    abstract class ArrayAllMatch implements Predicate {
+
     }
 
     @Override
@@ -290,6 +320,29 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
         BeanUtils.copyProperties(goodsImages.get(4), goodsImageResult);
         goodsResult.setGoodsAttached4Image(goodsImageResult);
         goodsResult.setGoodsAttributes(goodsAttributeService.findAll(param));
+        List<GoodsSku> goodsSkus = goodsSkuService.findAll(param);
+        List<GoodsResult.GoodsSkuResult> goodsSkuResults = new ArrayList<>();
+        GoodsResult.GoodsSkuResult goodsSkuResult;
+        for (GoodsSku goodsSku : goodsSkus) {
+            goodsSkuResult = new GoodsResult.GoodsSkuResult();
+            BeanUtils.copyProperties(goodsSku, goodsSkuResult);
+            String[] goodsAttrIds = goodsSku.getGoodsAttributeIds().split(",");
+            List<String> goodsAttrIdList = Arrays.asList(goodsAttrIds);
+            goodsSkuResult.setGoodsAttributes(String.join(",", goodsAttrIdList
+                    .stream()
+                    .map(goodsAttrId -> {
+                        try {
+                            GoodsAttribute goodsAttribute = goodsAttributeService.findOne(goodsAttrId);
+                            return goodsAttribute.getGoodsTypeAttributeId() + ":" + goodsAttribute.getGoodsTypeAttributeValue();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        return "";
+                    })
+                    .collect(Collectors.toList())));
+            goodsSkuResults.add(goodsSkuResult);
+        }
+        goodsResult.setGoodsSkus(goodsSkuResults);
         return goodsResult;
     }
 
