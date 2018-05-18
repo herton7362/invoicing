@@ -3,10 +3,11 @@ package com.herton.module.goods.service;
 import com.herton.common.AbstractCrudService;
 import com.herton.common.PageRepository;
 import com.herton.common.PageResult;
-import com.herton.common.utils.CacheUtils;
 import com.herton.common.utils.StringUtils;
 import com.herton.exceptions.InvalidParamException;
-import com.herton.module.goods.domain.*;
+import com.herton.module.goods.domain.Goods;
+import com.herton.module.goods.domain.GoodsAttribute;
+import com.herton.module.goods.domain.GoodsRepository;
 import com.herton.module.goods.sku.domain.GoodsSku;
 import com.herton.module.goods.sku.service.GoodsSkuService;
 import com.herton.module.goods.web.GoodsResult;
@@ -30,8 +31,6 @@ import java.util.stream.Collectors;
 @Transactional
 public class GoodsServiceImpl extends AbstractCrudService<Goods> implements GoodsService {
     private final GoodsRepository goodsRepository;
-    private final GoodsPriceService goodsPriceService;
-    private final GoodsImageService goodsImageService;
     private final GoodsSkuService goodsSkuService;
     private final GoodsAttributeService goodsAttributeService;
     @Override
@@ -50,56 +49,8 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
         Goods goods = new Goods();
         BeanUtils.copyProperties(goodsSaveParam, goods);
         super.save(goods);
-        savePrice(goods.getId(), goodsSaveParam);
-        saveImage(goods.getId(), goodsSaveParam);
         List<GoodsAttribute> goodsAttributes = saveAtrributes(goods.getId(), goodsSaveParam);
         saveSkus(goods.getId(), goodsSaveParam, goodsAttributes);
-    }
-
-    private void savePrice(String goodsId, GoodsSaveParam goodsSaveParam) throws Exception {
-        GoodsPrice goodsPrice = new GoodsPrice();
-        BeanUtils.copyProperties(goodsSaveParam.getBasicGoodsPrice(), goodsPrice);
-        goodsPrice.setSortNumber(0);
-        goodsPrice.setGoodsId(goodsId);
-        goodsPriceService.save(goodsPrice);
-        GoodsPrice assistGoodsPrice1 = new GoodsPrice();
-        BeanUtils.copyProperties(goodsSaveParam.getAssistGoodsPrice1(), assistGoodsPrice1);
-        assistGoodsPrice1.setSortNumber(1);
-        assistGoodsPrice1.setGoodsId(goodsId);
-        goodsPriceService.save(assistGoodsPrice1);
-        GoodsPrice assistGoodsPrice2 = new GoodsPrice();
-        BeanUtils.copyProperties(goodsSaveParam.getAssistGoodsPrice2(), assistGoodsPrice2);
-        assistGoodsPrice2.setSortNumber(1);
-        assistGoodsPrice2.setGoodsId(goodsId);
-        goodsPriceService.save(assistGoodsPrice2);
-    }
-
-    private void saveImage(String goodsId, GoodsSaveParam goodsSaveParam) throws Exception {
-        GoodsImage goodsImage = new GoodsImage();
-        BeanUtils.copyProperties(goodsSaveParam.getGoodsCoverImage(), goodsImage);
-        goodsImage.setGoodsId(goodsId);
-        goodsImage.setSortNumber(0);
-        goodsImageService.save(goodsImage);
-        goodsImage = new GoodsImage();
-        BeanUtils.copyProperties(goodsSaveParam.getGoodsAttached1Image(), goodsImage);
-        goodsImage.setGoodsId(goodsId);
-        goodsImage.setSortNumber(1);
-        goodsImageService.save(goodsImage);
-        goodsImage = new GoodsImage();
-        BeanUtils.copyProperties(goodsSaveParam.getGoodsAttached2Image(), goodsImage);
-        goodsImage.setGoodsId(goodsId);
-        goodsImage.setSortNumber(2);
-        goodsImageService.save(goodsImage);
-        goodsImage = new GoodsImage();
-        BeanUtils.copyProperties(goodsSaveParam.getGoodsAttached3Image(), goodsImage);
-        goodsImage.setGoodsId(goodsId);
-        goodsImage.setSortNumber(3);
-        goodsImageService.save(goodsImage);
-        goodsImage = new GoodsImage();
-        BeanUtils.copyProperties(goodsSaveParam.getGoodsAttached4Image(), goodsImage);
-        goodsImage.setGoodsId(goodsId);
-        goodsImage.setSortNumber(4);
-        goodsImageService.save(goodsImage);
     }
 
     private List<GoodsAttribute> saveAtrributes(String goodsId, GoodsSaveParam goodsSaveParam) throws Exception {
@@ -246,10 +197,6 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
         }
     }
 
-    abstract class ArrayAllMatch implements Predicate {
-
-    }
-
     @Override
     public PageResult<GoodsResult> findAllTranslated(PageRequest pageRequest, Map<String, ?> param) throws Exception {
         PageResult<Goods> page = new PageResult<>(getRepository().findAll(new GoodsSpecification(param), pageRequest));
@@ -275,8 +222,7 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
     public void delete(String id) throws Exception {
         Map<String, String> param = new HashMap<>();
         param.put("goodsId", id);
-        goodsPriceService.delete(goodsPriceService.findAll(param));
-        goodsImageService.delete(goodsImageService.findAll(param));
+        goodsAttributeService.delete(goodsAttributeService.findAll(param));
         goodsSkuService.delete(goodsSkuService.findAll(param));
         super.delete(id);
     }
@@ -294,34 +240,6 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
         BeanUtils.copyProperties(goods, goodsResult);
         Map<String, String> param = new HashMap<>();
         param.put("goodsId", goods.getId());
-        PageResult<GoodsPrice> goodsPricePageResult  = goodsPriceService.findAll(pageRequest, param);
-        List<GoodsPrice> goodsPrices = goodsPricePageResult.getContent();
-        GoodsResult.GoodsPriceResult goodsPriceResult = new GoodsResult.GoodsPriceResult();
-        BeanUtils.copyProperties(goodsPrices.get(0), goodsPriceResult);
-        goodsResult.setBasicGoodsPrice(goodsPriceResult);
-        goodsPriceResult = new GoodsResult.GoodsPriceResult();
-        BeanUtils.copyProperties(goodsPrices.get(1), goodsPriceResult);
-        goodsResult.setAssistGoodsPrice1(goodsPriceResult);
-        goodsPriceResult = new GoodsResult.GoodsPriceResult();
-        BeanUtils.copyProperties(goodsPrices.get(2), goodsPriceResult);
-        goodsResult.setAssistGoodsPrice2(goodsPriceResult);
-        PageResult<GoodsImage> goodsImagePageResult = goodsImageService.findAll(pageRequest, param);
-        List<GoodsImage> goodsImages = goodsImagePageResult.getContent();
-        GoodsResult.GoodsImageResult goodsImageResult = new GoodsResult.GoodsImageResult();
-        BeanUtils.copyProperties(goodsImages.get(0), goodsImageResult);
-        goodsResult.setGoodsCoverImage(goodsImageResult);
-        goodsImageResult = new GoodsResult.GoodsImageResult();
-        BeanUtils.copyProperties(goodsImages.get(1), goodsImageResult);
-        goodsResult.setGoodsAttached1Image(goodsImageResult);
-        goodsImageResult = new GoodsResult.GoodsImageResult();
-        BeanUtils.copyProperties(goodsImages.get(2), goodsImageResult);
-        goodsResult.setGoodsAttached2Image(goodsImageResult);
-        goodsImageResult = new GoodsResult.GoodsImageResult();
-        BeanUtils.copyProperties(goodsImages.get(3), goodsImageResult);
-        goodsResult.setGoodsAttached3Image(goodsImageResult);
-        goodsImageResult = new GoodsResult.GoodsImageResult();
-        BeanUtils.copyProperties(goodsImages.get(4), goodsImageResult);
-        goodsResult.setGoodsAttached4Image(goodsImageResult);
         goodsResult.setGoodsAttributes(goodsAttributeService.findAll(param));
         List<GoodsSku> goodsSkus = goodsSkuService.findAll(param);
         List<GoodsResult.GoodsSkuResult> goodsSkuResults = new ArrayList<>();
@@ -370,7 +288,7 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
             if(params.containsKey("quickSearch")) {
                 String[] value = params.get("quickSearch");
                 predicates.add(criteriaBuilder.like(root.get("name"), "%"+ value[0] +"%"));
-                predicates.add(criteriaBuilder.like(root.get("code"), "%"+ value[0] +"%"));
+                predicates.add(criteriaBuilder.like(root.get("barcode"), "%"+ value[0] +"%"));
                 predicates.add(criteriaBuilder.like(root.get("shortname"), "%"+ value[0] +"%"));
                 predicates.add(criteriaBuilder.like(root.get("pinyin"), "%"+ value[0] +"%"));
                 predicates.add(criteriaBuilder.like(root.get("remark"), "%"+ value[0] +"%"));
@@ -387,14 +305,10 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
     @Autowired
     public GoodsServiceImpl(
             GoodsRepository goodsRepository,
-            GoodsPriceService goodsPriceService,
-            GoodsImageService goodsImageService,
             GoodsSkuService goodsSkuService,
             GoodsAttributeService goodsAttributeService
     ) {
         this.goodsRepository = goodsRepository;
-        this.goodsPriceService = goodsPriceService;
-        this.goodsImageService = goodsImageService;
         this.goodsSkuService = goodsSkuService;
         this.goodsAttributeService = goodsAttributeService;
     }

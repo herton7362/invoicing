@@ -31,7 +31,7 @@ public class CommonFilter implements Filter {
                 break;
             }
         }
-        String AccessControlAllowHeaders = "Origin, Content-Type, Accept, Authorization, Access-Control-Allow-Credentials, appId, refreshToken";
+        String AccessControlAllowHeaders = "Origin, Content-Type, Accept, Authorization, Access-Control-Allow-Credentials, appId, refreshToken, X-Requested-With";
         response.setHeader("Access-Control-Allow-Origin", isValid? origin: "null");
         response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Methods","GET, POST, PUT, DELETE");

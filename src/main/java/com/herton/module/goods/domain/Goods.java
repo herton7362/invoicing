@@ -37,12 +37,17 @@ public class Goods extends BaseEntity {
     @ApiModelProperty(value = "产地")
     @Column(length = 50)
     private String madeAddress;
+    @ApiModelProperty(value = "商品封面图片")
+    private String coverImageId;
     @ApiModelProperty(value = "规格")
     @Column(length = 100)
     private String standard;
     @ApiModelProperty(value = "型号")
     @Column(length = 100)
     private String model;
+    @ApiModelProperty(value = "零售价格")
+    @Column(length = 11, scale = 2, precision = 13)
+    private Double retailPrice;
     @ApiModelProperty(value = "重量")
     @Column(length = 11, scale = 2, precision = 13)
     private Double weight;
@@ -140,6 +145,14 @@ public class Goods extends BaseEntity {
         this.madeAddress = madeAddress;
     }
 
+    public String getCoverImageId() {
+        return coverImageId;
+    }
+
+    public void setCoverImageId(String coverImageId) {
+        this.coverImageId = coverImageId;
+    }
+
     public String getStandard() {
         return standard;
     }
@@ -154,6 +167,14 @@ public class Goods extends BaseEntity {
 
     public void setModel(String model) {
         this.model = model;
+    }
+
+    public Double getRetailPrice() {
+        return retailPrice;
+    }
+
+    public void setRetailPrice(Double retailPrice) {
+        this.retailPrice = retailPrice;
     }
 
     public Double getWeight() {
