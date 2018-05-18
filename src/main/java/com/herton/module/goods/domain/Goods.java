@@ -61,6 +61,9 @@ public class Goods extends BaseEntity {
     @ApiModelProperty(value = "库存数量")
     @Column(length = 11, scale = 2, precision = 13)
     private Double stockNumber;
+    @ApiModelProperty(value = "库存预警值")
+    @Column(length = 11, scale = 2, precision = 13)
+    private Double stockWarnNumber;
     @ApiModelProperty(value = "备注")
     @Column(length = 200)
     private String remark;
@@ -199,6 +202,14 @@ public class Goods extends BaseEntity {
 
     public void setStockNumber(Double stockNumber) {
         this.stockNumber = stockNumber;
+    }
+
+    public Double getStockWarnNumber() {
+        return stockWarnNumber;
+    }
+
+    public void setStockWarnNumber(Double stockWarnNumber) {
+        this.stockWarnNumber = stockWarnNumber;
     }
 
     public String getRemark() {

@@ -215,7 +215,7 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
                     });
 
             for (GoodsSku goodsSku : goodsSkus) {
-                GoodsSku oldGoodsSku = oldGoodsSkus
+                final Optional<GoodsSku> oldGoodsSkuOptional = oldGoodsSkus
                         .stream()
                         .filter(sku -> {
                             String[] attrIds1 = goodsSku.getGoodsAttributeIds().split(",");
@@ -226,14 +226,17 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
                                     .stream()
                                     .allMatch(attrId -> attrIdList2.contains(attrId));
                         })
-                        .findFirst()
-                        .get();
+                        .findFirst();
 
-                if(oldGoodsSku != null) {
-                    oldGoodsSku.setBarcode(goodsSku.getBarcode());
-                    oldGoodsSku.setLastPurchasePrice(goodsSku.getLastPurchasePrice());
-                    oldGoodsSku.setCode(goodsSku.getCode());
-                    oldGoodsSku.setStockNumber(goodsSku.getStockNumber());
+                if(oldGoodsSkuOptional.isPresent()) {
+                    final GoodsSku oldGoodsSku = oldGoodsSkuOptional.get();
+                    goodsSku.setId(oldGoodsSku.getId());
+                    goodsSku.setSortNumber(oldGoodsSku.getSortNumber());
+                    goodsSku.setLogicallyDeleted(oldGoodsSku.getLogicallyDeleted());
+                    goodsSku.setCreatedDate(oldGoodsSku.getCreatedDate());
+                    goodsSku.setCreateUserId(oldGoodsSku.getCreateUserId());
+                    goodsSku.setClientId(oldGoodsSku.getClientId());
+                    goodsSku.setUpdatedDate(oldGoodsSku.getUpdatedDate());
                     goodsSkuService.save(goodsSku);
                 } else {
                     goodsSku.setGoodsId(goodsId);
