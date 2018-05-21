@@ -8,6 +8,7 @@ import com.herton.exceptions.InvalidParamException;
 import com.herton.module.goods.domain.Goods;
 import com.herton.module.goods.domain.GoodsAttribute;
 import com.herton.module.goods.domain.GoodsRepository;
+import com.herton.module.goods.domain.GoodsSupplier;
 import com.herton.module.goods.sku.domain.GoodsSku;
 import com.herton.module.goods.sku.service.GoodsSkuService;
 import com.herton.module.goods.web.GoodsResult;
@@ -33,6 +34,7 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
     private final GoodsRepository goodsRepository;
     private final GoodsSkuService goodsSkuService;
     private final GoodsAttributeService goodsAttributeService;
+    private final GoodsSupplierService goodsSupplierService;
     @Override
     protected PageRepository<Goods> getRepository() {
         return goodsRepository;
@@ -49,8 +51,16 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
         Goods goods = new Goods();
         BeanUtils.copyProperties(goodsSaveParam, goods);
         super.save(goods);
-        List<GoodsAttribute> goodsAttributes = saveAtrributes(goods.getId(), goodsSaveParam);
-        saveSkus(goods.getId(), goodsSaveParam, goodsAttributes);
+        if(StringUtils.isNotBlank(goods.getGoodsTypeId())) {
+            List<GoodsAttribute> goodsAttributes = saveAtrributes(goods.getId(), goodsSaveParam);
+            saveSkus(goods.getId(), goodsSaveParam, goodsAttributes);
+        } else {
+            Map<String, String> param = new HashMap<>();
+            param.put("goodsId", goods.getId());
+            goodsAttributeService.delete(goodsAttributeService.findAll(param));
+            goodsSkuService.delete(goodsSkuService.findAll(param));
+        }
+        saveSuppliers(goods.getId(), goodsSaveParam);
     }
 
     private List<GoodsAttribute> saveAtrributes(String goodsId, GoodsSaveParam goodsSaveParam) throws Exception {
@@ -197,6 +207,56 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
         }
     }
 
+    private void saveSuppliers(String goodsId, GoodsSaveParam goodsSaveParam) throws Exception {
+        List<GoodsSupplier> goodsSuppliers = new ArrayList<>();
+        Boolean isCreate = true;
+        Goods old = null;
+        if(StringUtils.isNotBlank(goodsSaveParam.getId())) {
+            old = findOne(goodsSaveParam.getId());
+            isCreate = false;
+        }
+        if(goodsSaveParam.getGoodsSuppliers() != null) {
+            goodsSuppliers.addAll(goodsSaveParam.getGoodsSuppliers());
+        }
+        if(isCreate) {
+            for (GoodsSupplier goodsSupplier : goodsSuppliers) {
+                goodsSupplier.setGoodsId(goodsId);
+                goodsSupplierService.save(goodsSupplier);
+            }
+        } else {
+            Map<String, String> params = new HashMap<>();
+            params.put("goodsId", goodsId);
+            List<GoodsSupplier> oldGoodsSuppliers = goodsSupplierService.findAll(params);
+
+            oldGoodsSuppliers
+                    .stream()
+                    .filter(goodsSupplier -> goodsSuppliers
+                            .stream()
+                            .noneMatch(supplier ->
+                                    supplier.getBusinessRelatedUnitId().equals(goodsSupplier.getBusinessRelatedUnitId())))
+                    .forEach(goodsSupplier -> {
+                        try {
+                            goodsSupplierService.delete(goodsSupplier.getId());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+
+            goodsSuppliers.stream().filter(goodsSupplier -> oldGoodsSuppliers
+                    .stream()
+                    .noneMatch(supplier ->
+                            supplier.getBusinessRelatedUnitId().equals(goodsSupplier.getBusinessRelatedUnitId())))
+                    .forEach(goodsSupplier -> {
+                        try {
+                            goodsSupplier.setGoodsId(goodsId);
+                            goodsSupplierService.save(goodsSupplier);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+        }
+    }
+
     @Override
     public PageResult<GoodsResult> findAllTranslated(PageRequest pageRequest, Map<String, ?> param) throws Exception {
         PageResult<Goods> page = new PageResult<>(getRepository().findAll(new GoodsSpecification(param), pageRequest));
@@ -224,6 +284,7 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
         param.put("goodsId", id);
         goodsAttributeService.delete(goodsAttributeService.findAll(param));
         goodsSkuService.delete(goodsSkuService.findAll(param));
+        goodsSupplierService.delete(goodsSupplierService.findAll(param));
         super.delete(id);
     }
 
@@ -306,10 +367,12 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
     public GoodsServiceImpl(
             GoodsRepository goodsRepository,
             GoodsSkuService goodsSkuService,
-            GoodsAttributeService goodsAttributeService
+            GoodsAttributeService goodsAttributeService,
+            GoodsSupplierService goodsSupplierService
     ) {
         this.goodsRepository = goodsRepository;
         this.goodsSkuService = goodsSkuService;
         this.goodsAttributeService = goodsAttributeService;
+        this.goodsSupplierService = goodsSupplierService;
     }
 }

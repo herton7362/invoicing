@@ -20,7 +20,7 @@ public class PurchaseOrder extends BaseEntity {
     @ApiModelProperty(value = "经手人")
     @Column(length = 36)
     private String operator;
-    @ApiModelProperty(value = "交货日期")
+    @ApiModelProperty(value = "预定交货日期")
     @JsonFormat(pattern = "yyyy-MM-dd", locale = "zh", timezone = "GMT+8")
     private Date deliveryDate;
     @ApiModelProperty(value = "摘要")
@@ -29,10 +29,10 @@ public class PurchaseOrder extends BaseEntity {
     @ApiModelProperty(value = "附加说明")
     @Column(length = 500)
     private String remark;
-    @ApiModelProperty(value = "仓库id")
+    @ApiModelProperty(value = "交货到")
     @Column(length = 36)
     private String warehouseId;
-    @ApiModelProperty(value = "供应商id")
+    @ApiModelProperty(value = "供应商")
     @Column(length = 36)
     private String businessRelatedUnitId;
     @ApiModelProperty(value = "订单状态")
@@ -105,8 +105,9 @@ public class PurchaseOrder extends BaseEntity {
     }
 
     public enum OrderStatus {
-        UN_DELIVERED("等待收货"),
-        FINISHED("已完成");
+        CANCEL("已取消"),
+        DRAFT("草稿"),
+        NORMAL("正常");
         private String displayName;
         OrderStatus(String displayName) {
             this.displayName = displayName;
