@@ -14,20 +14,17 @@ import org.springframework.web.bind.annotation.*;
 @Api(value = "往来单位管理")
 @RestController
 @RequestMapping("/api/businessRelatedUnit")
-public class BusinessRelatedUnitController extends AbstractCrudController<BusinessRelatedUnit> {
-    private final BusinessRelatedUnitService businessRelatedUnitService;
-    @Override
-    protected CrudService<BusinessRelatedUnit> getService() {
-        return businessRelatedUnitService;
+public class BusinessRelatedUnitController extends AbstractCrudController<BusinessRelatedUnitService, BusinessRelatedUnit> {
+    private BusinessRelatedUnitService getService() {
+        return (BusinessRelatedUnitService) crudService;
     }
-
     /**
      * 修改期初应收应付款
      */
     @ApiOperation(value="修改期初应收应付款")
     @RequestMapping(value = "/editReceivablePayableAmount/{id}", method = RequestMethod.POST)
     public ResponseEntity<?> editReceivablePayableAmount(@PathVariable String id, @RequestBody EditReceivablePayableAmountParam editReceivablePayableAmountParam) throws Exception {
-        businessRelatedUnitService.editReceivablePayableAmount(id, editReceivablePayableAmountParam);
+        getService().editReceivablePayableAmount(id, editReceivablePayableAmountParam);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -37,12 +34,7 @@ public class BusinessRelatedUnitController extends AbstractCrudController<Busine
     @ApiOperation(value="设置信用额度")
     @RequestMapping(value = "/editCreditLine/{id}", method = RequestMethod.POST)
     public ResponseEntity<?> editCreditLine(@PathVariable String id, @RequestBody EditCreditLineParam editCreditLineParam) throws Exception {
-        businessRelatedUnitService.editCreditLine(id, editCreditLineParam);
+        getService().editCreditLine(id, editCreditLineParam);
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @Autowired
-    public BusinessRelatedUnitController(BusinessRelatedUnitService businessRelatedUnitService) {
-        this.businessRelatedUnitService = businessRelatedUnitService;
     }
 }

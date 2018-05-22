@@ -22,13 +22,8 @@ import java.util.Map;
 @Api(value = "字典管理")
 @RestController
 @RequestMapping("/api/dictionary")
-public class DictionaryController extends AbstractCrudController<Dictionary> {
-    private final DictionaryService dictionaryService;
+public class DictionaryController extends AbstractCrudController<DictionaryService, Dictionary> {
     private final DictionaryCategoryService dictionaryCategoryService;
-    @Override
-    protected CrudService<Dictionary> getService() {
-        return dictionaryService;
-    }
 
     /**
      * 保存
@@ -41,7 +36,7 @@ public class DictionaryController extends AbstractCrudController<Dictionary> {
         } else {
             product.setDictionaryCategory(null);
         }
-        product = dictionaryService.save(product);
+        product = crudService.save(product);
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
@@ -60,17 +55,15 @@ public class DictionaryController extends AbstractCrudController<Dictionary> {
             params.put("sort", new String[]{"sortNumber,updatedDate"});
             params.put("order", new String[]{"asc,desc"});
             params.put("dictionaryCategory.id", new String[]{dictionaryCategories.get(0).getId()});
-            dictionaries = dictionaryService.findAll(params);
+            dictionaries = crudService.findAll(params);
         }
         return new ResponseEntity<>(dictionaries, HttpStatus.OK);
     }
 
     @Autowired
     public DictionaryController(
-            DictionaryService dictionaryService,
             DictionaryCategoryService dictionaryCategoryService
     ) {
-        this.dictionaryService = dictionaryService;
         this.dictionaryCategoryService = dictionaryCategoryService;
     }
 }

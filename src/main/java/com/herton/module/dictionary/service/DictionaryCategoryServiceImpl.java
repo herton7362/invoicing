@@ -10,15 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional
-public class DictionaryCategoryServiceImpl extends AbstractCrudService<DictionaryCategory> implements DictionaryCategoryService {
-    private final DictionaryCategoryRepository dictionaryCategoryRepository;
-    @Override
-    protected PageRepository<DictionaryCategory> getRepository() {
-        return dictionaryCategoryRepository;
-    }
-
-    @Autowired
-    public DictionaryCategoryServiceImpl(DictionaryCategoryRepository dictionaryCategoryRepository) {
-        this.dictionaryCategoryRepository = dictionaryCategoryRepository;
-    }
+public class DictionaryCategoryServiceImpl extends AbstractCrudService<DictionaryCategoryRepository, DictionaryCategory>
+        implements DictionaryCategoryService {
 }

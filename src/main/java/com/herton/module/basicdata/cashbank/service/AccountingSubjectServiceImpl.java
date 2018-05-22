@@ -15,12 +15,7 @@ import java.math.BigDecimal;
 
 @Component
 @Transactional
-public class AccountingSubjectServiceImpl extends AbstractCrudService<AccountingSubject> implements AccountingSubjectService {
-    private final AccountingSubjectRepository accountingSubjectRepository;
-    @Override
-    protected PageRepository<AccountingSubject> getRepository() {
-        return accountingSubjectRepository;
-    }
+public class AccountingSubjectServiceImpl extends AbstractCrudService<AccountingSubjectRepository, AccountingSubject> implements AccountingSubjectService {
 
     @Override
     public void editOpeningBalance(String id, EditOpeningBalanceParam editOpeningBalanceParam) throws Exception {
@@ -31,11 +26,6 @@ public class AccountingSubjectServiceImpl extends AbstractCrudService<Accounting
         BigDecimal value = new BigDecimal(editOpeningBalanceParam.getOpeningBalance()).subtract(new BigDecimal(accountingSubject.getOpeningBalance()));
         accountingSubject.setOpeningBalance(editOpeningBalanceParam.getOpeningBalance());
         accountingSubject.setEndingBalance(new BigDecimal(accountingSubject.getEndingBalance()).add(value).doubleValue());
-        accountingSubjectRepository.save(accountingSubject);
-    }
-
-    @Autowired
-    public AccountingSubjectServiceImpl(AccountingSubjectRepository accountingSubjectRepository) {
-        this.accountingSubjectRepository = accountingSubjectRepository;
+        super.save(accountingSubject);
     }
 }

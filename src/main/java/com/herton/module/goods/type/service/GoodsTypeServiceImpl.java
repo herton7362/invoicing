@@ -19,13 +19,8 @@ import java.util.Map;
 
 @Component
 @Transactional
-public class GoodsTypeServiceImpl extends AbstractCrudService<GoodsType> implements GoodsTypeService {
-    private final GoodsTypeRepository goodsTypeRepository;
+public class GoodsTypeServiceImpl extends AbstractCrudService<GoodsTypeRepository, GoodsType> implements GoodsTypeService {
     private final GoodsTypeAttributeService goodsTypeAttributeService;
-    @Override
-    protected PageRepository<GoodsType> getRepository() {
-        return goodsTypeRepository;
-    }
 
     @Override
     public PageResult<GoodsTypeResult> findAllTranslated(PageRequest pageRequest, Map<String, String[]> param) throws Exception {
@@ -66,10 +61,8 @@ public class GoodsTypeServiceImpl extends AbstractCrudService<GoodsType> impleme
 
     @Autowired
     public GoodsTypeServiceImpl(
-            GoodsTypeRepository goodsTypeRepository,
             GoodsTypeAttributeService goodsTypeAttributeService
     ) {
-        this.goodsTypeRepository = goodsTypeRepository;
         this.goodsTypeAttributeService = goodsTypeAttributeService;
     }
 }

@@ -10,15 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional
-public class GoodsTypeAttributeServiceImpl extends AbstractCrudService<GoodsTypeAttribute> implements GoodsTypeAttributeService {
-    private final GoodsTypeAttributeRepository goodsTypeAttributeRepository;
-    @Override
-    protected PageRepository<GoodsTypeAttribute> getRepository() {
-        return goodsTypeAttributeRepository;
-    }
-
-    @Autowired
-    public GoodsTypeAttributeServiceImpl(GoodsTypeAttributeRepository goodsTypeAttributeRepository) {
-        this.goodsTypeAttributeRepository = goodsTypeAttributeRepository;
-    }
+public class GoodsTypeAttributeServiceImpl extends AbstractCrudService<GoodsTypeAttributeRepository, GoodsTypeAttribute>
+        implements GoodsTypeAttributeService {
 }

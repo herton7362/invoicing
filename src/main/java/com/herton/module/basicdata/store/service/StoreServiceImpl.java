@@ -12,13 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional
-public class StoreServiceImpl extends AbstractCrudService<Store> implements StoreService {
-    private final StoreRepository storeRepository;
+public class StoreServiceImpl extends AbstractCrudService<StoreRepository, Store> implements StoreService {
     private final CounterService counterService;
-    @Override
-    protected PageRepository<Store> getRepository() {
-        return storeRepository;
-    }
 
     @Override
     public Integer getCounterCount(String id) throws Exception {
@@ -30,10 +25,8 @@ public class StoreServiceImpl extends AbstractCrudService<Store> implements Stor
 
     @Autowired
     public StoreServiceImpl(
-            StoreRepository storeRepository,
             CounterService counterService
     ) {
-        this.storeRepository = storeRepository;
         this.counterService = counterService;
     }
 }

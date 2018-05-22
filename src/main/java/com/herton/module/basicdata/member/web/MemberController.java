@@ -19,11 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "会员管理")
 @RestController
 @RequestMapping("/api/member")
-public class MemberController extends AbstractCrudController<Member> {
-    private final MemberService memberService;
-    @Override
-    protected CrudService<Member> getService() {
-        return memberService;
+public class MemberController extends AbstractCrudController<MemberService, Member> {
+    protected MemberService getService() {
+        return (MemberService) crudService;
     }
 
     /**
@@ -32,7 +30,7 @@ public class MemberController extends AbstractCrudController<Member> {
     @ApiOperation(value="查询账户储值余额")
     @RequestMapping(value = "/balance/{id}", method = RequestMethod.GET)
     public ResponseEntity<Double> getBalance(@PathVariable String id) throws Exception {
-        return new ResponseEntity<>(memberService.getBalance(id), HttpStatus.OK);
+        return new ResponseEntity<>(getService().getBalance(id), HttpStatus.OK);
     }
 
     /**
@@ -41,7 +39,7 @@ public class MemberController extends AbstractCrudController<Member> {
     @ApiOperation(value="查询账户积分")
     @RequestMapping(value = "/points/{id}", method = RequestMethod.GET)
     public ResponseEntity<Integer> getPoints(@PathVariable String id) throws Exception {
-        return new ResponseEntity<>(memberService.getPoints(id), HttpStatus.OK);
+        return new ResponseEntity<>(getService().getPoints(id), HttpStatus.OK);
     }
 
     /**
@@ -50,11 +48,6 @@ public class MemberController extends AbstractCrudController<Member> {
     @ApiOperation(value="获取会员卡数量")
     @RequestMapping(value = "/cardCount/{id}", method = RequestMethod.GET)
     public ResponseEntity<Integer> getCardCount(@PathVariable String id) throws Exception {
-        return new ResponseEntity<>(memberService.getCardCount(id), HttpStatus.OK);
-    }
-
-    @Autowired
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
+        return new ResponseEntity<>(getService().getCardCount(id), HttpStatus.OK);
     }
 }

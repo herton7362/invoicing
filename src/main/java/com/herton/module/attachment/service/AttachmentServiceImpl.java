@@ -23,13 +23,8 @@ import java.util.List;
 
 @Component
 @Transactional
-public class AttachmentServiceImpl extends AbstractCrudService<Attachment> implements AttachmentService {
-    private final AttachmentRepository attachmentRepository;
+public class AttachmentServiceImpl extends AbstractCrudService<AttachmentRepository, Attachment> implements AttachmentService {
     public static final String prefixPath = "C:";
-    @Override
-    protected PageRepository<Attachment> getRepository() {
-        return attachmentRepository;
-    }
 
     @Override
     public Attachment save(MultipartFile multipartFile) throws Exception {
@@ -66,7 +61,7 @@ public class AttachmentServiceImpl extends AbstractCrudService<Attachment> imple
         File temp = new File(prefixPath, attachment.getPath());
         FileUtils.forceMkdir(temp.getParentFile());
         multipartFile.transferTo(temp);
-        return attachmentRepository.save(attachment);
+        return super.save(attachment);
     }
 
     @Override
@@ -76,16 +71,5 @@ public class AttachmentServiceImpl extends AbstractCrudService<Attachment> imple
             attachments.add(save(multipartFile));
         }
         return attachments;
-    }
-
-    @Override
-    public void delete(String id) throws Exception {
-        Attachment attachment = attachmentRepository.findOne(id);
-        attachmentRepository.delete(id);
-    }
-
-    @Autowired
-    public AttachmentServiceImpl(AttachmentRepository attachmentRepository) {
-        this.attachmentRepository = attachmentRepository;
     }
 }

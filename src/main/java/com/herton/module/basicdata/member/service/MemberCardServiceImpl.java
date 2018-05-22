@@ -21,12 +21,7 @@ import java.util.Map;
 
 @Component
 @Transactional
-public class MemberCardServiceImpl extends AbstractCrudService<MemberCard> implements MemberCardService {
-    private final MemberCardRepository memberCardRepository;
-    @Override
-    protected PageRepository<MemberCard> getRepository() {
-        return memberCardRepository;
-    }
+public class MemberCardServiceImpl extends AbstractCrudService<MemberCardRepository, MemberCard> implements MemberCardService {
 
     @Override
     public Double getMemberTotalBalance(String memberId) throws Exception {
@@ -67,7 +62,7 @@ public class MemberCardServiceImpl extends AbstractCrudService<MemberCard> imple
         }
         Map<String, String[]> params = new HashMap<>();
         params.put("memberId", new String[]{memberId});
-        return Long.valueOf(memberCardRepository.count(getSpecification(params))).intValue();
+        return Long.valueOf(pageRepository.count(getSpecification(params))).intValue();
     }
 
     @Override
@@ -75,12 +70,12 @@ public class MemberCardServiceImpl extends AbstractCrudService<MemberCard> imple
         if(StringUtils.isBlank(id)) {
             throw new InvalidParamException("会员卡id不能为空");
         }
-        MemberCard memberCard = memberCardRepository.findOne(id);
+        MemberCard memberCard = pageRepository.findOne(id);
         if(!memberCard.getLogicallyDeleted()) {
             return;
         }
         memberCard.setLogicallyDeleted(false);
-        memberCardRepository.save(memberCard);
+        pageRepository.save(memberCard);
     }
 
     @Override
@@ -88,12 +83,12 @@ public class MemberCardServiceImpl extends AbstractCrudService<MemberCard> imple
         if(StringUtils.isBlank(id)) {
             throw new InvalidParamException("会员卡id不能为空");
         }
-        MemberCard memberCard = memberCardRepository.findOne(id);
+        MemberCard memberCard = pageRepository.findOne(id);
         if(memberCard.getLogicallyDeleted()) {
             return;
         }
         memberCard.setLogicallyDeleted(true);
-        memberCardRepository.save(memberCard);
+        pageRepository.save(memberCard);
     }
 
     @Override
@@ -110,11 +105,11 @@ public class MemberCardServiceImpl extends AbstractCrudService<MemberCard> imple
         if(StringUtils.isBlank(changeBalanceParam.getReceiveAccountId())) {
             throw new InvalidParamException("收款账户id不能为空");
         }
-        MemberCard memberCard = memberCardRepository.findOne(id);
+        MemberCard memberCard = pageRepository.findOne(id);
         memberCard.setBalance(new BigDecimal(memberCard.getBalance())
                 .add(new BigDecimal(changeBalanceParam.getValue()))
                 .add(new BigDecimal(changeBalanceParam.getExtra())).doubleValue());
-        memberCardRepository.save(memberCard);
+        pageRepository.save(memberCard);
         // TODO 增加收款单
     }
 
@@ -132,9 +127,9 @@ public class MemberCardServiceImpl extends AbstractCrudService<MemberCard> imple
         if(StringUtils.isBlank(changePointsParam.getRemark())) {
             throw new InvalidParamException("调整原因不能为空");
         }
-        MemberCard memberCard = memberCardRepository.findOne(id);
+        MemberCard memberCard = pageRepository.findOne(id);
         memberCard.setPoints(memberCard.getPoints() + changePointsParam.getValue());
-        memberCardRepository.save(memberCard);
+        pageRepository.save(memberCard);
         // TODO 增加积分变更明细
     }
 
@@ -155,15 +150,10 @@ public class MemberCardServiceImpl extends AbstractCrudService<MemberCard> imple
         if(exchangePointsToBalanceParam.getBalance() == 0) {
             throw new InvalidParamException("转化储值不能为0");
         }
-        MemberCard memberCard = memberCardRepository.findOne(id);
+        MemberCard memberCard = pageRepository.findOne(id);
         memberCard.setPoints(memberCard.getPoints() - exchangePointsToBalanceParam.getPoints());
         memberCard.setBalance(new BigDecimal(memberCard.getBalance())
                 .add(new BigDecimal(exchangePointsToBalanceParam.getBalance())).doubleValue());
-        memberCardRepository.save(memberCard);
-    }
-
-    @Autowired
-    public MemberCardServiceImpl(MemberCardRepository memberCardRepository) {
-        this.memberCardRepository = memberCardRepository;
+        pageRepository.save(memberCard);
     }
 }

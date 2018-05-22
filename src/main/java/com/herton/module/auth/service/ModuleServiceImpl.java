@@ -10,18 +10,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional
-public class ModuleServiceImpl extends AbstractCrudService<Module> implements ModuleService {
-    private final ModuleRepository moduleRepository;
-
-
-
-    @Override
-    protected PageRepository<Module> getRepository() {
-        return moduleRepository;
-    }
-
-    @Autowired
-    public ModuleServiceImpl(ModuleRepository moduleRepository) {
-        this.moduleRepository = moduleRepository;
-    }
+public class ModuleServiceImpl extends AbstractCrudService<ModuleRepository, Module> implements ModuleService {
 }

@@ -12,15 +12,5 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "游客地址接口，无权限过滤")
 @RestController
 @RequestMapping("/address")
-public class GuestAddressController extends AbstractReadController<Address> {
-    private final AddressService addressService;
-    @Override
-    protected CrudService<Address> getService() {
-        return addressService;
-    }
-
-    @Autowired
-    public GuestAddressController(AddressService addressService) {
-        this.addressService = addressService;
-    }
+public class GuestAddressController extends AbstractReadController<AddressService, Address> {
 }

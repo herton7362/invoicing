@@ -17,8 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "模块管理")
 @RestController
 @RequestMapping("/api/module")
-public class ModuleController extends AbstractCrudController<Module> {
-    private final ModuleService moduleService;
+public class ModuleController extends AbstractCrudController<ModuleService, Module> {
 
     /**
      * 保存
@@ -27,20 +26,11 @@ public class ModuleController extends AbstractCrudController<Module> {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Module> save(@RequestBody Module module) throws Exception {
         if(module.getParent() != null && StringUtils.isNotBlank(module.getParent().getId())) {
-            module.setParent(moduleService.findOne(module.getParent().getId()));
+            module.setParent(crudService.findOne(module.getParent().getId()));
         } else {
             module.setParent(null);
         }
-        module = moduleService.save(module);
+        module = crudService.save(module);
         return new ResponseEntity<>(module, HttpStatus.OK);
-    }
-
-    @Override
-    protected CrudService<Module> getService() {
-        return moduleService;
-    }
-
-    public ModuleController(ModuleService moduleService) {
-        this.moduleService = moduleService;
     }
 }

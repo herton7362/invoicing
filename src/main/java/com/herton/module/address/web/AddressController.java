@@ -18,12 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "地址管理")
 @RestController
 @RequestMapping("/api/address")
-public class AddressController extends AbstractCrudController<Address> {
-    private final AddressService addressService;
-    @Override
-    protected CrudService<Address> getService() {
-        return addressService;
-    }
+public class AddressController extends AbstractCrudController<AddressService, Address> {
 
     /**
      * 保存
@@ -32,16 +27,11 @@ public class AddressController extends AbstractCrudController<Address> {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Address> save(@RequestBody Address productCategory) throws Exception {
         if(productCategory.getParent() != null && StringUtils.isNotBlank(productCategory.getParent().getId())) {
-            productCategory.setParent(addressService.findOne(productCategory.getParent().getId()));
+            productCategory.setParent(crudService.findOne(productCategory.getParent().getId()));
         } else {
             productCategory.setParent(null);
         }
-        productCategory = addressService.save(productCategory);
+        productCategory = crudService.save(productCategory);
         return new ResponseEntity<>(productCategory, HttpStatus.OK);
-    }
-
-    @Autowired
-    public AddressController(AddressService addressService) {
-        this.addressService = addressService;
     }
 }

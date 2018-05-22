@@ -21,11 +21,9 @@ import java.io.File;
 @Api(value = "附件管理")
 @RestController
 @RequestMapping("/api/attachment")
-public class AttachmentController extends AbstractCrudController<Attachment> {
-    private final AttachmentService attachmentService;
-    @Override
-    protected CrudService<Attachment> getService() {
-        return attachmentService;
+public class AttachmentController extends AbstractCrudController<AttachmentService, Attachment> {
+    protected AttachmentService getService() {
+        return (AttachmentService) crudService;
     }
 
     /**
@@ -35,7 +33,7 @@ public class AttachmentController extends AbstractCrudController<Attachment> {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Attachment> delete(@PathVariable String id) throws Exception {
         ResponseEntity<Attachment> responseEntity;
-        Attachment attachment = attachmentService.findOne(id);
+        Attachment attachment = getService().findOne(id);
         try {
             responseEntity = super.delete(id);
             File temp = new File(AttachmentServiceImpl.prefixPath, attachment.getPath());
@@ -45,10 +43,5 @@ public class AttachmentController extends AbstractCrudController<Attachment> {
             throw new InvalidParamException("当前附件已经被使用，需要先删除关联数据");
         }
         return responseEntity;
-    }
-
-    @Autowired
-    public AttachmentController(AttachmentService attachmentService) {
-        this.attachmentService = attachmentService;
     }
 }

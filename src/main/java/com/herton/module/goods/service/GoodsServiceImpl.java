@@ -30,15 +30,10 @@ import java.util.stream.Collectors;
 
 @Component
 @Transactional
-public class GoodsServiceImpl extends AbstractCrudService<Goods> implements GoodsService {
-    private final GoodsRepository goodsRepository;
+public class GoodsServiceImpl extends AbstractCrudService<GoodsRepository, Goods> implements GoodsService {
     private final GoodsSkuService goodsSkuService;
     private final GoodsAttributeService goodsAttributeService;
     private final GoodsSupplierService goodsSupplierService;
-    @Override
-    protected PageRepository<Goods> getRepository() {
-        return goodsRepository;
-    }
 
     @Override
     public void save(GoodsSaveParam goodsSaveParam) throws Exception {
@@ -259,7 +254,7 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
 
     @Override
     public PageResult<GoodsResult> findAllTranslated(PageRequest pageRequest, Map<String, ?> param) throws Exception {
-        PageResult<Goods> page = new PageResult<>(getRepository().findAll(new GoodsSpecification(param), pageRequest));
+        PageResult<Goods> page = new PageResult<>(pageRepository.findAll(new GoodsSpecification(param), pageRequest));
         PageResult<GoodsResult> pageResult = new PageResult<>();
         pageResult.setSize(page.getSize());
         pageResult.setTotalElements(page.getTotalElements());
@@ -365,12 +360,10 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods> implements Good
     @Lazy
     @Autowired
     public GoodsServiceImpl(
-            GoodsRepository goodsRepository,
             GoodsSkuService goodsSkuService,
             GoodsAttributeService goodsAttributeService,
             GoodsSupplierService goodsSupplierService
     ) {
-        this.goodsRepository = goodsRepository;
         this.goodsSkuService = goodsSkuService;
         this.goodsAttributeService = goodsAttributeService;
         this.goodsSupplierService = goodsSupplierService;

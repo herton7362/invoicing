@@ -17,14 +17,14 @@ import java.util.List;
  * @since 1.0.1
  * @param <T> 实现增删改查的实体
  */
-public abstract class AbstractCrudController<T extends BaseEntity> extends AbstractReadController<T> {
+public abstract class AbstractCrudController<S extends CrudService<T>, T extends BaseEntity> extends AbstractReadController<S, T> {
     /**
      * 保存
      */
     @ApiOperation(value="保存")
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<T> save(@RequestBody T t) throws Exception {
-        t = getService().save(t);
+        t = (T) crudService.save(t);
         return new ResponseEntity<>(t, HttpStatus.CREATED);
     }
 
@@ -36,7 +36,7 @@ public abstract class AbstractCrudController<T extends BaseEntity> extends Abstr
     public ResponseEntity<T> delete(@PathVariable String id) throws Exception {
         String[] ids = id.split(",");
         for (String s : ids) {
-            getService().delete(s);
+            crudService.delete(s);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -47,7 +47,7 @@ public abstract class AbstractCrudController<T extends BaseEntity> extends Abstr
     @ApiOperation(value="调整排序")
     @RequestMapping(value = "/sort", method = RequestMethod.POST)
     public ResponseEntity<T> sort(@RequestBody List<T> ts) throws Exception {
-        getService().sort(ts);
+        crudService.sort(ts);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -57,7 +57,7 @@ public abstract class AbstractCrudController<T extends BaseEntity> extends Abstr
     @ApiOperation(value="启用")
     @RequestMapping(value = "/enable/{id}", method = RequestMethod.POST)
     public ResponseEntity<T> enable(@PathVariable String id) throws Exception {
-        getService().enable(id);
+        crudService.enable(id);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -67,7 +67,7 @@ public abstract class AbstractCrudController<T extends BaseEntity> extends Abstr
     @ApiOperation(value="停用")
     @RequestMapping(value = "/disable/{id}", method = RequestMethod.POST)
     public ResponseEntity<T> disable(@PathVariable String id) throws Exception {
-        getService().disable(id);
+        crudService.disable(id);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

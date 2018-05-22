@@ -19,13 +19,8 @@ import java.util.Map;
 
 @Component
 @Transactional
-public class MemberServiceImpl extends AbstractCrudService<Member> implements MemberService {
-    private final MemberRepository memberRepository;
+public class MemberServiceImpl extends AbstractCrudService<MemberRepository, Member> implements MemberService {
     private final MemberCardService memberCardService;
-    @Override
-    protected PageRepository<Member> getRepository() {
-        return memberRepository;
-    }
 
     private Map<String, String[]> produceQueryParam(Map<String, String[]> param) throws Exception {
         Map<String, String[]> newParam = new HashMap<>();
@@ -80,10 +75,8 @@ public class MemberServiceImpl extends AbstractCrudService<Member> implements Me
 
     @Autowired
     public MemberServiceImpl(
-            MemberRepository memberRepository,
             MemberCardService memberCardService
     ) {
-        this.memberRepository = memberRepository;
         this.memberCardService = memberCardService;
     }
 }

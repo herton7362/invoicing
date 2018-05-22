@@ -14,11 +14,9 @@ import org.springframework.web.bind.annotation.*;
 @Api(value = "会计科目管理")
 @RestController
 @RequestMapping("/api/accountingSubject")
-public class AccountingSubjectController extends AbstractCrudController<AccountingSubject> {
-    private final AccountingSubjectService accountingSubjectService;
-    @Override
-    protected CrudService<AccountingSubject> getService() {
-        return accountingSubjectService;
+public class AccountingSubjectController extends AbstractCrudController<AccountingSubjectService, AccountingSubject> {
+    protected AccountingSubjectService getService() {
+        return (AccountingSubjectService) crudService;
     }
 
     /**
@@ -27,12 +25,7 @@ public class AccountingSubjectController extends AbstractCrudController<Accounti
     @ApiOperation(value="修改期初金额")
     @RequestMapping(value = "/openingBalance/{id}", method = RequestMethod.POST)
     public ResponseEntity<?> editOpeningBalance(@PathVariable String id, @RequestBody EditOpeningBalanceParam editOpeningBalanceParam) throws Exception {
-        accountingSubjectService.editOpeningBalance(id, editOpeningBalanceParam);
+        getService().editOpeningBalance(id, editOpeningBalanceParam);
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @Autowired
-    public AccountingSubjectController(AccountingSubjectService accountingSubjectService) {
-        this.accountingSubjectService = accountingSubjectService;
     }
 }

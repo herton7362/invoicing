@@ -14,20 +14,17 @@ import org.springframework.web.bind.annotation.*;
 @Api(value = "会员卡管理")
 @RestController
 @RequestMapping("/api/memberCard")
-public class MemberCardController extends AbstractCrudController<MemberCard> {
-    private final MemberCardService memberCardService;
-    @Override
-    protected CrudService<MemberCard> getService() {
-        return memberCardService;
+public class MemberCardController extends AbstractCrudController<MemberCardService, MemberCard> {
+    private MemberCardService getService() {
+        return (MemberCardService) crudService;
     }
-
     /**
      * 充值
      */
     @ApiOperation(value="充值")
     @RequestMapping(value = "/balance/{id}", method = RequestMethod.POST)
     public ResponseEntity<?> changeBalance(@PathVariable String id, @RequestBody ChangeBalanceParam changeBalanceParam) throws Exception {
-        memberCardService.changeBalance(id, changeBalanceParam);
+        getService().changeBalance(id, changeBalanceParam);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -38,7 +35,7 @@ public class MemberCardController extends AbstractCrudController<MemberCard> {
     @RequestMapping(value = "/exchangePoints/toBalance/{id}", method = RequestMethod.POST)
     public ResponseEntity<?> exchangePointsToBalance(@PathVariable String id,
                                                      @RequestBody ExchangePointsToBalanceParam exchangePointsToBalanceParam) throws Exception {
-        memberCardService.exchangePointsToBalance(id, exchangePointsToBalanceParam);
+        getService().exchangePointsToBalance(id, exchangePointsToBalanceParam);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -48,12 +45,7 @@ public class MemberCardController extends AbstractCrudController<MemberCard> {
     @ApiOperation(value="变更积分")
     @RequestMapping(value = "/points/{id}", method = RequestMethod.POST)
     public ResponseEntity<?> changePoints(@PathVariable String id, @RequestBody ChangePointsParam changePointsParam) throws Exception {
-        memberCardService.changePoints(id, changePointsParam);
+        getService().changePoints(id, changePointsParam);
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @Autowired
-    public MemberCardController(MemberCardService memberCardService) {
-        this.memberCardService = memberCardService;
     }
 }

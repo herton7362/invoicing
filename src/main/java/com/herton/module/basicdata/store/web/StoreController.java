@@ -17,24 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "门店管理")
 @RestController
 @RequestMapping("/api/store")
-public class StoreController extends AbstractCrudController<Store> {
-    private final StoreService storeService;
-    @Override
-    protected CrudService<Store> getService() {
-        return storeService;
+public class StoreController extends AbstractCrudController<StoreService, Store> {
+    private StoreService getService() {
+        return (StoreService) crudService;
     }
-
     /**
      * 获取收银台数量
      */
     @ApiOperation(value="获取收银台数量")
     @RequestMapping(value = "/counterCount/{id}", method = RequestMethod.GET)
     public ResponseEntity<Integer> getCounterCount(@PathVariable String id) throws Exception {
-        return new ResponseEntity<>(storeService.getCounterCount(id), HttpStatus.OK);
-    }
-
-    @Autowired
-    public StoreController(StoreService storeService) {
-        this.storeService = storeService;
+        return new ResponseEntity<>(getService().getCounterCount(id), HttpStatus.OK);
     }
 }

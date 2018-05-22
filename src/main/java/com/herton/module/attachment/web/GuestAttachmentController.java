@@ -24,19 +24,16 @@ import java.util.List;
 @Api(value = "游客附件接口，无权限过滤")
 @RestController
 @RequestMapping("/attachment")
-public class GuestAttachmentController extends AbstractReadController<Attachment> {
-    private final AttachmentService attachmentService;
-    @Override
-    protected CrudService<Attachment> getService() {
-        return attachmentService;
+public class GuestAttachmentController extends AbstractReadController<AttachmentService, Attachment> {
+    private AttachmentService getService() {
+        return (AttachmentService) crudService;
     }
-
     /**
      * 上传文件
      */
     @RequestMapping(value="/upload", method = RequestMethod.POST)
     public ResponseEntity<List<Attachment>> upload(@RequestParam("attachments") MultipartFile[] attachments) throws Exception {
-        List<Attachment> results = attachmentService.save(Arrays.asList(attachments));
+        List<Attachment> results = getService().save(Arrays.asList(attachments));
         return new ResponseEntity<>(results, HttpStatus.OK);
     }
 
@@ -46,7 +43,7 @@ public class GuestAttachmentController extends AbstractReadController<Attachment
     @ApiOperation(value="下载文件")
     @RequestMapping(value = "/download/{id}", method = RequestMethod.GET)
     public ResponseEntity<byte[]> download(@PathVariable String id) throws Exception {
-        Attachment attachment = attachmentService.findOne(id);
+        Attachment attachment = getService().findOne(id);
         String prefixPath = null;
         if(OSUtils.isWindows()) {
             prefixPath = AttachmentServiceImpl.prefixPath;
@@ -60,10 +57,5 @@ public class GuestAttachmentController extends AbstractReadController<Attachment
         headers.setContentDispositionFormData("attachment", downloadFileName);//告知浏览器以下载方式打开
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);//设置MIME类型
         return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
-    }
-
-    @Autowired
-    public GuestAttachmentController(AttachmentService attachmentService) {
-        this.attachmentService = attachmentService;
     }
 }

@@ -10,15 +10,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional
-public class DictionaryServiceImpl extends AbstractCrudService<Dictionary> implements DictionaryService {
-    private final DictionaryRepository dictionaryRepository;
-    @Override
-    protected PageRepository<Dictionary> getRepository() {
-        return dictionaryRepository;
-    }
-
-    @Autowired
-    public DictionaryServiceImpl(DictionaryRepository dictionaryRepository) {
-        this.dictionaryRepository = dictionaryRepository;
-    }
+public class DictionaryServiceImpl extends AbstractCrudService<DictionaryRepository, Dictionary> implements DictionaryService {
 }

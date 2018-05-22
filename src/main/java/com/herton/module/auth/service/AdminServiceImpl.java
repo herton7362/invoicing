@@ -28,13 +28,11 @@ import java.util.Map;
 
 @Component
 @Transactional
-public class AdminServiceImpl extends AbstractCrudService<Admin> implements AdminService, UserService {
-    private final AdminRepository adminRepository;
+public class AdminServiceImpl extends AbstractCrudService<AdminRepository, Admin> implements AdminService, UserService {
     private final EntityManager entityManager;
 
-    @Override
-    protected PageRepository<Admin> getRepository() {
-        return adminRepository;
+    private AdminRepository getRepository() {
+        return (AdminRepository) pageRepository;
     }
 
     @Override
@@ -52,7 +50,7 @@ public class AdminServiceImpl extends AbstractCrudService<Admin> implements Admi
             admin.setPassword(new BCryptPasswordEncoder().encode(admin.getPassword()));
         } else {
             if(admin.getPassword() == null) {
-                Admin temp = adminRepository.findOne(admin.getId());
+                Admin temp = getRepository().findOne(admin.getId());
                 admin.setPassword(temp.getPassword());
             } else {
                 admin.setPassword(new BCryptPasswordEncoder().encode(admin.getPassword()));
@@ -63,12 +61,12 @@ public class AdminServiceImpl extends AbstractCrudService<Admin> implements Admi
 
     @Override
     public BaseUser findOneByLoginName(String account) throws Exception {
-        return adminRepository.findOneByLoginName(account);
+        return getRepository().findOneByLoginName(account);
     }
 
     @Override
     public BaseUser findOneByLoginNameAndClientId(String account, String clientId) throws Exception {
-        return adminRepository.findOneByLoginNameAndClientId(account, clientId);
+        return getRepository().findOneByLoginNameAndClientId(account, clientId);
     }
 
     class AdminSpecification extends SimpleSpecification {
@@ -109,10 +107,8 @@ public class AdminServiceImpl extends AbstractCrudService<Admin> implements Admi
 
     @Autowired
     public AdminServiceImpl(
-            AdminRepository adminRepository,
             EntityManager entityManager
     ) {
-        this.adminRepository = adminRepository;
         this.entityManager = entityManager;
     }
 }

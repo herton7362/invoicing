@@ -24,14 +24,10 @@ import java.util.Map;
 @Api(value = "角色管理")
 @RestController
 @RequestMapping("/api/role")
-public class RoleController extends AbstractCrudController<Role> {
-    private final RoleService roleService;
-
-    @Override
-    protected CrudService<Role> getService() {
-        return roleService;
+public class RoleController extends AbstractCrudController<RoleService, Role> {
+    private RoleService getService() {
+        return (RoleService) crudService;
     }
-
     /**
      * 查询
      */
@@ -46,10 +42,10 @@ public class RoleController extends AbstractCrudController<Role> {
     public ResponseEntity<?> searchPagedList(@ModelAttribute PageParam pageParam, HttpServletRequest request) throws Exception {
         Map<String, String[]> param = request.getParameterMap();
         if(pageParam.isPageAble()) {
-            PageResult<RoleResult> page = roleService.findAllTranslated(pageParam.getPageRequest(), param);
+            PageResult<RoleResult> page = getService().findAllTranslated(pageParam.getPageRequest(), param);
             return new ResponseEntity<>(page, HttpStatus.OK);
         }
-        List<RoleResult> list = roleService.findAllTranslated(param);
+        List<RoleResult> list = getService().findAllTranslated(param);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
@@ -59,7 +55,7 @@ public class RoleController extends AbstractCrudController<Role> {
     @ApiOperation(value="加载权限（已授权的模块）")
     @RequestMapping(value = "/authorizations/{roleId}", method = RequestMethod.GET)
     public ResponseEntity<List<Module>> authorizations(@PathVariable String roleId) throws Exception {
-        Role role = roleService.findOne(roleId);
+        Role role = getService().findOne(roleId);
         return new ResponseEntity<>(role.getModules(), HttpStatus.OK);
     }
 
@@ -69,12 +65,7 @@ public class RoleController extends AbstractCrudController<Role> {
     @ApiOperation(value="授权")
     @RequestMapping(value = "/authorize", method = RequestMethod.POST)
     public ResponseEntity<?> authorize(@RequestBody AuthorizeParam authorizeParam) throws Exception {
-        roleService.authorize(authorizeParam.getRoleId(), authorizeParam.getModuleIds());
+        getService().authorize(authorizeParam.getRoleId(), authorizeParam.getModuleIds());
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @Autowired
-    public RoleController(RoleService roleService) {
-        this.roleService = roleService;
     }
 }

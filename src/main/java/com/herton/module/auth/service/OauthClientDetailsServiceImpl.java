@@ -14,16 +14,10 @@ import java.util.List;
 
 @Component
 @Transactional
-public class OauthClientDetailsServiceImpl extends AbstractCrudService<OauthClientDetails> implements OauthClientDetailsService {
-    private final OauthClientDetailsRepository oauthClientDetailsRepository;
+public class OauthClientDetailsServiceImpl extends AbstractCrudService<OauthClientDetailsRepository, OauthClientDetails> implements OauthClientDetailsService {
     private final AdminService adminService;
     private final ModuleService moduleService;
     private final RoleService roleService;
-
-    @Override
-    protected PageRepository<OauthClientDetails> getRepository() {
-        return oauthClientDetailsRepository;
-    }
 
     @Override
     public OauthClientDetails save(OauthClientDetails oauthClientDetails) throws Exception {
@@ -88,17 +82,15 @@ public class OauthClientDetailsServiceImpl extends AbstractCrudService<OauthClie
 
     @Override
     public OauthClientDetails findOneByClientId(String clientId) throws Exception {
-        return oauthClientDetailsRepository.findOneByClientId(clientId);
+        return ((OauthClientDetailsRepository) pageRepository).findOneByClientId(clientId);
     }
 
     @Autowired
     public OauthClientDetailsServiceImpl(
-            OauthClientDetailsRepository oauthClientDetailsRepository,
             AdminService adminService,
             ModuleService moduleService,
             RoleService roleService
     ) {
-        this.oauthClientDetailsRepository = oauthClientDetailsRepository;
         this.adminService = adminService;
         this.moduleService = moduleService;
         this.roleService = roleService;

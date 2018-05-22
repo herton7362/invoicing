@@ -15,18 +15,7 @@ import java.util.Map;
 
 @Component
 @Transactional
-public class CounterServiceImpl extends AbstractCrudService<Counter> implements CounterService {
-    private final CounterRepository counterRepository;
-    @Override
-    protected PageRepository<Counter> getRepository() {
-        return counterRepository;
-    }
-
-    @Autowired
-    public CounterServiceImpl(CounterRepository counterRepository) {
-        this.counterRepository = counterRepository;
-    }
-
+public class CounterServiceImpl extends AbstractCrudService<CounterRepository, Counter> implements CounterService {
     @Override
     public Integer getStoreCounterCount(String storeId) throws Exception {
         if(StringUtils.isBlank(storeId)) {
@@ -34,6 +23,6 @@ public class CounterServiceImpl extends AbstractCrudService<Counter> implements 
         }
         Map<String, String[]> params = new HashMap<>();
         params.put("storeId", new String[]{storeId});
-        return Long.valueOf(counterRepository.count(getSpecification(params))).intValue();
+        return Long.valueOf(pageRepository.count(getSpecification(params))).intValue();
     }
 }

@@ -18,13 +18,8 @@ import java.util.*;
 
 @Component
 @Transactional
-public class GoodsSkuServiceImpl extends AbstractCrudService<GoodsSku> implements GoodsSkuService {
-    private final GoodsSkuRepository goodsSkuRepository;
+public class GoodsSkuServiceImpl extends AbstractCrudService<GoodsSkuRepository, GoodsSku> implements GoodsSkuService {
     private final GoodsService goodsService;
-    @Override
-    protected PageRepository<GoodsSku> getRepository() {
-        return goodsSkuRepository;
-    }
 
     @Override
     public void refreshGoodsSkuByRaw(String goodsId, List<List<String>> goodsPropertyValueIdsList) throws Exception {
@@ -155,10 +150,8 @@ public class GoodsSkuServiceImpl extends AbstractCrudService<GoodsSku> implement
     @Lazy
     @Autowired
     public GoodsSkuServiceImpl(
-            GoodsSkuRepository goodsSkuRepository,
             GoodsService goodsService
     ) {
-        this.goodsSkuRepository = goodsSkuRepository;
         this.goodsService = goodsService;
     }
 }

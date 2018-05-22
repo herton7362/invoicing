@@ -16,12 +16,8 @@ import java.math.BigDecimal;
 
 @Component
 @Transactional
-public class BusinessRelatedUnitServiceImpl extends AbstractCrudService<BusinessRelatedUnit> implements BusinessRelatedUnitService {
-    private final BusinessRelatedUnitRepository businessRelatedUnitRepository;
-    @Override
-    protected PageRepository<BusinessRelatedUnit> getRepository() {
-        return businessRelatedUnitRepository;
-    }
+public class BusinessRelatedUnitServiceImpl extends AbstractCrudService<BusinessRelatedUnitRepository, BusinessRelatedUnit>
+        implements BusinessRelatedUnitService {
 
     @Override
     public void editReceivablePayableAmount(String id, EditReceivablePayableAmountParam editReceivablePayableAmountParam) throws Exception {
@@ -37,7 +33,7 @@ public class BusinessRelatedUnitServiceImpl extends AbstractCrudService<Business
                 .subtract(new BigDecimal(businessRelatedUnit.getOpeningPayableAmount()));
         businessRelatedUnit.setOpeningPayableAmount(editReceivablePayableAmountParam.getOpeningPayableAmount());
         businessRelatedUnit.setNowPayableAmount(new BigDecimal(businessRelatedUnit.getNowPayableAmount()).add(value).doubleValue());
-        businessRelatedUnitRepository.save(businessRelatedUnit);
+        super.save(businessRelatedUnit);
     }
 
     @Override
@@ -51,11 +47,6 @@ public class BusinessRelatedUnitServiceImpl extends AbstractCrudService<Business
         }
         businessRelatedUnit.setCreditLineEnable(editCreditLineParam.getCreditLineEnable());
         businessRelatedUnit.setCreditLine(editCreditLineParam.getCreditLine());
-        businessRelatedUnitRepository.save(businessRelatedUnit);
-    }
-
-    @Autowired
-    public BusinessRelatedUnitServiceImpl(BusinessRelatedUnitRepository businessRelatedUnitRepository) {
-        this.businessRelatedUnitRepository = businessRelatedUnitRepository;
+        super.save(businessRelatedUnit);
     }
 }

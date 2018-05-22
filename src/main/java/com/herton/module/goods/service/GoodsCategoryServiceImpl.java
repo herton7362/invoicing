@@ -16,13 +16,9 @@ import java.util.*;
 
 @Component
 @Transactional
-public class GoodsCategoryServiceImpl extends AbstractCrudService<GoodsCategory> implements GoodsCategoryService {
-    private final GoodsCategoryRepository goodsCategoryRepository;
+public class GoodsCategoryServiceImpl extends AbstractCrudService<GoodsCategoryRepository, GoodsCategory>
+        implements GoodsCategoryService {
     private final GoodsService goodsService;
-    @Override
-    protected PageRepository<GoodsCategory> getRepository() {
-        return goodsCategoryRepository;
-    }
 
     @Override
     public List<GoodsCategory> findAll(Map<String, ?> param) throws Exception {
@@ -112,10 +108,8 @@ public class GoodsCategoryServiceImpl extends AbstractCrudService<GoodsCategory>
 
     @Autowired
     public GoodsCategoryServiceImpl(
-            GoodsCategoryRepository goodsCategoryRepository,
             GoodsService goodsService
     ) {
-        this.goodsCategoryRepository = goodsCategoryRepository;
         this.goodsService = goodsService;
     }
 }

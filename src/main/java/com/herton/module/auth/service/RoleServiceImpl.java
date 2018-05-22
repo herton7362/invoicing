@@ -22,20 +22,18 @@ import java.util.Map;
 
 @Component
 @Transactional
-public class RoleServiceImpl extends AbstractCrudService<Role> implements RoleService {
-    private final RoleRepository roleRepository;
-    private final ModuleService moduleService;
-    @Override
-    protected PageRepository<Role> getRepository() {
-        return roleRepository;
+public class RoleServiceImpl extends AbstractCrudService<RoleRepository, Role> implements RoleService {
+    private RoleRepository getRepository() {
+        return (RoleRepository) pageRepository;
     }
+    private final ModuleService moduleService;
 
     @Override
     public void authorize(String roleId, List<String> moduleIds) throws Exception {
         if(StringUtils.isBlank(roleId)) {
             throw new InvalidParamException("roleId is required");
         }
-        Role role = roleRepository.findOne(roleId);
+        Role role = getRepository().findOne(roleId);
         List<Module> modules = new ArrayList<>(moduleIds.size());
         moduleIds.forEach(moduleId -> {
             try {
@@ -45,7 +43,7 @@ public class RoleServiceImpl extends AbstractCrudService<Role> implements RoleSe
             }
         });
         role.setModules(modules);
-        roleRepository.save(role);
+        getRepository().save(role);
     }
 
     @Override
@@ -76,7 +74,7 @@ public class RoleServiceImpl extends AbstractCrudService<Role> implements RoleSe
         BeanUtils.copyProperties(role, roleResult);
         Map<String, String> param = new HashMap<>();
         param.put("roleId", role.getId());
-        roleResult.setStaffAccountMount(roleRepository.getStaffAccountMount(role.getId()));
+        roleResult.setStaffAccountMount(getRepository().getStaffAccountMount(role.getId()));
         return roleResult;
     }
 
@@ -95,7 +93,7 @@ public class RoleServiceImpl extends AbstractCrudService<Role> implements RoleSe
     }
 
     private void checkUsed(String id) throws Exception {
-        int count = roleRepository.getStaffAccountMount(id);
+        int count = getRepository().getStaffAccountMount(id);
         if(count > 0) {
             throw new InvalidParamException("有员工归属于当前角色，请先删除员工");
         }
@@ -103,10 +101,8 @@ public class RoleServiceImpl extends AbstractCrudService<Role> implements RoleSe
 
     @Autowired
     public RoleServiceImpl(
-            RoleRepository roleRepository,
             ModuleService moduleService
     ) {
-        this.roleRepository = roleRepository;
         this.moduleService = moduleService;
     }
 }

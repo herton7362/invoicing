@@ -6,6 +6,7 @@ import com.herton.common.utils.StringUtils;
 import com.herton.entity.BaseEntity;
 import com.herton.exceptions.InvalidParamException;
 import com.herton.module.auth.UserThread;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,7 +31,7 @@ import java.util.*;
  * @since 1.0.0
  * @param <T> 增删改查的实体
  */
-public abstract class AbstractCrudService<T extends BaseEntity> implements CrudService<T> {
+public abstract class AbstractCrudService<D extends PageRepository<T>, T extends BaseEntity> implements CrudService<T> {
     private final CacheUtils cache = CacheUtils.getInstance();
     @Value("${service.showAllEntities}")
     private Boolean showAllEntities;
@@ -39,7 +40,8 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
      * 获取实体Repository
      * @return {@link PageRepository} 实现类
      */
-    protected abstract PageRepository<T> getRepository();
+    @Autowired
+    protected PageRepository<T> pageRepository;
 
     private Map<String, String[]> manufactureQueryParam(Map<String, ?> param) {
         Map<String, String[]> newParam = new HashMap<>();
@@ -55,13 +57,13 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
 
     @Override
     public PageResult<T> findAll(PageRequest pageRequest, Map<String, ?> param) throws Exception {
-        Page<T> page = getRepository().findAll(getSpecification(param), pageRequest);
+        Page<T> page = pageRepository.findAll(getSpecification(param), pageRequest);
         return new PageResult<>(page);
     }
 
     @Override
     public List<T> findAll(Map<String, ?> param) throws Exception {
-        return getRepository().findAll(getSpecification(param));
+        return pageRepository.findAll(getSpecification(param));
     }
 
     @Override
@@ -70,27 +72,27 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
         if(cache.get(id) != null) {
             return (T) cache.get(id);
         }
-        T t = getRepository().findOne(id);
+        T t = pageRepository.findOne(id);
         cache.set(id, t);
         return t;
     }
 
     @Override
     public void delete(String id) throws Exception {
-        getRepository().delete(id);
+        pageRepository.delete(id);
         cache.remove(id);
     }
 
     @Override
     public T save(T t) throws Exception {
-        t = getRepository().save(t);
+        t = pageRepository.save(t);
         cache.set(t.getId(), t);
         return t;
     }
 
     @Override
     public void delete(Iterable<? extends T> ts) throws Exception {
-        getRepository().delete(ts);
+        pageRepository.delete(ts);
         for (T t : ts) {
             cache.remove(t.getId());
         }
@@ -281,9 +283,9 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
             if(StringUtils.isBlank(ts.get(i).getId())) {
                 throw new InvalidParamException("参数不正确，缺失主键");
             }
-            t = getRepository().findOne(ts.get(i).getId());
+            t = pageRepository.findOne(ts.get(i).getId());
             t.setSortNumber(i);
-            getRepository().save(t);
+            pageRepository.save(t);
         }
     }
 
@@ -291,28 +293,28 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
         if(StringUtils.isBlank(id)) {
             throw new InvalidParamException("id不能为空");
         }
-        T t = getRepository().findOne(id);
+        T t = pageRepository.findOne(id);
         if(!t.getLogicallyDeleted()) {
             return;
         }
         t.setLogicallyDeleted(false);
-        getRepository().save(t);
+        pageRepository.save(t);
     }
 
     public void disable(String id) throws Exception {
         if(StringUtils.isBlank(id)) {
             throw new InvalidParamException("id不能为空");
         }
-        T t = getRepository().findOne(id);
+        T t = pageRepository.findOne(id);
         if(t.getLogicallyDeleted()) {
             return;
         }
         t.setLogicallyDeleted(true);
-        getRepository().save(t);
+        pageRepository.save(t);
     }
 
     @Override
     public Long count(Map<String, ?> param) throws Exception {
-        return getRepository().count(getSpecification(manufactureQueryParam(param)));
+        return pageRepository.count(getSpecification(manufactureQueryParam(param)));
     }
 }

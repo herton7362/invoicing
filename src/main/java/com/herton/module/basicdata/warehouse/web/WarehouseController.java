@@ -12,15 +12,5 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "仓库管理")
 @RestController
 @RequestMapping("/api/warehouse")
-public class WarehouseController extends AbstractCrudController<Warehouse> {
-    private final WarehouseService warehouseService;
-    @Override
-    protected CrudService<Warehouse> getService() {
-        return warehouseService;
-    }
-
-    @Autowired
-    public WarehouseController(WarehouseService warehouseService) {
-        this.warehouseService = warehouseService;
-    }
+public class WarehouseController extends AbstractCrudController<WarehouseService, Warehouse> {
 }

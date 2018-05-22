@@ -17,15 +17,5 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "采购订单商品管理")
 @RestController
 @RequestMapping("/api/purchaseOrderSku")
-public class PurchaseOrderSkuController extends AbstractCrudController<PurchaseOrderSku> {
-    private final PurchaseOrderSkuService purchaseOrderSkuService;
-    @Override
-    protected CrudService<PurchaseOrderSku> getService() {
-        return purchaseOrderSkuService;
-    }
-
-    @Autowired
-    public PurchaseOrderSkuController(PurchaseOrderSkuService purchaseOrderGoodsService) {
-        this.purchaseOrderSkuService = purchaseOrderGoodsService;
-    }
+public class PurchaseOrderSkuController extends AbstractCrudController<PurchaseOrderSkuService, PurchaseOrderSku> {
 }

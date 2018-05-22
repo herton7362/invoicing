@@ -10,15 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional
-public class PurchaseOrderSkuServiceImpl extends AbstractCrudService<PurchaseOrderSku> implements PurchaseOrderSkuService {
-    private final PurchaseOrderSkuRepository purchaseOrderSkuRepository;
-    @Override
-    protected PageRepository<PurchaseOrderSku> getRepository() {
-        return purchaseOrderSkuRepository;
-    }
-
-    @Autowired
-    public PurchaseOrderSkuServiceImpl(PurchaseOrderSkuRepository purchaseOrderGoodsRepository) {
-        this.purchaseOrderSkuRepository = purchaseOrderGoodsRepository;
-    }
+public class PurchaseOrderSkuServiceImpl extends AbstractCrudService<PurchaseOrderSkuRepository, PurchaseOrderSku>
+        implements PurchaseOrderSkuService {
 }

@@ -25,13 +25,10 @@ import java.util.Map;
 @Api(value = "商品sku管理")
 @RestController
 @RequestMapping("/api/goodsSku")
-public class GoodsSkuController extends AbstractCrudController<GoodsSku> {
-    private final GoodsSkuService goodsSkuService;
-    @Override
-    protected CrudService<GoodsSku> getService() {
-        return goodsSkuService;
+public class GoodsSkuController extends AbstractCrudController<GoodsSkuService, GoodsSku> {
+    private GoodsSkuService getService() {
+        return (GoodsSkuService) crudService;
     }
-
     /**
      * 查询
      */
@@ -46,15 +43,10 @@ public class GoodsSkuController extends AbstractCrudController<GoodsSku> {
     public ResponseEntity<?> searchPagedList(@ModelAttribute PageParam pageParam, HttpServletRequest request) throws Exception {
         Map<String, String[]> param = request.getParameterMap();
         if(pageParam.isPageAble()) {
-            PageResult<GoodsSkuResult> page = goodsSkuService.findAllTranslated(pageParam.getPageRequest(), param);
+            PageResult<GoodsSkuResult> page = getService().findAllTranslated(pageParam.getPageRequest(), param);
             return new ResponseEntity<>(page, HttpStatus.OK);
         }
-        List<GoodsSkuResult> list = goodsSkuService.findAllTranslated(param);
+        List<GoodsSkuResult> list = getService().findAllTranslated(param);
         return new ResponseEntity<>(list, HttpStatus.OK);
-    }
-
-    @Autowired
-    public GoodsSkuController(GoodsSkuService goodsSkuService) {
-        this.goodsSkuService = goodsSkuService;
     }
 }

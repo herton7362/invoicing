@@ -10,15 +10,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional
-public class WarehouseServiceImpl extends AbstractCrudService<Warehouse> implements WarehouseService {
-    private final WarehouseRepository warehouseRepository;
-    @Override
-    protected PageRepository<Warehouse> getRepository() {
-        return warehouseRepository;
-    }
-
-    @Autowired
-    public WarehouseServiceImpl(WarehouseRepository warehouseRepository) {
-        this.warehouseRepository = warehouseRepository;
-    }
+public class WarehouseServiceImpl extends AbstractCrudService<WarehouseRepository, Warehouse> implements WarehouseService {
 }

@@ -10,15 +10,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional
-public class AddressServiceImpl extends AbstractCrudService<Address> implements AddressService {
-    private final AddressRepository addressRepository;
-    @Override
-    protected PageRepository<Address> getRepository() {
-        return addressRepository;
-    }
-
-    @Autowired
-    public AddressServiceImpl(AddressRepository addressRepository) {
-        this.addressRepository = addressRepository;
-    }
+public class AddressServiceImpl extends AbstractCrudService<AddressRepository, Address> implements AddressService {
 }

@@ -23,22 +23,20 @@ import java.util.Map;
 @Api(value = "商品类型管理")
 @RestController
 @RequestMapping("/api/goodsType")
-public class GoodsTypeController extends AbstractCrudController<GoodsType> {
-    private final GoodsTypeService goodsTypeService;
-    @Override
-    protected CrudService<GoodsType> getService() {
-        return goodsTypeService;
-    }
+public class GoodsTypeController extends AbstractCrudController<GoodsTypeService, GoodsType> {
 
+    private GoodsTypeService getService() {
+        return (GoodsTypeService) crudService;
+    }
 
     @Override
     public ResponseEntity<?> searchPagedList(PageParam pageParam, HttpServletRequest request) throws Exception {
         Map<String, String[]> param = request.getParameterMap();
         if(pageParam.isPageAble()) {
-            PageResult<GoodsTypeResult> page = goodsTypeService.findAllTranslated(pageParam.getPageRequest(), param);
+            PageResult<GoodsTypeResult> page = getService().findAllTranslated(pageParam.getPageRequest(), param);
             return new ResponseEntity<>(page, HttpStatus.OK);
         }
-        List<GoodsTypeResult> list = goodsTypeService.findAllTranslated(param);
+        List<GoodsTypeResult> list = getService().findAllTranslated(param);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
@@ -46,11 +44,6 @@ public class GoodsTypeController extends AbstractCrudController<GoodsType> {
      * 查询一个
      */
     public ResponseEntity<GoodsTypeResult> getOne(@PathVariable String id) throws Exception {
-        return new ResponseEntity<>(goodsTypeService.getOneTranslated(id), HttpStatus.OK);
-    }
-
-    @Autowired
-    public GoodsTypeController(GoodsTypeService goodsTypeService) {
-        this.goodsTypeService = goodsTypeService;
+        return new ResponseEntity<>(getService().getOneTranslated(id), HttpStatus.OK);
     }
 }

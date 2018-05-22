@@ -25,15 +25,10 @@ import java.util.Map;
 
 @Component
 @Transactional
-public class PurchaseOrderServiceImpl extends AbstractCrudService<PurchaseOrder> implements PurchaseOrderService {
-    private final PurchaseOrderRepository purchaseOrderRepository;
+public class PurchaseOrderServiceImpl extends AbstractCrudService<PurchaseOrderRepository, PurchaseOrder> implements PurchaseOrderService {
     private final PurchaseOrderSkuService purchaseOrderSkuService;
     private final CodeNumberService codeNumberService;
     private final GoodsSkuService goodsSkuService;
-    @Override
-    protected PageRepository<PurchaseOrder> getRepository() {
-        return purchaseOrderRepository;
-    }
 
     @Override
     public void save(PurchaseOrderSaveParam purchaseOrderSaveParam) throws Exception {
@@ -93,12 +88,10 @@ public class PurchaseOrderServiceImpl extends AbstractCrudService<PurchaseOrder>
 
     @Autowired
     public PurchaseOrderServiceImpl(
-            PurchaseOrderRepository purchaseOrderRepository,
             PurchaseOrderSkuService purchaseOrderSkuService,
             CodeNumberService codeNumberService,
             GoodsSkuService goodsSkuService
     ) {
-        this.purchaseOrderRepository = purchaseOrderRepository;
         this.purchaseOrderSkuService = purchaseOrderSkuService;
         this.codeNumberService = codeNumberService;
         this.goodsSkuService = goodsSkuService;

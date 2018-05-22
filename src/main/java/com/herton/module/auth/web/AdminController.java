@@ -23,8 +23,7 @@ import java.util.stream.Collectors;
 @Api(value = "管理员管理")
 @RestController
 @RequestMapping("/api/admin")
-public class AdminController extends AbstractCrudController<Admin> {
-    private final AdminService adminService;
+public class AdminController extends AbstractCrudController<AdminService, Admin> {
     private final RoleService roleService;
 
     /**
@@ -35,7 +34,7 @@ public class AdminController extends AbstractCrudController<Admin> {
     @RequestMapping(value = "/menus", method = RequestMethod.GET)
     public ResponseEntity<List<Module>> menus() throws Exception {
         Admin admin = AdminThread.getInstance().get();
-        admin = adminService.findOne(admin.getId());
+        admin = crudService.findOne(admin.getId());
         final List<Module> modulesNew = new ArrayList<>();
         List<Role> roles = admin.getRoles();
         roles.forEach(role -> modulesNew.addAll(role.getModules()));
@@ -53,7 +52,7 @@ public class AdminController extends AbstractCrudController<Admin> {
     @ApiOperation(value="根据id获取用户")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<Admin> getOne(@PathVariable String id) throws Exception {
-        Admin admin = adminService.findOne(id);
+        Admin admin = crudService.findOne(id);
         AdminSaveParam adminSaveParam = new AdminSaveParam();
         BeanUtils.copyProperties(admin, adminSaveParam);
         List<Role> roles = admin.getRoles();
@@ -71,7 +70,7 @@ public class AdminController extends AbstractCrudController<Admin> {
     @ApiOperation(value="保存")
     @RequestMapping(value = "/save/deprecated", method = RequestMethod.POST)
     public ResponseEntity<Admin> save(@RequestBody Admin t) throws Exception {
-        t = adminService.save(t);
+        t = crudService.save(t);
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
 
@@ -93,21 +92,15 @@ public class AdminController extends AbstractCrudController<Admin> {
             }
         });
         admin.setRoles(roles);
-        admin = adminService.save(admin);
+        admin = crudService.save(admin);
         return new ResponseEntity<>(admin, HttpStatus.OK);
     }
 
     @Autowired
     public AdminController(
-            AdminService adminService,
             RoleService roleService
     ) {
-        this.adminService = adminService;
         this.roleService = roleService;
     }
 
-    @Override
-    protected AdminService getService() {
-        return adminService;
-    }
 }

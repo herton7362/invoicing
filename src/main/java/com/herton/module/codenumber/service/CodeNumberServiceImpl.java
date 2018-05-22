@@ -17,13 +17,8 @@ import java.util.Map;
 
 @Component
 @Transactional
-public class CodeNumberServiceImpl extends AbstractCrudService<CodeNumber> implements CodeNumberService {
-    private final CodeNumberRepository codeNumberRepository;
+public class CodeNumberServiceImpl extends AbstractCrudService<CodeNumberRepository, CodeNumber> implements CodeNumberService {
     private final SimpleDateFormat s = new SimpleDateFormat("yyyyMMdd");
-    @Override
-    protected PageRepository<CodeNumber> getRepository() {
-        return codeNumberRepository;
-    }
 
     @Override
     public CodeNumber generateNextCode(CodeNumber.BusinessType businessType) throws Exception {
@@ -44,13 +39,13 @@ public class CodeNumberServiceImpl extends AbstractCrudService<CodeNumber> imple
             } else {
                 codeNumber.setNextCode(String.format("%03d", 1));
             }
-            codeNumberRepository.save(codeNumber);
+            pageRepository.save(codeNumber);
             return codeNumber;
         } else {
             codeNumber = new CodeNumber();
             codeNumber.setBusinessType(businessType);
             codeNumber.setNextCode(String.format("%03d", 1));
-            codeNumberRepository.save(codeNumber);
+            pageRepository.save(codeNumber);
             return codeNumber;
         }
     }
@@ -75,10 +70,5 @@ public class CodeNumberServiceImpl extends AbstractCrudService<CodeNumber> imple
 
         return String.format("%s-%s-%s",
                 codeNumber.getBusinessType().name(), s.format(new Date()), codeNumber.getNextCode());
-    }
-
-    @Autowired
-    public CodeNumberServiceImpl(CodeNumberRepository codeNumberRepository) {
-        this.codeNumberRepository = codeNumberRepository;
     }
 }

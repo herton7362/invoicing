@@ -12,15 +12,5 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "会员卡类型管理")
 @RestController
 @RequestMapping("/api/memberCardType")
-public class MemberCardTypeController extends AbstractCrudController<MemberCardType> {
-    private final MemberCardTypeService memberCardTypeService;
-    @Override
-    protected CrudService<MemberCardType> getService() {
-        return memberCardTypeService;
-    }
-
-    @Autowired
-    public MemberCardTypeController(MemberCardTypeService memberCardTypeService) {
-        this.memberCardTypeService = memberCardTypeService;
-    }
+public class MemberCardTypeController extends AbstractCrudController<MemberCardTypeService, MemberCardType> {
 }

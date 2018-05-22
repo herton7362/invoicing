@@ -18,12 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "字典类别管理")
 @RestController
 @RequestMapping("/api/dictionaryCategory")
-public class DictionaryCategoryController extends AbstractCrudController<DictionaryCategory> {
-    private final DictionaryCategoryService dictionaryCategoryService;
-    @Override
-    protected CrudService<DictionaryCategory> getService() {
-        return dictionaryCategoryService;
-    }
+public class DictionaryCategoryController extends AbstractCrudController<DictionaryCategoryService, DictionaryCategory> {
 
     /**
      * 保存
@@ -32,16 +27,12 @@ public class DictionaryCategoryController extends AbstractCrudController<Diction
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<DictionaryCategory> save(@RequestBody DictionaryCategory productCategory) throws Exception {
         if(productCategory.getParent() != null && StringUtils.isNotBlank(productCategory.getParent().getId())) {
-            productCategory.setParent(dictionaryCategoryService.findOne(productCategory.getParent().getId()));
+            productCategory.setParent(crudService.findOne(productCategory.getParent().getId()));
         } else {
             productCategory.setParent(null);
         }
-        productCategory = dictionaryCategoryService.save(productCategory);
+        productCategory = crudService.save(productCategory);
         return new ResponseEntity<>(productCategory, HttpStatus.OK);
     }
 
-    @Autowired
-    public DictionaryCategoryController(DictionaryCategoryService dictionaryCategoryService) {
-        this.dictionaryCategoryService = dictionaryCategoryService;
-    }
 }
