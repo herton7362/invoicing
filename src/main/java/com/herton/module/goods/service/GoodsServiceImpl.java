@@ -1,7 +1,6 @@
 package com.herton.module.goods.service;
 
 import com.herton.common.AbstractCrudService;
-import com.herton.common.PageRepository;
 import com.herton.common.PageResult;
 import com.herton.common.utils.StringUtils;
 import com.herton.exceptions.InvalidParamException;
@@ -47,7 +46,7 @@ public class GoodsServiceImpl extends AbstractCrudService<GoodsRepository, Goods
         BeanUtils.copyProperties(goodsSaveParam, goods);
         super.save(goods);
         if(StringUtils.isNotBlank(goods.getGoodsTypeId())) {
-            List<GoodsAttribute> goodsAttributes = saveAtrributes(goods.getId(), goodsSaveParam);
+            List<GoodsAttribute> goodsAttributes = saveAttributes(goods.getId(), goodsSaveParam);
             saveSkus(goods.getId(), goodsSaveParam, goodsAttributes);
         } else {
             Map<String, String> param = new HashMap<>();
@@ -58,13 +57,11 @@ public class GoodsServiceImpl extends AbstractCrudService<GoodsRepository, Goods
         saveSuppliers(goods.getId(), goodsSaveParam);
     }
 
-    private List<GoodsAttribute> saveAtrributes(String goodsId, GoodsSaveParam goodsSaveParam) throws Exception {
+    private List<GoodsAttribute> saveAttributes(String goodsId, GoodsSaveParam goodsSaveParam) throws Exception {
         List<GoodsAttribute> goodsAttributes = goodsSaveParam.getGoodsAttributes();
         Boolean isCreate = true;
-        Goods old = null;
         List<GoodsAttribute> newGoodsAttributes = new ArrayList<>();
         if(StringUtils.isNotBlank(goodsSaveParam.getId())) {
-            old = findOne(goodsSaveParam.getId());
             isCreate = false;
         }
         if(isCreate) {
@@ -135,9 +132,7 @@ public class GoodsServiceImpl extends AbstractCrudService<GoodsRepository, Goods
             goodsSkus.add(goodsSku);
         });
         Boolean isCreate = true;
-        Goods old = null;
         if(StringUtils.isNotBlank(goodsSaveParam.getId())) {
-            old = findOne(goodsSaveParam.getId());
             isCreate = false;
         }
         if(isCreate) {
@@ -156,11 +151,7 @@ public class GoodsServiceImpl extends AbstractCrudService<GoodsRepository, Goods
                             .noneMatch(sku -> {
                                 String[] attrIds1 = goodsSku.getGoodsAttributeIds().split(",");
                                 String[] attrIds2 = sku.getGoodsAttributeIds().split(",");
-                                List<String> attrIdList1 = Arrays.asList(attrIds1);
-                                List<String> attrIdList2 = Arrays.asList(attrIds2);
-                                return attrIdList1
-                                        .stream()
-                                        .allMatch(attrId -> attrIdList2.contains(attrId));
+                                return arrayMatches(attrIds1, attrIds2);
                             }))
                     .forEach(goodsSku -> {
                         try {
@@ -176,11 +167,7 @@ public class GoodsServiceImpl extends AbstractCrudService<GoodsRepository, Goods
                         .filter(sku -> {
                             String[] attrIds1 = goodsSku.getGoodsAttributeIds().split(",");
                             String[] attrIds2 = sku.getGoodsAttributeIds().split(",");
-                            List<String> attrIdList1 = Arrays.asList(attrIds1);
-                            List<String> attrIdList2 = Arrays.asList(attrIds2);
-                            return attrIdList1
-                                    .stream()
-                                    .allMatch(attrId -> attrIdList2.contains(attrId));
+                            return arrayMatches(attrIds1, attrIds2);
                         })
                         .findFirst();
 
@@ -202,12 +189,18 @@ public class GoodsServiceImpl extends AbstractCrudService<GoodsRepository, Goods
         }
     }
 
+    private Boolean arrayMatches(String[] arry1, String[] arr2) {
+        List<String> attrIdList1 = Arrays.asList(arry1);
+        List<String> attrIdList2 = Arrays.asList(arr2);
+        return attrIdList1
+                .stream()
+                .allMatch(attrIdList2::contains);
+    }
+
     private void saveSuppliers(String goodsId, GoodsSaveParam goodsSaveParam) throws Exception {
         List<GoodsSupplier> goodsSuppliers = new ArrayList<>();
         Boolean isCreate = true;
-        Goods old = null;
         if(StringUtils.isNotBlank(goodsSaveParam.getId())) {
-            old = findOne(goodsSaveParam.getId());
             isCreate = false;
         }
         if(goodsSaveParam.getGoodsSuppliers() != null) {
