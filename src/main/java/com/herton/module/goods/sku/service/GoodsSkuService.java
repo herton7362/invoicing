@@ -2,13 +2,14 @@ package com.herton.module.goods.sku.service;
 
 import com.herton.common.CrudService;
 import com.herton.common.PageResult;
+import com.herton.module.goods.domain.GoodsAttribute;
 import com.herton.module.goods.sku.domain.GoodsSku;
 import com.herton.module.goods.sku.web.GoodsSkuResult;
+import com.herton.module.goods.web.GoodsSaveParam;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public interface GoodsSkuService extends CrudService<GoodsSku> {
     /**
@@ -48,4 +49,6 @@ public interface GoodsSkuService extends CrudService<GoodsSku> {
      * @return 实体
      */
     GoodsSkuResult findOneTranslated(String id) throws Exception;
+
+    void save(Boolean isCreate, String goodsId, List<GoodsSaveParam.GoodsSkuParam> goodsSkuParams, List<GoodsAttribute> goodsAttributes) throws Exception;
 }

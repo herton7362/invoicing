@@ -6,6 +6,7 @@ import com.herton.common.utils.StringUtils;
 import com.herton.entity.BaseEntity;
 import com.herton.exceptions.InvalidParamException;
 import com.herton.module.auth.UserThread;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.Assert;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -35,6 +37,17 @@ public abstract class AbstractCrudService<D extends PageRepository<T>, T extends
     private final CacheUtils cache = CacheUtils.getInstance();
     @Value("${service.showAllEntities}")
     private Boolean showAllEntities;
+
+    // JPA查询工厂
+    protected JPAQueryFactory queryFactory;
+
+    @Autowired
+    private EntityManager em;
+
+    @PostConstruct
+    public void initFactory() {
+        queryFactory = new JPAQueryFactory(em);
+    }
 
     /**
      * 获取实体Repository

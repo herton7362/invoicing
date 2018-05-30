@@ -2,6 +2,7 @@ package com.herton.module.goods.web;
 
 import com.herton.module.goods.domain.Goods;
 import com.herton.module.goods.domain.GoodsAttribute;
+import com.herton.module.goods.domain.GoodsSupplier;
 import com.herton.module.goods.sku.domain.GoodsSku;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -14,6 +15,8 @@ public class GoodsResult extends Goods {
     private List<GoodsAttribute> goodsAttributes;
     @ApiModelProperty(value = "商品sku")
     private List<GoodsSkuResult> goodsSkus;
+    @ApiModelProperty(value = "商品供应商")
+    private List<GoodsSupplier> goodsSuppliers;
 
     public List<GoodsAttribute> getGoodsAttributes() {
         return goodsAttributes;
@@ -29,6 +32,14 @@ public class GoodsResult extends Goods {
 
     public void setGoodsSkus(List<GoodsSkuResult> goodsSkus) {
         this.goodsSkus = goodsSkus;
+    }
+
+    public List<GoodsSupplier> getGoodsSuppliers() {
+        return goodsSuppliers;
+    }
+
+    public void setGoodsSuppliers(List<GoodsSupplier> goodsSuppliers) {
+        this.goodsSuppliers = goodsSuppliers;
     }
 
     @ApiModel("商品sku")
