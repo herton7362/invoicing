@@ -13,6 +13,9 @@ public class PurchaseOrderSku extends BaseEntity {
     @ApiModelProperty(value = "采购订单 id")
     @Column(length = 36)
     private String purchaseOrderId;
+    @ApiModelProperty(value = "商品 id")
+    @Column(length = 36)
+    private String goodsId;
     @ApiModelProperty(value = "sku id")
     @Column(length = 36)
     private String skuId;
@@ -35,6 +38,14 @@ public class PurchaseOrderSku extends BaseEntity {
 
     public void setPurchaseOrderId(String purchaseOrderId) {
         this.purchaseOrderId = purchaseOrderId;
+    }
+
+    public String getGoodsId() {
+        return goodsId;
+    }
+
+    public void setGoodsId(String goodsId) {
+        this.goodsId = goodsId;
     }
 
     public String getSkuId() {
