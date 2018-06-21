@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "地址管理")
 @RestController
 @RequestMapping("/api/address")
-public class AddressController extends AbstractCrudController<AddressService, Address> {
+public class AddressController extends AbstractCrudController<Address> {
 
     /**
      * 保存

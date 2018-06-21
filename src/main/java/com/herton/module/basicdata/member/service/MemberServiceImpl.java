@@ -19,7 +19,7 @@ import java.util.Map;
 
 @Component
 @Transactional
-public class MemberServiceImpl extends AbstractCrudService<MemberRepository, Member> implements MemberService {
+public class MemberServiceImpl extends AbstractCrudService<Member> implements MemberService {
     private final MemberCardService memberCardService;
 
     private Map<String, String[]> produceQueryParam(Map<String, String[]> param) throws Exception {

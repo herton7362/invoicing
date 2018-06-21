@@ -14,7 +14,7 @@ import java.util.List;
 
 @Component
 @Transactional
-public class OauthClientDetailsServiceImpl extends AbstractCrudService<OauthClientDetailsRepository, OauthClientDetails> implements OauthClientDetailsService {
+public class OauthClientDetailsServiceImpl extends AbstractCrudService<OauthClientDetails> implements OauthClientDetailsService {
     private final AdminService adminService;
     private final ModuleService moduleService;
     private final RoleService roleService;

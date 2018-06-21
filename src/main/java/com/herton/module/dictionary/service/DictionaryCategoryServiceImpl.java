@@ -10,6 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional
-public class DictionaryCategoryServiceImpl extends AbstractCrudService<DictionaryCategoryRepository, DictionaryCategory>
+public class DictionaryCategoryServiceImpl extends AbstractCrudService<DictionaryCategory>
         implements DictionaryCategoryService {
 }

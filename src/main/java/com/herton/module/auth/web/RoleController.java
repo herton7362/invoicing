@@ -24,7 +24,7 @@ import java.util.Map;
 @Api(value = "角色管理")
 @RestController
 @RequestMapping("/api/role")
-public class RoleController extends AbstractCrudController<RoleService, Role> {
+public class RoleController extends AbstractCrudController<Role> {
     private RoleService getService() {
         return (RoleService) crudService;
     }

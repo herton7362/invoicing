@@ -10,5 +10,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional
-public class AddressServiceImpl extends AbstractCrudService<AddressRepository, Address> implements AddressService {
+public class AddressServiceImpl extends AbstractCrudService<Address> implements AddressService {
 }

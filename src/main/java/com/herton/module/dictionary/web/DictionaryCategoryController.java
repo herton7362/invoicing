@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "字典类别管理")
 @RestController
 @RequestMapping("/api/dictionaryCategory")
-public class DictionaryCategoryController extends AbstractCrudController<DictionaryCategoryService, DictionaryCategory> {
+public class DictionaryCategoryController extends AbstractCrudController<DictionaryCategory> {
 
     /**
      * 保存

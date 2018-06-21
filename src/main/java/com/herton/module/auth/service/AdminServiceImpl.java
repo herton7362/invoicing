@@ -28,16 +28,13 @@ import java.util.Map;
 
 @Component
 @Transactional
-public class AdminServiceImpl extends AbstractCrudService<AdminRepository, Admin> implements AdminService, UserService {
+public class AdminServiceImpl extends AbstractCrudService<Admin> implements AdminService, UserService {
     private final EntityManager entityManager;
-
-    private AdminRepository getRepository() {
-        return (AdminRepository) pageRepository;
-    }
+    private final AdminRepository adminRepository;
 
     @Override
     public PageResult<Admin> findAll(PageRequest pageRequest, Map<String, ?> param) throws Exception {
-        Page<Admin> page = getRepository().findAll(new AdminSpecification(param), pageRequest);
+        Page<Admin> page = pageRepository.findAll(new AdminSpecification(param), pageRequest);
         return new PageResult<>(page);
     }
 
@@ -50,7 +47,7 @@ public class AdminServiceImpl extends AbstractCrudService<AdminRepository, Admin
             admin.setPassword(new BCryptPasswordEncoder().encode(admin.getPassword()));
         } else {
             if(admin.getPassword() == null) {
-                Admin temp = getRepository().findOne(admin.getId());
+                Admin temp = pageRepository.findOne(admin.getId());
                 admin.setPassword(temp.getPassword());
             } else {
                 admin.setPassword(new BCryptPasswordEncoder().encode(admin.getPassword()));
@@ -61,12 +58,12 @@ public class AdminServiceImpl extends AbstractCrudService<AdminRepository, Admin
 
     @Override
     public BaseUser findOneByLoginName(String account) throws Exception {
-        return getRepository().findOneByLoginName(account);
+        return adminRepository.findOneByLoginName(account);
     }
 
     @Override
     public BaseUser findOneByLoginNameAndClientId(String account, String clientId) throws Exception {
-        return getRepository().findOneByLoginNameAndClientId(account, clientId);
+        return adminRepository.findOneByLoginNameAndClientId(account, clientId);
     }
 
     class AdminSpecification extends SimpleSpecification {
@@ -107,8 +104,10 @@ public class AdminServiceImpl extends AbstractCrudService<AdminRepository, Admin
 
     @Autowired
     public AdminServiceImpl(
-            EntityManager entityManager
+            EntityManager entityManager,
+            AdminRepository adminRepository
     ) {
         this.entityManager = entityManager;
+        this.adminRepository = adminRepository;
     }
 }

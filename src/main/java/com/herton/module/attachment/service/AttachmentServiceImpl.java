@@ -23,7 +23,7 @@ import java.util.List;
 
 @Component
 @Transactional
-public class AttachmentServiceImpl extends AbstractCrudService<AttachmentRepository, Attachment> implements AttachmentService {
+public class AttachmentServiceImpl extends AbstractCrudService<Attachment> implements AttachmentService {
     public static final String prefixPath = "C:";
 
     @Override

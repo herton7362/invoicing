@@ -10,5 +10,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional
-public class WarehouseServiceImpl extends AbstractCrudService<WarehouseRepository, Warehouse> implements WarehouseService {
+public class WarehouseServiceImpl extends AbstractCrudService<Warehouse> implements WarehouseService {
 }

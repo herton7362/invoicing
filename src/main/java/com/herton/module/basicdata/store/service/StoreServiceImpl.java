@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional
-public class StoreServiceImpl extends AbstractCrudService<StoreRepository, Store> implements StoreService {
+public class StoreServiceImpl extends AbstractCrudService<Store> implements StoreService {
     private final CounterService counterService;
 
     @Override

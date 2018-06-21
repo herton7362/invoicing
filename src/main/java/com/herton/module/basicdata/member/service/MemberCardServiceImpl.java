@@ -21,7 +21,7 @@ import java.util.Map;
 
 @Component
 @Transactional
-public class MemberCardServiceImpl extends AbstractCrudService<MemberCardRepository, MemberCard> implements MemberCardService {
+public class MemberCardServiceImpl extends AbstractCrudService<MemberCard> implements MemberCardService {
 
     @Override
     public Double getMemberTotalBalance(String memberId) throws Exception {

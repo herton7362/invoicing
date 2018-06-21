@@ -23,7 +23,7 @@ import java.util.Map;
 @Api(value = "商品类型管理")
 @RestController
 @RequestMapping("/api/goodsType")
-public class GoodsTypeController extends AbstractCrudController<GoodsTypeService, GoodsType> {
+public class GoodsTypeController extends AbstractCrudController<GoodsType> {
 
     private GoodsTypeService getService() {
         return (GoodsTypeService) crudService;

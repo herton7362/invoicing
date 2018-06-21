@@ -17,5 +17,5 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "采购订单商品管理")
 @RestController
 @RequestMapping("/api/purchaseOrderSku")
-public class PurchaseOrderSkuController extends AbstractCrudController<PurchaseOrderSkuService, PurchaseOrderSku> {
+public class PurchaseOrderSkuController extends AbstractCrudController<PurchaseOrderSku> {
 }

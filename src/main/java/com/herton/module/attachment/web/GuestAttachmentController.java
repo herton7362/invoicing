@@ -24,7 +24,7 @@ import java.util.List;
 @Api(value = "游客附件接口，无权限过滤")
 @RestController
 @RequestMapping("/attachment")
-public class GuestAttachmentController extends AbstractReadController<AttachmentService, Attachment> {
+public class GuestAttachmentController extends AbstractReadController<Attachment> {
     private AttachmentService getService() {
         return (AttachmentService) crudService;
     }

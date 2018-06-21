@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 @Component
 @Transactional
-public class GoodsServiceImpl extends AbstractCrudService<GoodsRepository, Goods> implements GoodsService {
+public class GoodsServiceImpl extends AbstractCrudService<Goods> implements GoodsService {
     private final GoodsSkuService goodsSkuService;
     private final GoodsAttributeService goodsAttributeService;
     private final GoodsSupplierService goodsSupplierService;

@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 
 @Component
 @Transactional
-public class BusinessRelatedUnitServiceImpl extends AbstractCrudService<BusinessRelatedUnitRepository, BusinessRelatedUnit>
+public class BusinessRelatedUnitServiceImpl extends AbstractCrudService<BusinessRelatedUnit>
         implements BusinessRelatedUnitService {
 
     @Override

@@ -10,5 +10,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional
-public class DictionaryServiceImpl extends AbstractCrudService<DictionaryRepository, Dictionary> implements DictionaryService {
+public class DictionaryServiceImpl extends AbstractCrudService<Dictionary> implements DictionaryService {
 }

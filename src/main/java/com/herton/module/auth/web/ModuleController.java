@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "模块管理")
 @RestController
 @RequestMapping("/api/module")
-public class ModuleController extends AbstractCrudController<ModuleService, Module> {
+public class ModuleController extends AbstractCrudController<Module> {
 
     /**
      * 保存

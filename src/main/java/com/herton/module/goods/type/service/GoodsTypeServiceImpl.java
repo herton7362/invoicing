@@ -19,7 +19,7 @@ import java.util.Map;
 
 @Component
 @Transactional
-public class GoodsTypeServiceImpl extends AbstractCrudService<GoodsTypeRepository, GoodsType> implements GoodsTypeService {
+public class GoodsTypeServiceImpl extends AbstractCrudService<GoodsType> implements GoodsTypeService {
     private final GoodsTypeAttributeService goodsTypeAttributeService;
 
     @Override

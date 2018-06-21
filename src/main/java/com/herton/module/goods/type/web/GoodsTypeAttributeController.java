@@ -12,5 +12,5 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "商品属性管理")
 @RestController
 @RequestMapping("/api/goodsTypeAttribute")
-public class GoodsTypeAttributeController extends AbstractCrudController<GoodsTypeAttributeService, GoodsTypeAttribute> {
+public class GoodsTypeAttributeController extends AbstractCrudController<GoodsTypeAttribute> {
 }

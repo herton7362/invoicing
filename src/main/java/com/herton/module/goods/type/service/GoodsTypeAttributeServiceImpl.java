@@ -10,6 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional
-public class GoodsTypeAttributeServiceImpl extends AbstractCrudService<GoodsTypeAttributeRepository, GoodsTypeAttribute>
+public class GoodsTypeAttributeServiceImpl extends AbstractCrudService<GoodsTypeAttribute>
         implements GoodsTypeAttributeService {
 }

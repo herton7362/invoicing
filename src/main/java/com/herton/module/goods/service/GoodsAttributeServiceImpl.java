@@ -16,7 +16,7 @@ import java.util.Map;
 
 @Component
 @Transactional
-public class GoodsAttributeServiceImpl extends AbstractCrudService<GoodsAttributeRepository, GoodsAttribute>
+public class GoodsAttributeServiceImpl extends AbstractCrudService<GoodsAttribute>
         implements GoodsAttributeService {
     @Override
     public List<GoodsAttribute> save(Boolean isCreate, String goodsId, List<GoodsAttribute> goodsAttributes) throws Exception {

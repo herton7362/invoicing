@@ -16,7 +16,7 @@ import java.util.*;
 
 @Component
 @Transactional
-public class GoodsCategoryServiceImpl extends AbstractCrudService<GoodsCategoryRepository, GoodsCategory>
+public class GoodsCategoryServiceImpl extends AbstractCrudService<GoodsCategory>
         implements GoodsCategoryService {
     private final GoodsService goodsService;
 

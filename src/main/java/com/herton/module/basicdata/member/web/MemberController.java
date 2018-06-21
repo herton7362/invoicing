@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "会员管理")
 @RestController
 @RequestMapping("/api/member")
-public class MemberController extends AbstractCrudController<MemberService, Member> {
+public class MemberController extends AbstractCrudController<Member> {
     protected MemberService getService() {
         return (MemberService) crudService;
     }

@@ -12,5 +12,5 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "应用客户端管理")
 @RestController
 @RequestMapping("/api/oauthClient")
-public class OauthClientDetailsController extends AbstractCrudController<OauthClientDetailsService, OauthClientDetails> {
+public class OauthClientDetailsController extends AbstractCrudController<OauthClientDetails> {
 }

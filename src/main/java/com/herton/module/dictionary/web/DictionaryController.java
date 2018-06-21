@@ -22,7 +22,7 @@ import java.util.Map;
 @Api(value = "字典管理")
 @RestController
 @RequestMapping("/api/dictionary")
-public class DictionaryController extends AbstractCrudController<DictionaryService, Dictionary> {
+public class DictionaryController extends AbstractCrudController<Dictionary> {
     private final DictionaryCategoryService dictionaryCategoryService;
 
     /**

@@ -22,7 +22,7 @@ import java.util.Map;
  * @since 1.0.1
  * @param <T> 实现查询的实体
  */
-public abstract class AbstractReadController<S extends CrudService<T>, T extends BaseEntity> {
+public abstract class AbstractReadController<T extends BaseEntity> {
     /**
      * 获取实体的service
      * @return {@link CrudService} 实现类

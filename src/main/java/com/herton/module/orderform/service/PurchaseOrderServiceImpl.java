@@ -25,7 +25,7 @@ import java.util.Map;
 
 @Component
 @Transactional
-public class PurchaseOrderServiceImpl extends AbstractCrudService<PurchaseOrderRepository, PurchaseOrder> implements PurchaseOrderService {
+public class PurchaseOrderServiceImpl extends AbstractCrudService<PurchaseOrder> implements PurchaseOrderService {
     private final PurchaseOrderSkuService purchaseOrderSkuService;
     private final CodeNumberService codeNumberService;
     private final GoodsSkuService goodsSkuService;

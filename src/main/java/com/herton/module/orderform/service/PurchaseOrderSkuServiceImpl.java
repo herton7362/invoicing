@@ -10,6 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional
-public class PurchaseOrderSkuServiceImpl extends AbstractCrudService<PurchaseOrderSkuRepository, PurchaseOrderSku>
+public class PurchaseOrderSkuServiceImpl extends AbstractCrudService<PurchaseOrderSku>
         implements PurchaseOrderSkuService {
 }

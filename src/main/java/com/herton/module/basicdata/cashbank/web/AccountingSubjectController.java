@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @Api(value = "会计科目管理")
 @RestController
 @RequestMapping("/api/accountingSubject")
-public class AccountingSubjectController extends AbstractCrudController<AccountingSubjectService, AccountingSubject> {
+public class AccountingSubjectController extends AbstractCrudController<AccountingSubject> {
     protected AccountingSubjectService getService() {
         return (AccountingSubjectService) crudService;
     }

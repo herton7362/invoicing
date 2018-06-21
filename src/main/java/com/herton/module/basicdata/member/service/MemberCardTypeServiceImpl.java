@@ -10,6 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional
-public class MemberCardTypeServiceImpl extends AbstractCrudService<MemberCardTypeRepository, MemberCardType>
+public class MemberCardTypeServiceImpl extends AbstractCrudService<MemberCardType>
         implements MemberCardTypeService {
 }

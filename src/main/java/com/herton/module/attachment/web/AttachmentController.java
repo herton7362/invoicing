@@ -21,7 +21,7 @@ import java.io.File;
 @Api(value = "附件管理")
 @RestController
 @RequestMapping("/api/attachment")
-public class AttachmentController extends AbstractCrudController<AttachmentService, Attachment> {
+public class AttachmentController extends AbstractCrudController<Attachment> {
     protected AttachmentService getService() {
         return (AttachmentService) crudService;
     }

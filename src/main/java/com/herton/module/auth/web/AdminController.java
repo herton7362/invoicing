@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Api(value = "管理员管理")
 @RestController
 @RequestMapping("/api/admin")
-public class AdminController extends AbstractCrudController<AdminService, Admin> {
+public class AdminController extends AbstractCrudController<Admin> {
     private final RoleService roleService;
 
     /**

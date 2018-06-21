@@ -22,18 +22,16 @@ import java.util.Map;
 
 @Component
 @Transactional
-public class RoleServiceImpl extends AbstractCrudService<RoleRepository, Role> implements RoleService {
-    private RoleRepository getRepository() {
-        return (RoleRepository) pageRepository;
-    }
+public class RoleServiceImpl extends AbstractCrudService<Role> implements RoleService {
     private final ModuleService moduleService;
+    private final RoleRepository roleRepository;
 
     @Override
     public void authorize(String roleId, List<String> moduleIds) throws Exception {
         if(StringUtils.isBlank(roleId)) {
             throw new InvalidParamException("roleId is required");
         }
-        Role role = getRepository().findOne(roleId);
+        Role role = roleRepository.findOne(roleId);
         List<Module> modules = new ArrayList<>(moduleIds.size());
         moduleIds.forEach(moduleId -> {
             try {
@@ -43,7 +41,7 @@ public class RoleServiceImpl extends AbstractCrudService<RoleRepository, Role> i
             }
         });
         role.setModules(modules);
-        getRepository().save(role);
+        roleRepository.save(role);
     }
 
     @Override
@@ -74,7 +72,7 @@ public class RoleServiceImpl extends AbstractCrudService<RoleRepository, Role> i
         BeanUtils.copyProperties(role, roleResult);
         Map<String, String> param = new HashMap<>();
         param.put("roleId", role.getId());
-        roleResult.setStaffAccountMount(getRepository().getStaffAccountMount(role.getId()));
+        roleResult.setStaffAccountMount(roleRepository.getStaffAccountMount(role.getId()));
         return roleResult;
     }
 
@@ -93,7 +91,7 @@ public class RoleServiceImpl extends AbstractCrudService<RoleRepository, Role> i
     }
 
     private void checkUsed(String id) throws Exception {
-        int count = getRepository().getStaffAccountMount(id);
+        int count = roleRepository.getStaffAccountMount(id);
         if(count > 0) {
             throw new InvalidParamException("有员工归属于当前角色，请先删除员工");
         }
@@ -101,8 +99,10 @@ public class RoleServiceImpl extends AbstractCrudService<RoleRepository, Role> i
 
     @Autowired
     public RoleServiceImpl(
-            ModuleService moduleService
+            ModuleService moduleService,
+            RoleRepository roleRepository
     ) {
         this.moduleService = moduleService;
+        this.roleRepository = roleRepository;
     }
 }

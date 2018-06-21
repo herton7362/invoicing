@@ -12,5 +12,5 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "游客应用客户端管理接口，无权限过滤")
 @RestController
 @RequestMapping("/oauthClient")
-public class GuestOauthClientDetailsController extends AbstractReadController<OauthClientDetailsService, OauthClientDetails> {
+public class GuestOauthClientDetailsController extends AbstractReadController<OauthClientDetails> {
 }

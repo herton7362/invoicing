@@ -17,7 +17,7 @@ import java.util.Map;
 
 @Component
 @Transactional
-public class CodeNumberServiceImpl extends AbstractCrudService<CodeNumberRepository, CodeNumber> implements CodeNumberService {
+public class CodeNumberServiceImpl extends AbstractCrudService<CodeNumber> implements CodeNumberService {
     private final SimpleDateFormat s = new SimpleDateFormat("yyyyMMdd");
 
     @Override

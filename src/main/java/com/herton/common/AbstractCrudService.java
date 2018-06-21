@@ -33,7 +33,7 @@ import java.util.*;
  * @since 1.0.0
  * @param <T> 增删改查的实体
  */
-public abstract class AbstractCrudService<D extends PageRepository<T>, T extends BaseEntity> implements CrudService<T> {
+public abstract class AbstractCrudService<T extends BaseEntity> implements CrudService<T> {
     private final CacheUtils cache = CacheUtils.getInstance();
     @Value("${service.showAllEntities}")
     private Boolean showAllEntities;

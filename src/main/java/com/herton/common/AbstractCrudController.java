@@ -17,7 +17,7 @@ import java.util.List;
  * @since 1.0.1
  * @param <T> 实现增删改查的实体
  */
-public abstract class AbstractCrudController<S extends CrudService<T>, T extends BaseEntity> extends AbstractReadController<S, T> {
+public abstract class AbstractCrudController<T extends BaseEntity> extends AbstractReadController<T> {
     /**
      * 保存
      */

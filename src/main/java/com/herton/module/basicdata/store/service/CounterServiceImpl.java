@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Component
 @Transactional
-public class CounterServiceImpl extends AbstractCrudService<CounterRepository, Counter> implements CounterService {
+public class CounterServiceImpl extends AbstractCrudService<Counter> implements CounterService {
     @Override
     public Integer getStoreCounterCount(String storeId) throws Exception {
         if(StringUtils.isBlank(storeId)) {

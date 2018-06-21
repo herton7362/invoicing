@@ -10,5 +10,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional
-public class ModuleServiceImpl extends AbstractCrudService<ModuleRepository, Module> implements ModuleService {
+public class ModuleServiceImpl extends AbstractCrudService<Module> implements ModuleService {
 }

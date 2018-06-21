@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 
 @Component
 @Transactional
-public class AccountingSubjectServiceImpl extends AbstractCrudService<AccountingSubjectRepository, AccountingSubject> implements AccountingSubjectService {
+public class AccountingSubjectServiceImpl extends AbstractCrudService<AccountingSubject> implements AccountingSubjectService {
 
     @Override
     public void editOpeningBalance(String id, EditOpeningBalanceParam editOpeningBalanceParam) throws Exception {

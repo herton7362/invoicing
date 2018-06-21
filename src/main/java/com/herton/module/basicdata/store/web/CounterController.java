@@ -12,5 +12,5 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "收银台管理")
 @RestController
 @RequestMapping("/api/storeCounter")
-public class CounterController extends AbstractCrudController<CounterService, Counter> {
+public class CounterController extends AbstractCrudController<Counter> {
 }

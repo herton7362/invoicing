@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @Api(value = "会员卡管理")
 @RestController
 @RequestMapping("/api/memberCard")
-public class MemberCardController extends AbstractCrudController<MemberCardService, MemberCard> {
+public class MemberCardController extends AbstractCrudController<MemberCard> {
     private MemberCardService getService() {
         return (MemberCardService) crudService;
     }

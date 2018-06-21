@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @Api(value = "往来单位管理")
 @RestController
 @RequestMapping("/api/businessRelatedUnit")
-public class BusinessRelatedUnitController extends AbstractCrudController<BusinessRelatedUnitService, BusinessRelatedUnit> {
+public class BusinessRelatedUnitController extends AbstractCrudController<BusinessRelatedUnit> {
     private BusinessRelatedUnitService getService() {
         return (BusinessRelatedUnitService) crudService;
     }
