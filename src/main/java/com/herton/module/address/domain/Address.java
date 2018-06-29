@@ -3,6 +3,8 @@ package com.herton.module.address.domain;
 import com.herton.entity.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +12,8 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 
 @Entity
+@Setter
+@Getter
 @ApiModel("地址")
 public class Address extends BaseEntity {
     @ApiModelProperty(value = "上级地址")
@@ -21,30 +25,6 @@ public class Address extends BaseEntity {
     @ApiModelProperty(value = "级别")
     @Column(length = 50)
     private String level;
-
-    public Address getParent() {
-        return parent;
-    }
-
-    public void setParent(Address parent) {
-        this.parent = parent;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getLevel() {
-        return level;
-    }
-
-    public void setLevel(String level) {
-        this.level = level;
-    }
 
     public enum Level {
         PROVINCE,

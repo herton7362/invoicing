@@ -3,11 +3,15 @@ package com.herton.module.goods.sku.domain;
 import com.herton.entity.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
 @Entity
+@Setter
+@Getter
 @ApiModel("商品最小库存单元")
 public class GoodsSku extends BaseEntity {
     @ApiModelProperty(value = "商品id")
@@ -31,60 +35,4 @@ public class GoodsSku extends BaseEntity {
     @ApiModelProperty(value = "库存预警值")
     @Column(length = 11, scale = 2, precision = 13)
     private Double stockWarnNumber;
-
-    public String getGoodsId() {
-        return goodsId;
-    }
-
-    public void setGoodsId(String goodsId) {
-        this.goodsId = goodsId;
-    }
-
-    public String getBarcode() {
-        return barcode;
-    }
-
-    public void setBarcode(String barcode) {
-        this.barcode = barcode;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getGoodsAttributeIds() {
-        return goodsAttributeIds;
-    }
-
-    public void setGoodsAttributeIds(String goodsAttributeIds) {
-        this.goodsAttributeIds = goodsAttributeIds;
-    }
-
-    public Double getLastPurchasePrice() {
-        return lastPurchasePrice;
-    }
-
-    public void setLastPurchasePrice(Double lastPurchasePrice) {
-        this.lastPurchasePrice = lastPurchasePrice;
-    }
-
-    public Double getStockNumber() {
-        return stockNumber;
-    }
-
-    public void setStockNumber(Double stockNumber) {
-        this.stockNumber = stockNumber;
-    }
-
-    public Double getStockWarnNumber() {
-        return stockWarnNumber;
-    }
-
-    public void setStockWarnNumber(Double stockWarnNumber) {
-        this.stockWarnNumber = stockWarnNumber;
-    }
 }

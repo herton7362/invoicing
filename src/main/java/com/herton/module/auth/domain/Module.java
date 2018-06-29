@@ -3,6 +3,8 @@ package com.herton.module.auth.domain;
 import com.herton.entity.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +17,8 @@ import javax.persistence.ManyToOne;
  * @since 1.0.0
  */
 @Entity
+@Setter
+@Getter
 @ApiModel("模块")
 public class Module extends BaseEntity {
     @ApiModelProperty(value = "上级模块")
@@ -41,70 +45,6 @@ public class Module extends BaseEntity {
     @ApiModelProperty(value = "图标")
     @Column(length = 100)
     private String icon;
-
-    public Module getParent() {
-        return parent;
-    }
-
-    public void setParent(Module parent) {
-        this.parent = parent;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getNaviNamePath() {
-        return naviNamePath;
-    }
-
-    public void setNaviNamePath(String naviNamePath) {
-        this.naviNamePath = naviNamePath;
-    }
-
-    public String getNaviIdPath() {
-        return naviIdPath;
-    }
-
-    public void setNaviIdPath(String naviIdPath) {
-        this.naviIdPath = naviIdPath;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
 
     public enum Type {
         MENU, FUNCTION

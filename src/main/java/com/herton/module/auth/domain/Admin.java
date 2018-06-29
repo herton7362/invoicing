@@ -3,6 +3,8 @@ package com.herton.module.auth.domain;
 import com.herton.entity.BaseUser;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,6 +15,8 @@ import java.util.List;
  * @since 1.0.0
  */
 @Entity
+@Setter
+@Getter
 @ApiModel(value = "管理员")
 public class Admin extends BaseUser {
     @ApiModelProperty(required = true, value = "姓名")
@@ -25,32 +29,4 @@ public class Admin extends BaseUser {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name="admin_roles",joinColumns={@JoinColumn(name="admin_id")},inverseJoinColumns={@JoinColumn(name="role_id")})
     private List<Role> roles;
-
-    public Admin() {
-        setUserType(UserType.ADMIN.name());
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public List<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
-    }
 }

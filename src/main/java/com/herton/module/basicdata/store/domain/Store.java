@@ -3,11 +3,15 @@ package com.herton.module.basicdata.store.domain;
 import com.herton.entity.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
 @Entity
+@Setter
+@Getter
 @ApiModel("门店")
 public class Store extends BaseEntity {
     @ApiModelProperty(value = "门店名称")
@@ -55,124 +59,4 @@ public class Store extends BaseEntity {
     @ApiModelProperty(value = "备注")
     @Column(length = 200)
     private String remark;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getWarehouseId() {
-        return warehouseId;
-    }
-
-    public void setWarehouseId(String warehouseId) {
-        this.warehouseId = warehouseId;
-    }
-
-    public String getStartBusinessTime() {
-        return startBusinessTime;
-    }
-
-    public void setStartBusinessTime(String startBusinessTime) {
-        this.startBusinessTime = startBusinessTime;
-    }
-
-    public String getCloseBusinessTime() {
-        return closeBusinessTime;
-    }
-
-    public void setCloseBusinessTime(String closeBusinessTime) {
-        this.closeBusinessTime = closeBusinessTime;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getStoreManagerId() {
-        return storeManagerId;
-    }
-
-    public void setStoreManagerId(String storeManagerId) {
-        this.storeManagerId = storeManagerId;
-    }
-
-    public String getAddressId() {
-        return addressId;
-    }
-
-    public void setAddressId(String addressId) {
-        this.addressId = addressId;
-    }
-
-    public String getZipCode() {
-        return zipCode;
-    }
-
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
-    }
-
-    public String getDetailAddress() {
-        return detailAddress;
-    }
-
-    public void setDetailAddress(String detailAddress) {
-        this.detailAddress = detailAddress;
-    }
-
-    public String getLinkman() {
-        return linkman;
-    }
-
-    public void setLinkman(String linkman) {
-        this.linkman = linkman;
-    }
-
-    public String getMobile() {
-        return mobile;
-    }
-
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
-
-    public String getTelephone() {
-        return telephone;
-    }
-
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
-    }
-
-    public String getFax() {
-        return fax;
-    }
-
-    public void setFax(String fax) {
-        this.fax = fax;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
 }

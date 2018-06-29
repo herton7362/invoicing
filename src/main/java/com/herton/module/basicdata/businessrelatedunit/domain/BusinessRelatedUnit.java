@@ -3,6 +3,8 @@ package com.herton.module.basicdata.businessrelatedunit.domain;
 import com.herton.entity.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +12,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
 @Entity
+@Setter
+@Getter
 @ApiModel("往来单位")
 public class BusinessRelatedUnit extends BaseEntity{
     @ApiModelProperty(value = "单位名称")
@@ -78,182 +82,6 @@ public class BusinessRelatedUnit extends BaseEntity{
     private Double creditLine;
     @ApiModelProperty(value = "信用额度启用状态")
     private Boolean creditLineEnable = false;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getShortname() {
-        return shortname;
-    }
-
-    public void setShortname(String shortname) {
-        this.shortname = shortname;
-    }
-
-    public String getPinyin() {
-        return pinyin;
-    }
-
-    public void setPinyin(String pinyin) {
-        this.pinyin = pinyin;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
-    }
-
-    public String getTaxNumber() {
-        return taxNumber;
-    }
-
-    public void setTaxNumber(String taxNumber) {
-        this.taxNumber = taxNumber;
-    }
-
-    public Integer getTaxRate() {
-        return taxRate;
-    }
-
-    public void setTaxRate(Integer taxRate) {
-        this.taxRate = taxRate;
-    }
-
-    public String getLinkman() {
-        return linkman;
-    }
-
-    public void setLinkman(String linkman) {
-        this.linkman = linkman;
-    }
-
-    public String getTelephone() {
-        return telephone;
-    }
-
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
-    }
-
-    public String getMobile() {
-        return mobile;
-    }
-
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPriceLevel() {
-        return priceLevel;
-    }
-
-    public void setPriceLevel(String priceLevel) {
-        this.priceLevel = priceLevel;
-    }
-
-    public String getDetailAddress() {
-        return detailAddress;
-    }
-
-    public void setDetailAddress(String detailAddress) {
-        this.detailAddress = detailAddress;
-    }
-
-    public String getDepositBank() {
-        return depositBank;
-    }
-
-    public void setDepositBank(String depositBank) {
-        this.depositBank = depositBank;
-    }
-
-    public String getBankAccount() {
-        return bankAccount;
-    }
-
-    public void setBankAccount(String bankAccount) {
-        this.bankAccount = bankAccount;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    public Double getOpeningPayableAmount() {
-        return openingPayableAmount;
-    }
-
-    public void setOpeningPayableAmount(Double openingPayableAmount) {
-        this.openingPayableAmount = openingPayableAmount;
-    }
-
-    public Double getOpeningReceivableAmount() {
-        return openingReceivableAmount;
-    }
-
-    public void setOpeningReceivableAmount(Double openingReceivableAmount) {
-        this.openingReceivableAmount = openingReceivableAmount;
-    }
-
-    public Double getNowPayableAmount() {
-        return nowPayableAmount;
-    }
-
-    public void setNowPayableAmount(Double nowPayableAmount) {
-        this.nowPayableAmount = nowPayableAmount;
-    }
-
-    public Double getNowReceivableAmount() {
-        return nowReceivableAmount;
-    }
-
-    public void setNowReceivableAmount(Double nowReceivableAmount) {
-        this.nowReceivableAmount = nowReceivableAmount;
-    }
-
-    public Double getCreditLine() {
-        return creditLine;
-    }
-
-    public void setCreditLine(Double creditLine) {
-        this.creditLine = creditLine;
-    }
-
-    public Boolean getCreditLineEnable() {
-        return creditLineEnable;
-    }
-
-    public void setCreditLineEnable(Boolean creditLineEnable) {
-        this.creditLineEnable = creditLineEnable;
-    }
 
     public enum Type {
         VENDOR("供货商"),

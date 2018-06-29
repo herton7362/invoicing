@@ -3,6 +3,8 @@ package com.herton.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.herton.common.utils.IteratorUtils;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
@@ -14,6 +16,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+@Setter
+@Getter
 @MappedSuperclass
 public abstract class BaseEntity implements Cloneable, Serializable {
     @Id
@@ -38,62 +42,6 @@ public abstract class BaseEntity implements Cloneable, Serializable {
     @ApiModelProperty(required = true, value = "创建人id")
     @Column(length = 36)
     private String createUserId;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public Date getUpdatedDate() {
-        return updatedDate;
-    }
-
-    public void setUpdatedDate(Date updatedDate) {
-        this.updatedDate = updatedDate;
-    }
-
-    public Boolean getLogicallyDeleted() {
-        return logicallyDeleted;
-    }
-
-    public void setLogicallyDeleted(Boolean logicallyDeleted) {
-        this.logicallyDeleted = logicallyDeleted;
-    }
-
-    public Integer getSortNumber() {
-        return sortNumber;
-    }
-
-    public void setSortNumber(Integer sortNumber) {
-        this.sortNumber = sortNumber;
-    }
-
-    public String getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
-    }
-
-    public String getCreateUserId() {
-        return createUserId;
-    }
-
-    public void setCreateUserId(String createUserId) {
-        this.createUserId = createUserId;
-    }
 
     @Override
     public boolean equals(Object obj) {

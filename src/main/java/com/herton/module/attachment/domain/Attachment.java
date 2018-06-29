@@ -3,11 +3,15 @@ package com.herton.module.attachment.domain;
 import com.herton.entity.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
 @Entity
+@Setter
+@Getter
 @ApiModel("附件")
 public class Attachment extends BaseEntity {
     @ApiModelProperty(value = "附件存储路径")
@@ -21,36 +25,4 @@ public class Attachment extends BaseEntity {
     private String format;
     @ApiModelProperty(value = "附件大小")
     private Long size;
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getFormat() {
-        return format;
-    }
-
-    public void setFormat(String format) {
-        this.format = format;
-    }
-
-    public Long getSize() {
-        return size;
-    }
-
-    public void setSize(Long size) {
-        this.size = size;
-    }
 }

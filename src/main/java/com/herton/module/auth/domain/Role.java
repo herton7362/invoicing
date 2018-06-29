@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.herton.entity.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -15,6 +17,8 @@ import java.util.List;
  * @since 1.0.0
  */
 @Entity
+@Setter
+@Getter
 @ApiModel("角色")
 public class Role extends BaseEntity {
     @ApiModelProperty(value = "角色名称")
@@ -31,36 +35,4 @@ public class Role extends BaseEntity {
     @JoinTable(name="role_modules",joinColumns={@JoinColumn(name="role_id")},inverseJoinColumns={@JoinColumn(name="module_id")})
     @Where(clause="logically_deleted=0")
     private List<Module> modules;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    public List<Module> getModules() {
-        return modules;
-    }
-
-    public void setModules(List<Module> modules) {
-        this.modules = modules;
-    }
 }

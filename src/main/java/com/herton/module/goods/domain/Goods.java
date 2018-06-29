@@ -3,11 +3,15 @@ package com.herton.module.goods.domain;
 import com.herton.entity.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
 @Entity
+@Setter
+@Getter
 @ApiModel("商品")
 public class Goods extends BaseEntity {
     @ApiModelProperty(value = "分类id")
@@ -72,172 +76,4 @@ public class Goods extends BaseEntity {
     @ApiModelProperty(value = "备注")
     @Column(length = 200)
     private String remark;
-
-    public String getGoodsCategoryId() {
-        return goodsCategoryId;
-    }
-
-    public void setGoodsCategoryId(String goodsCategoryId) {
-        this.goodsCategoryId = goodsCategoryId;
-    }
-
-    public String getBarcode() {
-        return barcode;
-    }
-
-    public void setBarcode(String barcode) {
-        this.barcode = barcode;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getShortname() {
-        return shortname;
-    }
-
-    public void setShortname(String shortname) {
-        this.shortname = shortname;
-    }
-
-    public String getPinyin() {
-        return pinyin;
-    }
-
-    public void setPinyin(String pinyin) {
-        this.pinyin = pinyin;
-    }
-
-    public String getBrandId() {
-        return brandId;
-    }
-
-    public void setBrandId(String brandId) {
-        this.brandId = brandId;
-    }
-
-    public String getGoodsTypeId() {
-        return goodsTypeId;
-    }
-
-    public void setGoodsTypeId(String goodsTypeId) {
-        this.goodsTypeId = goodsTypeId;
-    }
-
-    public String getMadeAddress() {
-        return madeAddress;
-    }
-
-    public void setMadeAddress(String madeAddress) {
-        this.madeAddress = madeAddress;
-    }
-
-    public String getCoverImageId() {
-        return coverImageId;
-    }
-
-    public void setCoverImageId(String coverImageId) {
-        this.coverImageId = coverImageId;
-    }
-
-    public String getStandard() {
-        return standard;
-    }
-
-    public void setStandard(String standard) {
-        this.standard = standard;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public Double getRetailPrice() {
-        return retailPrice;
-    }
-
-    public void setRetailPrice(Double retailPrice) {
-        this.retailPrice = retailPrice;
-    }
-
-    public Double getWeight() {
-        return weight;
-    }
-
-    public void setWeight(Double weight) {
-        this.weight = weight;
-    }
-
-    public Double getLength() {
-        return length;
-    }
-
-    public void setLength(Double length) {
-        this.length = length;
-    }
-
-    public Double getWidth() {
-        return width;
-    }
-
-    public void setWidth(Double width) {
-        this.width = width;
-    }
-
-    public Double getHeight() {
-        return height;
-    }
-
-    public void setHeight(Double height) {
-        this.height = height;
-    }
-
-    public Double getCostPrice() {
-        return costPrice;
-    }
-
-    public void setCostPrice(Double costPrice) {
-        this.costPrice = costPrice;
-    }
-
-    public Double getStockNumber() {
-        return stockNumber;
-    }
-
-    public void setStockNumber(Double stockNumber) {
-        this.stockNumber = stockNumber;
-    }
-
-    public Double getStockWarnNumber() {
-        return stockWarnNumber;
-    }
-
-    public void setStockWarnNumber(Double stockWarnNumber) {
-        this.stockWarnNumber = stockWarnNumber;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
 }
