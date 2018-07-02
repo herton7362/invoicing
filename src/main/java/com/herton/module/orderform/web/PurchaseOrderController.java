@@ -2,6 +2,7 @@ package com.herton.module.orderform.web;
 
 import com.herton.common.PageParam;
 import com.herton.common.PageResult;
+import com.herton.module.orderform.dto.PurchaseOrderDTO;
 import com.herton.module.orderform.service.PurchaseOrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -27,8 +28,8 @@ public class PurchaseOrderController {
      */
     @ApiOperation(value="保存")
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> save(@RequestBody PurchaseOrderSaveParam purchaseOrderSaveParam) throws Exception {
-        purchaseOrderService.save(purchaseOrderSaveParam);
+    public ResponseEntity<?> save(@RequestBody PurchaseOrderDTO purchaseOrderDTO) throws Exception {
+        purchaseOrderService.save(purchaseOrderDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -46,10 +47,10 @@ public class PurchaseOrderController {
     public ResponseEntity<?> searchPagedList(@ModelAttribute PageParam pageParam, HttpServletRequest request) throws Exception {
         Map<String, String[]> param = request.getParameterMap();
         if(pageParam.isPageAble()) {
-            PageResult<PurchaseOrderResult> page = purchaseOrderService.findAllTranslated(pageParam.getPageRequest(), param);
+            PageResult<PurchaseOrderDTO> page = purchaseOrderService.findAllTranslated(pageParam.getPageRequest(), param);
             return new ResponseEntity<>(page, HttpStatus.OK);
         }
-        List<PurchaseOrderResult> list = purchaseOrderService.findAllTranslated(param);
+        List<PurchaseOrderDTO> list = purchaseOrderService.findAllTranslated(param);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 

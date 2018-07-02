@@ -22,7 +22,7 @@ public abstract class DTOConverter<A, B> implements Function<A, B> {
 
     public DTOConverter<B, A> reverse() {
         DTOConverter<B, A> result = reverse;
-        return (result == null) ? reverse = new DTOConverter.ReverseConverter<A, B>(this) : result;
+        return (result == null) ? reverse = new DTOConverter.ReverseConverter<>(this) : result;
     }
 
     B correctedDoForward(A a) {
