@@ -1,5 +1,6 @@
 package com.herton.common;
 
+import com.herton.dto.BaseDTO;
 import com.herton.entity.BaseEntity;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
@@ -15,17 +16,18 @@ import java.util.List;
  * 提供基本增删改查
  * @author tang he
  * @since 1.0.1
- * @param <T> 实现增删改查的实体
+ * @param <E> 实现增删改查的实体
+ * @param <D> DTO对象
  */
-public abstract class AbstractCrudController<T extends BaseEntity> extends AbstractReadController<T> {
+public abstract class AbstractCrudController<E extends BaseEntity, D extends BaseDTO<E>> extends AbstractReadController<E, D> {
     /**
      * 保存
      */
     @ApiOperation(value="保存")
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<T> save(@RequestBody T t) throws Exception {
-        t = (T) crudService.save(t);
-        return new ResponseEntity<>(t, HttpStatus.CREATED);
+    public ResponseEntity<D> save(@RequestBody D d) throws Exception {
+        d = crudService.save(d);
+        return new ResponseEntity<>(d, HttpStatus.CREATED);
     }
 
     /**
@@ -33,7 +35,7 @@ public abstract class AbstractCrudController<T extends BaseEntity> extends Abstr
      */
     @ApiOperation(value="删除默认为逻辑删除")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<T> delete(@PathVariable String id) throws Exception {
+    public ResponseEntity<?> delete(@PathVariable String id) throws Exception {
         String[] ids = id.split(",");
         for (String s : ids) {
             crudService.delete(s);
@@ -46,7 +48,7 @@ public abstract class AbstractCrudController<T extends BaseEntity> extends Abstr
      */
     @ApiOperation(value="调整排序")
     @RequestMapping(value = "/sort", method = RequestMethod.POST)
-    public ResponseEntity<T> sort(@RequestBody List<T> ts) throws Exception {
+    public ResponseEntity<?> sort(@RequestBody List<E> ts) throws Exception {
         crudService.sort(ts);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -56,7 +58,7 @@ public abstract class AbstractCrudController<T extends BaseEntity> extends Abstr
      */
     @ApiOperation(value="启用")
     @RequestMapping(value = "/enable/{id}", method = RequestMethod.POST)
-    public ResponseEntity<T> enable(@PathVariable String id) throws Exception {
+    public ResponseEntity<?> enable(@PathVariable String id) throws Exception {
         crudService.enable(id);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -66,7 +68,7 @@ public abstract class AbstractCrudController<T extends BaseEntity> extends Abstr
      */
     @ApiOperation(value="停用")
     @RequestMapping(value = "/disable/{id}", method = RequestMethod.POST)
-    public ResponseEntity<T> disable(@PathVariable String id) throws Exception {
+    public ResponseEntity<?> disable(@PathVariable String id) throws Exception {
         crudService.disable(id);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

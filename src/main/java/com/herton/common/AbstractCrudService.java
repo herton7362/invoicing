@@ -3,6 +3,7 @@ package com.herton.common;
 import com.herton.common.utils.CacheUtils;
 import com.herton.common.utils.SpringUtils;
 import com.herton.common.utils.StringUtils;
+import com.herton.dto.BaseDTO;
 import com.herton.entity.BaseEntity;
 import com.herton.exceptions.InvalidParamException;
 import com.herton.module.auth.UserThread;
@@ -31,9 +32,10 @@ import java.util.*;
  * 抽象service提供基本的增删改查操作
  * @author tang he
  * @since 1.0.0
- * @param <T> 增删改查的实体
+ * @param <E> 增删改查的实体
+ * @param <D> DTO对象
  */
-public abstract class AbstractCrudService<T extends BaseEntity> implements CrudService<T> {
+public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDTO<E>> implements CrudService<E, D> {
     private final CacheUtils cache = CacheUtils.getInstance();
     @Value("${service.showAllEntities}")
     private Boolean showAllEntities;
@@ -43,6 +45,9 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
 
     @Autowired
     private EntityManager em;
+
+    @Autowired
+    private D baseDTO;
 
     @PostConstruct
     public void initFactory() {
@@ -54,7 +59,7 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
      * @return {@link PageRepository} 实现类
      */
     @Autowired
-    protected PageRepository<T> pageRepository;
+    protected PageRepository<E> pageRepository;
 
     private Map<String, String[]> manufactureQueryParam(Map<String, ?> param) {
         Map<String, String[]> newParam = new HashMap<>();
@@ -69,25 +74,35 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
     }
 
     @Override
-    public PageResult<T> findAll(PageRequest pageRequest, Map<String, ?> param) throws Exception {
-        Page<T> page = pageRepository.findAll(getSpecification(param), pageRequest);
-        return new PageResult<>(page);
+    public PageResult<D> findAll(PageRequest pageRequest, Map<String, ?> param) throws Exception {
+        Page<E> page = pageRepository.findAll(getSpecification(param), pageRequest);
+        PageResult pageResult = new PageResult(page);
+        pageResult.setContent(convert(pageResult.getContent()));
+        return new PageResult<>((Page<D>) pageResult);
     }
 
     @Override
-    public List<T> findAll(Map<String, ?> param) throws Exception {
-        return pageRepository.findAll(getSpecification(param));
+    public List<D> findAll(Map<String, ?> param) throws Exception {
+        return convert(pageRepository.findAll(getSpecification(param)));
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public T findOne(String id) throws Exception {
-        if(cache.get(id) != null) {
-            return (T) cache.get(id);
+    private List<D> convert(List<E> eList) {
+        List<D> dList = new ArrayList<>();
+        for (E e : eList) {
+            dList.add(baseDTO.convertFor(e));
         }
-        T t = pageRepository.findOne(id);
-        cache.set(id, t);
-        return t;
+        return dList;
+    }
+
+    @Override
+    public D findOne(String id) throws Exception {
+        if(cache.get(id) != null) {
+            return (D) cache.get(id);
+        }
+        E e = pageRepository.findOne(id);
+        D d = baseDTO.convertFor(e);
+        cache.set(id, d);
+        return d;
     }
 
     @Override
@@ -97,16 +112,17 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
     }
 
     @Override
-    public T save(T t) throws Exception {
-        t = pageRepository.save(t);
-        cache.set(t.getId(), t);
-        return t;
+    public D save(D d) throws Exception {
+        E e = pageRepository.save(d.convert());
+        d = baseDTO.convertFor(e);
+        cache.set(e.getId(), d);
+        return d;
     }
 
     @Override
-    public void delete(Iterable<? extends T> ts) throws Exception {
+    public void delete(Iterable<? extends E> ts) throws Exception {
         pageRepository.delete(ts);
-        for (T t : ts) {
+        for (E t : ts) {
             cache.remove(t.getId());
         }
     }
@@ -116,7 +132,7 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
      * @param param 用户传入的查询条件
      * @return {@link Specification}
      */
-    protected Specification<T> getSpecification(Map<String, ?> param) {
+    protected Specification<E> getSpecification(Map<String, ?> param) {
         return new SimpleSpecification(param, showAllEntities);
     }
 
@@ -125,7 +141,7 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
      * @param param 用户传入的查询条件
      * @return {@link Specification}
      */
-    protected Specification<T> getSpecificationForAllEntities(Map<String, ?> param) {
+    protected Specification<E> getSpecificationForAllEntities(Map<String, ?> param) {
         return new SimpleSpecification(param, true);
     }
 
@@ -138,7 +154,7 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
      * 5、当属性类型为数字时并且value为两个是则用between判断
      */
     @SuppressWarnings("unchecked")
-    protected class SimpleSpecification implements Specification<T> {
+    protected class SimpleSpecification implements Specification<E> {
         protected Map<String, String[]> params;
         protected String currentKey;
         protected Attribute currentAttribute;
@@ -148,8 +164,8 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
             this.allEntities = allEntities;
         }
         @Override
-        public Predicate toPredicate(Root<T> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-            Set<Attribute<? super T, ?>> attributes =  root.getModel().getAttributes();
+        public Predicate toPredicate(Root<E> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+            Set<Attribute<? super E, ?>> attributes =  root.getModel().getAttributes();
             List<Predicate> predicate = new ArrayList<>();
             String key;
             String[] values;
@@ -255,14 +271,14 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
             return criteriaBuilder.and(predicate.toArray(new Predicate[]{}));
         }
 
-        private String getEntityName(Class<?> clazz, Root<T> root, String key) {
+        private String getEntityName(Class<?> clazz, Root<E> root, String key) {
             if("parent".equals(key)) {
                 return root.getJavaType().getSimpleName();
             }
             return clazz.getSimpleName();
         }
 
-        private Boolean containsKey(String k, Set<Attribute<? super T, ?>> attributes) {
+        private Boolean containsKey(String k, Set<Attribute<? super E, ?>> attributes) {
             String key;
             for(Attribute attribute : attributes) {
                 key = attribute.getName();
@@ -290,8 +306,8 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
         }
     }
 
-    public void sort(List<T> ts) throws Exception {
-        T t;
+    public void sort(List<E> ts) throws Exception {
+        E t;
         for (int i = 0; i < ts.size(); i++) {
             if(StringUtils.isBlank(ts.get(i).getId())) {
                 throw new InvalidParamException("参数不正确，缺失主键");
@@ -306,7 +322,7 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
         if(StringUtils.isBlank(id)) {
             throw new InvalidParamException("id不能为空");
         }
-        T t = pageRepository.findOne(id);
+        E t = pageRepository.findOne(id);
         if(!t.getLogicallyDeleted()) {
             return;
         }
@@ -318,7 +334,7 @@ public abstract class AbstractCrudService<T extends BaseEntity> implements CrudS
         if(StringUtils.isBlank(id)) {
             throw new InvalidParamException("id不能为空");
         }
-        T t = pageRepository.findOne(id);
+        E t = pageRepository.findOne(id);
         if(t.getLogicallyDeleted()) {
             return;
         }

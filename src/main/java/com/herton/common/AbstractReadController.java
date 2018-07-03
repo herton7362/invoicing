@@ -1,5 +1,6 @@
 package com.herton.common;
 
+import com.herton.dto.BaseDTO;
 import com.herton.entity.BaseEntity;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -20,15 +21,16 @@ import java.util.Map;
  * 提供基本查询接口
  * @author tang he
  * @since 1.0.1
- * @param <T> 实现查询的实体
+ * @param <E> 实现查询的实体
+ * @param <D> DTO对象
  */
-public abstract class AbstractReadController<T extends BaseEntity> {
+public abstract class AbstractReadController<E extends BaseEntity, D extends BaseDTO<E>> {
     /**
      * 获取实体的service
      * @return {@link CrudService} 实现类
      */
     @Autowired
-    protected CrudService<T> crudService;
+    protected CrudService<E, D> crudService;
 
     /**
      * 查询
@@ -44,10 +46,10 @@ public abstract class AbstractReadController<T extends BaseEntity> {
     public ResponseEntity<?> searchPagedList(@ModelAttribute PageParam pageParam, HttpServletRequest request) throws Exception {
         Map<String, String[]> param = request.getParameterMap();
         if(pageParam.isPageAble()) {
-            PageResult<T> page = crudService.findAll(pageParam.getPageRequest(), param);
+            PageResult<D> page = crudService.findAll(pageParam.getPageRequest(), param);
             return new ResponseEntity<>(page, HttpStatus.OK);
         }
-        List<T> list = crudService.findAll(param);
+        List<D> list = crudService.findAll(param);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
@@ -56,7 +58,7 @@ public abstract class AbstractReadController<T extends BaseEntity> {
      */
     @ApiOperation(value="查询一个")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<? extends T> getOne(@PathVariable String id) throws Exception {
+    public ResponseEntity<D> getOne(@PathVariable String id) throws Exception {
         return new ResponseEntity<>(crudService.findOne(id), HttpStatus.OK);
     }
 }

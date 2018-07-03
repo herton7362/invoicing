@@ -1,33 +1,34 @@
 package com.herton.common;
 
+import com.herton.dto.BaseDTO;
 import com.herton.entity.BaseEntity;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Map;
 
-public interface CrudService<T extends BaseEntity> {
+public interface CrudService<E extends BaseEntity, D extends BaseDTO<E>> {
     /**
      * 分页查询
      * @param pageRequest 分页条件
      * @param param 查询条件
      * @return {@link PageResult} spring boot 分页类
      */
-    PageResult<T> findAll(PageRequest pageRequest, Map<String, ?> param) throws Exception;
+    PageResult<D> findAll(PageRequest pageRequest, Map<String, ?> param) throws Exception;
 
     /**
      * 列表查询
      * @param param 查询条件
      * @return 实体列表
      */
-    List<T> findAll(Map<String, ?> param) throws Exception;
+    List<D> findAll(Map<String, ?> param) throws Exception;
 
     /**
      * 查询一个
      * @param id 主键
      * @return 实体
      */
-    T findOne(String id) throws Exception;
+    D findOne(String id) throws Exception;
 
     /**
      * 删除
@@ -39,20 +40,20 @@ public interface CrudService<T extends BaseEntity> {
      * 删除
      * @param ts 待删除的列表
      */
-    void delete(Iterable<? extends T> ts) throws Exception;
+    void delete(Iterable<? extends E> ts) throws Exception;
 
     /**
      * 新增或修改
-     * @param t 实体，如果主键不为空则修改，为空则保存
+     * @param d 实体，如果主键不为空则修改，为空则保存
      * @return 保存后的实体
      */
-    T save(T t) throws Exception;
+    D save(D d) throws Exception;
 
     /**
      * 调整排序
      * @param ts 调整后的顺序列表
      */
-    void sort(List<T> ts) throws Exception;
+    void sort(List<E> ts) throws Exception;
 
     /**
      * 启用

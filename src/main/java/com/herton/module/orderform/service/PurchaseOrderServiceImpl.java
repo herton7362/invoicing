@@ -2,6 +2,7 @@ package com.herton.module.orderform.service;
 
 import com.herton.common.AbstractCrudService;
 import com.herton.common.PageResult;
+import com.herton.common.utils.CacheUtils;
 import com.herton.module.codenumber.domain.CodeNumber;
 import com.herton.module.codenumber.service.CodeNumberService;
 import com.herton.module.orderform.domain.PurchaseOrder;
@@ -18,45 +19,24 @@ import java.util.Map;
 
 @Component
 @Transactional
-public class PurchaseOrderServiceImpl extends AbstractCrudService<PurchaseOrder> implements PurchaseOrderService {
+public class PurchaseOrderServiceImpl extends AbstractCrudService<PurchaseOrder, PurchaseOrderDTO> implements PurchaseOrderService {
+    private final CacheUtils cache = CacheUtils.getInstance();
     private final PurchaseOrderSkuService purchaseOrderSkuService;
     private final CodeNumberService codeNumberService;
 
     @Override
-    public void save(PurchaseOrderDTO purchaseOrderDTO) throws Exception {
-        PurchaseOrder purchaseOrder = purchaseOrderDTO.convert();
+    public PurchaseOrderDTO save(PurchaseOrderDTO purchaseOrderDTO) throws Exception {
         codeNumberService.generateNextCode(CodeNumber.BusinessType.JHD);
-        purchaseOrder.setOrderNumber(codeNumberService.getCodeByBusinessType(CodeNumber.BusinessType.JHD));
-
-        super.save(purchaseOrder);
+        purchaseOrderDTO.setOrderNumber(codeNumberService.getCodeByBusinessType(CodeNumber.BusinessType.JHD));
+        PurchaseOrder purchaseOrder = pageRepository.save(purchaseOrderDTO.convert());
         final List<PurchaseOrderSkuDTO> purchaseOrderSkuDTOList =  purchaseOrderDTO.getItems();
         for (PurchaseOrderSkuDTO purchaseOrderSkuDTO : purchaseOrderSkuDTOList) {
-            purchaseOrderSkuDTO.setPurchaseOrderId(purchaseOrder.getId());
-            purchaseOrderSkuService.save(purchaseOrderSkuDTO.convert());
+            purchaseOrderSkuDTO.setPurchaseOrderId(purchaseOrderDTO.getId());
+            purchaseOrderSkuService.save(purchaseOrderSkuDTO);
         }
-    }
-
-    @Override
-    public PageResult<PurchaseOrderDTO> findAllTranslated(PageRequest pageRequest, Map<String, String[]> param) throws Exception {
-        PageResult<PurchaseOrder> page = super.findAll(pageRequest, param);
-        PageResult<PurchaseOrderDTO> pageResult = new PageResult<>();
-        pageResult.setSize(page.getSize());
-        pageResult.setTotalElements(page.getTotalElements());
-        pageResult.setContent(translateResults(page.getContent()));
-        return pageResult;
-    }
-
-    @Override
-    public List<PurchaseOrderDTO> findAllTranslated(Map<String, String[]> param) throws Exception {
-        return translateResults(super.findAll(param));
-    }
-
-    private List<PurchaseOrderDTO> translateResults(List<PurchaseOrder> purchaseOrders) throws Exception {
-        List<PurchaseOrderDTO> purchaseOrderResults = new ArrayList<>();
-        for (PurchaseOrder purchaseOrder : purchaseOrders) {
-            purchaseOrderResults.add(new PurchaseOrderDTO().convertFor(purchaseOrder));
-        }
-        return purchaseOrderResults;
+        purchaseOrderDTO = purchaseOrderDTO.convertFor(purchaseOrder);
+        cache.set(purchaseOrderDTO.getId(), purchaseOrderDTO);
+        return purchaseOrderDTO;
     }
 
     @Autowired
