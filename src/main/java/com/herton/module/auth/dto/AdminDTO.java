@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Component
 @ApiModel(value = "管理员")
-public class AdminDTO extends BaseDTO<Admin> {
+public class AdminDTO extends BaseDTO<AdminDTO, Admin> {
     @ApiModelProperty(required = true, value = "姓名")
     private String name;
     @ApiModelProperty(required = true, value = "头像")

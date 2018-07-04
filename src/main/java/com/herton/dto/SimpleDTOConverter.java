@@ -7,9 +7,10 @@ import java.lang.reflect.ParameterizedType;
 
 @Slf4j
 public class SimpleDTOConverter<A, B> extends DTOConverter<A, B> {
-    Class<B> clazzB;
-    Class<A> clazzA;
+    private Class<B> clazzB;
+    private Class<A> clazzA;
 
+    @SuppressWarnings("unchecked")
     public SimpleDTOConverter() {
         clazzB = (Class<B>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[1];
         clazzA = (Class<A>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
@@ -21,9 +22,8 @@ public class SimpleDTOConverter<A, B> extends DTOConverter<A, B> {
             B b = clazzB.newInstance();
             BeanUtils.copyProperties(a, b);
             return b;
-        } catch (InstantiationException e) {
-            log.error("DTO转换出现错误", e);
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
+
             log.error("DTO转换出现错误", e);
         }
         return null;
@@ -36,9 +36,7 @@ public class SimpleDTOConverter<A, B> extends DTOConverter<A, B> {
             A a = clazzA.newInstance();
             BeanUtils.copyProperties(b, a);
             return a;
-        } catch (InstantiationException e) {
-            log.error("DTO转换出现错误", e);
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             log.error("DTO转换出现错误", e);
         }
         return null;

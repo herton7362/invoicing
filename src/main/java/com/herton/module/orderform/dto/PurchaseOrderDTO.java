@@ -20,7 +20,7 @@ import java.util.List;
 @Getter
 @Component
 @ApiModel("采购订单")
-public class PurchaseOrderDTO extends BaseDTO<PurchaseOrder> {
+public class PurchaseOrderDTO extends BaseDTO<PurchaseOrderDTO, PurchaseOrder> {
     @ApiModelProperty(value = "订单号")
     private String orderNumber;
     @ApiModelProperty(value = "经手人")

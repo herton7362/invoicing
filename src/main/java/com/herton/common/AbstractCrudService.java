@@ -36,7 +36,7 @@ import java.util.concurrent.ArrayBlockingQueue;
  * @param <E> 增删改查的实体
  * @param <D> DTO对象
  */
-public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDTO<E>> implements CrudService<E, D> {
+public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDTO<D, E>> implements CrudService<E, D> {
     protected final CacheUtils cache = CacheUtils.getInstance();
     @Value("${service.showAllEntities}")
     private Boolean showAllEntities;
@@ -48,7 +48,7 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
     private EntityManager em;
 
     @Autowired
-    protected D baseDTO;
+    protected BaseDTO<D, E> baseDTO;
 
     @PostConstruct
     public void initFactory() {
@@ -77,9 +77,13 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
     @Override
     public PageResult<D> findAll(PageRequest pageRequest, Map<String, ?> param) throws Exception {
         Page<E> page = pageRepository.findAll(getSpecification(param), pageRequest);
-        PageResult pageResult = new PageResult(page);
-        pageResult.setContent(convert(pageResult.getContent()));
-        return new PageResult<>((Page<D>) pageResult);
+        PageResult<D> pageResult = new PageResult<>();
+        pageResult.setContent(convert(page.getContent()));
+        pageResult.setTotalElements(page.getTotalElements());
+        pageResult.setSize(page.getSize());
+        pageResult.setNumber(page.getNumber());
+        pageResult.setTotalPages(page.getTotalPages());
+        return pageResult;
     }
 
     @Override

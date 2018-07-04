@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Component
 @ApiModel("商品")
-public class GoodsDTO extends BaseDTO<Goods> {
+public class GoodsDTO extends BaseDTO<GoodsDTO, Goods> {
     @ApiModelProperty(value = "分类id")
     private String goodsCategoryId;
     @ApiModelProperty(value = "条码")

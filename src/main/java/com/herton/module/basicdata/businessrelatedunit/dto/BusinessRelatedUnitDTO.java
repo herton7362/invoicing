@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @Component
 @ApiModel("往来单位")
-public class BusinessRelatedUnitDTO extends BaseDTO<BusinessRelatedUnit> {
+public class BusinessRelatedUnitDTO extends BaseDTO<BusinessRelatedUnitDTO, BusinessRelatedUnit> {
     @ApiModelProperty(value = "单位名称")
     private String name;
     @ApiModelProperty(value = "单位编号")

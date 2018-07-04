@@ -15,7 +15,7 @@ import javax.persistence.Enumerated;
 @Getter
 @Component
 @ApiModel("会员")
-public class MemberDTO extends BaseDTO<Member> {
+public class MemberDTO extends BaseDTO<MemberDTO, Member> {
     @ApiModelProperty(value = "会员编号")
     private String code;
     @ApiModelProperty(value = "会员名")

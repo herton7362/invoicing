@@ -7,7 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import java.util.List;
 import java.util.Map;
 
-public interface CrudService<E extends BaseEntity, D extends BaseDTO<E>> {
+public interface CrudService<E extends BaseEntity, D extends BaseDTO<D, E>> {
     /**
      * 分页查询
      * @param pageRequest 分页条件

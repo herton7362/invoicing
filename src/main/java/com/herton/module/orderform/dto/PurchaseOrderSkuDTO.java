@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @Component
 @ApiModel("采购订单商品")
-public class PurchaseOrderSkuDTO extends BaseDTO<PurchaseOrderSku> {
+public class PurchaseOrderSkuDTO extends BaseDTO<PurchaseOrderSkuDTO, PurchaseOrderSku> {
     @ApiModelProperty(value = "采购订单 id")
     private String purchaseOrderId;
     @ApiModelProperty(value = "商品 id")

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @Component
 @ApiModel("模块")
-public class ModuleDTO extends BaseDTO<Module> {
+public class ModuleDTO extends BaseDTO<ModuleDTO, Module> {
     @ApiModelProperty(value = "上级模块")
     private Module parent;
     @ApiModelProperty(value = "模块名称")

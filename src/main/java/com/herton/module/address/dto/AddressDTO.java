@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @Component
 @ApiModel("地址")
-public class AddressDTO extends BaseDTO<Address> {
+public class AddressDTO extends BaseDTO<AddressDTO, Address> {
     @ApiModelProperty(value = "上级地址")
     private Address parent;
     @ApiModelProperty(value = "名称")

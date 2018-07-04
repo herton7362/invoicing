@@ -15,7 +15,7 @@ import java.util.Date;
 @Getter
 @Component
 @ApiModel("会员卡")
-public class MemberCardDTO extends BaseDTO<MemberCard> {
+public class MemberCardDTO extends BaseDTO<MemberCardDTO, MemberCard> {
     @ApiModelProperty(value = "会员卡号")
     private String cardNumber;
     @ApiModelProperty(value = "会员卡类型id")

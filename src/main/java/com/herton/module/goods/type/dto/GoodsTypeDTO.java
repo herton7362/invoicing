@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Component
 @ApiModel("商品类型")
-public class GoodsTypeDTO extends BaseDTO<GoodsType> {
+public class GoodsTypeDTO extends BaseDTO<GoodsTypeDTO, GoodsType> {
     @ApiModelProperty(value = "类型名称")
     private String name;
 

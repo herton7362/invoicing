@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @Component
 @ApiModel("收银台")
-public class CounterDTO extends BaseDTO<Counter> {
+public class CounterDTO extends BaseDTO<CounterDTO, Counter> {
     @ApiModelProperty(value = "收银台名称")
     private String name;
     @ApiModelProperty(value = "收银台编号")

@@ -19,7 +19,7 @@ import java.util.List;
  * @param <E> 实现增删改查的实体
  * @param <D> DTO对象
  */
-public abstract class AbstractCrudController<E extends BaseEntity, D extends BaseDTO<E>> extends AbstractReadController<E, D> {
+public abstract class AbstractCrudController<E extends BaseEntity, D extends BaseDTO<D, E>> extends AbstractReadController<E, D> {
     /**
      * 保存
      */

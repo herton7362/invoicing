@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Setter
 @Getter
 @Component
-public class OauthClientDetailsDTO extends BaseDTO<OauthClientDetails> {
+public class OauthClientDetailsDTO extends BaseDTO<OauthClientDetailsDTO, OauthClientDetails> {
     private String name;
     private String clientId;
     private String resourceIds;

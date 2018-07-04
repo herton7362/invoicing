@@ -1,6 +1,7 @@
 package com.herton.module.goods.sku.dto;
 
 import com.herton.dto.SimpleDTOConverter;
+import com.herton.module.goods.domain.GoodsRepository;
 import com.herton.module.goods.dto.GoodsAttributeDTO;
 import com.herton.module.goods.service.GoodsAttributeService;
 import com.herton.module.goods.service.GoodsService;
@@ -16,19 +17,14 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 public class GoodsSkuDTOConverter extends SimpleDTOConverter<GoodsSkuDTO, GoodsSku> {
-    private final GoodsService goodsService;
+    private final GoodsRepository goodsRepository;
     private final GoodsAttributeService goodsAttributeService;
-    @Override
-    protected GoodsSku doForward(GoodsSkuDTO goodsSkuDTO) {
-        GoodsSku goodsSku = super.doForward(goodsSkuDTO);
-        return goodsSku;
-    }
 
     @Override
     protected GoodsSkuDTO doBackward(GoodsSku goodsSku) {
         GoodsSkuDTO goodsSkuDTO = super.doBackward(goodsSku);
         try {
-            goodsSkuDTO.setGoods(goodsService.findOne(goodsSku.getGoodsId()));
+            goodsSkuDTO.setGoods(goodsRepository.findOne(goodsSku.getGoodsId()));
             String[] goodsAttrIds = goodsSku.getGoodsAttributeIds().split(",");
             List<String> goodsAttrIdList = Arrays.asList(goodsAttrIds);
             goodsSkuDTO.setGoodsAttributes(String.join(",", goodsAttrIdList
@@ -51,10 +47,10 @@ public class GoodsSkuDTOConverter extends SimpleDTOConverter<GoodsSkuDTO, GoodsS
 
     @Autowired
     public GoodsSkuDTOConverter(
-            GoodsService goodsService,
+            GoodsRepository goodsRepository,
             GoodsAttributeService goodsAttributeService
     ) {
-        this.goodsService = goodsService;
+        this.goodsRepository = goodsRepository;
         this.goodsAttributeService = goodsAttributeService;
     }
 }

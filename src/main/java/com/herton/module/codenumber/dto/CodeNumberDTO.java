@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @Component
 @ApiModel("编号管理")
-public class CodeNumberDTO extends BaseDTO<CodeNumber> {
+public class CodeNumberDTO extends BaseDTO<CodeNumberDTO, CodeNumber> {
     @ApiModelProperty(value = "业务类型")
     private CodeNumber.BusinessType businessType;
     @ApiModelProperty(value = "下一个编码")

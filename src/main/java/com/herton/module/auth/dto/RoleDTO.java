@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @Component
 @ApiModel("角色")
-public class RoleDTO extends BaseDTO<Role> {
+public class RoleDTO extends BaseDTO<RoleDTO, Role> {
     @ApiModelProperty(value = "角色名称")
     private String name;
     @ApiModelProperty(value = "图标")

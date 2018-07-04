@@ -4,7 +4,7 @@ import com.herton.entity.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public abstract class BaseDTO<E extends BaseEntity> {
+public abstract class BaseDTO<D extends BaseDTO, E extends BaseEntity> {
     @ApiModelProperty(value = "主键")
     private String id;
     @ApiModelProperty(value = "排序号")
@@ -37,11 +37,13 @@ public abstract class BaseDTO<E extends BaseEntity> {
     }
 
     @Autowired
-    protected  DTOConverter<BaseDTO<E>, E> converter;
+    protected  DTOConverter<D, E> converter;
+
+    @SuppressWarnings("unchecked")
     public E convert() {
-        return converter.convert(this);
+        return converter.convert((D) this);
     }
-    public <D extends BaseDTO<E>> D convertFor(E e) {
-        return (D) converter.reverse().convert(e);
+    public D convertFor(E e) {
+        return converter.reverse().convert(e);
     }
 }

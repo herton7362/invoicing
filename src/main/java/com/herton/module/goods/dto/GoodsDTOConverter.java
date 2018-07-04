@@ -32,7 +32,7 @@ public class GoodsDTOConverter extends SimpleDTOConverter<GoodsDTO, Goods> {
             log.error("DTO转换出错", e);
         }
 
-        return super.doBackward(goods);
+        return goodsDTO;
     }
 
     @Autowired

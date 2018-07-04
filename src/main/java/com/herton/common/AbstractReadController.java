@@ -24,7 +24,7 @@ import java.util.Map;
  * @param <E> 实现查询的实体
  * @param <D> DTO对象
  */
-public abstract class AbstractReadController<E extends BaseEntity, D extends BaseDTO<E>> {
+public abstract class AbstractReadController<E extends BaseEntity, D extends BaseDTO<D, E>> {
     /**
      * 获取实体的service
      * @return {@link CrudService} 实现类

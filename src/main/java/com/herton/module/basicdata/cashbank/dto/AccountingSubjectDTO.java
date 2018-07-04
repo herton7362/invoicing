@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @Component
 @ApiModel("会计科目")
-public class AccountingSubjectDTO extends BaseDTO<AccountingSubject> {
+public class AccountingSubjectDTO extends BaseDTO<AccountingSubjectDTO, AccountingSubject> {
     @ApiModelProperty(value = "科目名称")
     private String name;
     @ApiModelProperty(value = "科目编号")

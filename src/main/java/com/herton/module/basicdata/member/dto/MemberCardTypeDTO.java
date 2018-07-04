@@ -14,7 +14,7 @@ import javax.persistence.Column;
 @Getter
 @Component
 @ApiModel("会员卡类型")
-public class MemberCardTypeDTO extends BaseDTO<MemberCardType> {
+public class MemberCardTypeDTO extends BaseDTO<MemberCardTypeDTO, MemberCardType> {
     @ApiModelProperty(value = "类型名称")
     private String name;
     @ApiModelProperty(value = "折扣")

@@ -1,7 +1,7 @@
 package com.herton.module.goods.sku.dto;
 
 import com.herton.dto.BaseDTO;
-import com.herton.module.goods.dto.GoodsDTO;
+import com.herton.module.goods.domain.Goods;
 import com.herton.module.goods.sku.domain.GoodsSku;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -13,11 +13,11 @@ import org.springframework.stereotype.Component;
 @Getter
 @Component
 @ApiModel("商品最小库存单元")
-public class GoodsSkuDTO extends BaseDTO<GoodsSku> {
+public class GoodsSkuDTO extends BaseDTO<GoodsSkuDTO, GoodsSku> {
     @ApiModelProperty(value = "商品id")
     private String goodsId;
     @ApiModelProperty(value = "商品")
-    private GoodsDTO goods;
+    private Goods goods;
     @ApiModelProperty(value = "条码")
     private String barcode;
     @ApiModelProperty(value = "sku编号")

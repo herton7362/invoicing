@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @Component
 @ApiModel("附件")
-public class AttachmentDTO extends BaseDTO<Attachment> {
+public class AttachmentDTO extends BaseDTO<AttachmentDTO, Attachment> {
     @ApiModelProperty(value = "附件存储路径")
     private String path;
     @ApiModelProperty(value = "附件名称")

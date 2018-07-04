@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @Component
 @ApiModel("数据字典")
-public class DictionaryDTO extends BaseDTO<Dictionary> {
+public class DictionaryDTO extends BaseDTO<DictionaryDTO, Dictionary> {
     @ApiModelProperty(value = "字典类别")
     private DictionaryCategory dictionaryCategory;
     @ApiModelProperty("字典名称")
