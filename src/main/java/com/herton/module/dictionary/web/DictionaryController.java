@@ -4,6 +4,8 @@ import com.herton.common.AbstractCrudController;
 import com.herton.common.CrudService;
 import com.herton.module.dictionary.domain.Dictionary;
 import com.herton.module.dictionary.domain.DictionaryCategory;
+import com.herton.module.dictionary.dto.DictionaryCategoryDTO;
+import com.herton.module.dictionary.dto.DictionaryDTO;
 import com.herton.module.dictionary.service.DictionaryCategoryService;
 import com.herton.module.dictionary.service.DictionaryService;
 import io.swagger.annotations.Api;
@@ -22,7 +24,7 @@ import java.util.Map;
 @Api(value = "字典管理")
 @RestController
 @RequestMapping("/api/dictionary")
-public class DictionaryController extends AbstractCrudController<Dictionary> {
+public class DictionaryController extends AbstractCrudController<Dictionary, DictionaryDTO> {
     private final DictionaryCategoryService dictionaryCategoryService;
 
     /**
@@ -30,9 +32,9 @@ public class DictionaryController extends AbstractCrudController<Dictionary> {
      */
     @ApiOperation(value="保存")
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Dictionary> save(@RequestBody Dictionary product) throws Exception {
+    public ResponseEntity<DictionaryDTO> save(@RequestBody DictionaryDTO product) throws Exception {
         if(product.getDictionaryCategory() != null && StringUtils.isNotBlank(product.getDictionaryCategory().getId())) {
-            product.setDictionaryCategory(dictionaryCategoryService.findOne(product.getDictionaryCategory().getId()));
+            product.setDictionaryCategory((DictionaryCategory) dictionaryCategoryService.findOne(product.getDictionaryCategory().getId()).convert());
         } else {
             product.setDictionaryCategory(null);
         }
@@ -45,11 +47,11 @@ public class DictionaryController extends AbstractCrudController<Dictionary> {
      */
     @ApiOperation(value="根据code获取字典")
     @RequestMapping(value= "/code/{code}", method = RequestMethod.GET)
-    public ResponseEntity<List<Dictionary>> getByCode(@PathVariable String code) throws Exception {
+    public ResponseEntity<List<DictionaryDTO>> getByCode(@PathVariable String code) throws Exception {
         Map<String, String[]> params = new HashMap<>();
         params.put("code", new String[]{code});
-        List<DictionaryCategory> dictionaryCategories  =  dictionaryCategoryService.findAll(params);
-        List<Dictionary> dictionaries = new ArrayList<>();
+        List<DictionaryCategoryDTO> dictionaryCategories  =  dictionaryCategoryService.findAll(params);
+        List<DictionaryDTO> dictionaries = new ArrayList<>();
         if(dictionaryCategories != null && !dictionaryCategories.isEmpty()) {
             params.clear();
             params.put("sort", new String[]{"sortNumber,updatedDate"});

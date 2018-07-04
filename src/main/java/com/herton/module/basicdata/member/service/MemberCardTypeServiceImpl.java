@@ -4,12 +4,13 @@ import com.herton.common.AbstractCrudService;
 import com.herton.common.PageRepository;
 import com.herton.module.basicdata.member.domain.MemberCardType;
 import com.herton.module.basicdata.member.domain.MemberCardTypeRepository;
+import com.herton.module.basicdata.member.dto.MemberCardTypeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional
-public class MemberCardTypeServiceImpl extends AbstractCrudService<MemberCardType>
+public class MemberCardTypeServiceImpl extends AbstractCrudService<MemberCardType, MemberCardTypeDTO>
         implements MemberCardTypeService {
 }

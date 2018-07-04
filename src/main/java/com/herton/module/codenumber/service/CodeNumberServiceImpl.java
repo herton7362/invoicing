@@ -5,6 +5,7 @@ import com.herton.common.PageRepository;
 import com.herton.exceptions.InvalidParamException;
 import com.herton.module.codenumber.domain.CodeNumber;
 import com.herton.module.codenumber.domain.CodeNumberRepository;
+import com.herton.module.codenumber.dto.CodeNumberDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +18,7 @@ import java.util.Map;
 
 @Component
 @Transactional
-public class CodeNumberServiceImpl extends AbstractCrudService<CodeNumber> implements CodeNumberService {
+public class CodeNumberServiceImpl extends AbstractCrudService<CodeNumber, CodeNumberDTO> implements CodeNumberService {
     private final SimpleDateFormat s = new SimpleDateFormat("yyyyMMdd");
 
     @Override
@@ -27,10 +28,10 @@ public class CodeNumberServiceImpl extends AbstractCrudService<CodeNumber> imple
         }
         Map<String, String> param = new HashMap<>();
         param.put("businessType", businessType.name());
-        List<CodeNumber> codeNumbers = findAll(param);
+        List<CodeNumberDTO> codeNumbers = findAll(param);
         CodeNumber codeNumber;
         if(codeNumbers != null && !codeNumbers.isEmpty()) {
-            codeNumber = codeNumbers.get(0);
+            codeNumber = codeNumbers.get(0).convert();
             String time1 = s.format(codeNumber.getUpdatedDate());
             String time2 = s.format(new Date());
             // 如果日期变了则重新开始计数
@@ -57,16 +58,16 @@ public class CodeNumberServiceImpl extends AbstractCrudService<CodeNumber> imple
         }
         Map<String, String> param = new HashMap<>();
         param.put("businessType", businessType.name());
-        List<CodeNumber> codeNumbers = findAll(param);
+        List<CodeNumberDTO> codeNumbers = findAll(param);
         if(codeNumbers != null && !codeNumbers.isEmpty()) {
             return formatCode(codeNumbers.get(0));
         } else {
             CodeNumber codeNumber = generateNextCode(businessType);
-            return formatCode(codeNumber);
+            return formatCode(new CodeNumberDTO().convertFor(codeNumber));
         }
     }
 
-    private String formatCode (CodeNumber codeNumber) {
+    private String formatCode (CodeNumberDTO codeNumber) {
 
         return String.format("%s-%s-%s",
                 codeNumber.getBusinessType().name(), s.format(new Date()), codeNumber.getNextCode());

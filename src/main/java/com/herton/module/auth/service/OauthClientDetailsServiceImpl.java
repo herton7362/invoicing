@@ -1,10 +1,10 @@
 package com.herton.module.auth.service;
 
 import com.herton.common.AbstractCrudService;
-import com.herton.common.PageRepository;
 import com.herton.common.utils.StringUtils;
 import com.herton.exceptions.InvalidParamException;
 import com.herton.module.auth.domain.*;
+import com.herton.module.auth.dto.OauthClientDetailsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,13 +14,13 @@ import java.util.List;
 
 @Component
 @Transactional
-public class OauthClientDetailsServiceImpl extends AbstractCrudService<OauthClientDetails> implements OauthClientDetailsService {
-    private final AdminService adminService;
-    private final ModuleService moduleService;
-    private final RoleService roleService;
+public class OauthClientDetailsServiceImpl extends AbstractCrudService<OauthClientDetails, OauthClientDetailsDTO> implements OauthClientDetailsService {
+    private final AdminRepository adminRepository;
+    private final ModuleRepository moduleRepository;
+    private final RoleRepository roleRepository;
 
     @Override
-    public OauthClientDetails save(OauthClientDetails oauthClientDetails) throws Exception {
+    public OauthClientDetailsDTO save(OauthClientDetailsDTO oauthClientDetails) throws Exception {
         if(StringUtils.isBlank(oauthClientDetails.getClientId())) {
             throw new InvalidParamException("client id is null");
         }
@@ -45,7 +45,7 @@ public class OauthClientDetailsServiceImpl extends AbstractCrudService<OauthClie
         List<Role> roles = new ArrayList<>();
         roles.add(initRole(clientId));
         admin.setRoles(roles);
-        adminService.save(admin);
+        adminRepository.save(admin);
     }
 
     /**
@@ -57,7 +57,7 @@ public class OauthClientDetailsServiceImpl extends AbstractCrudService<OauthClie
         role.setName("超级管理员");
         role.setClientId(clientId);
         role.setModules(initModule(clientId));
-        return roleService.save(role);
+        return roleRepository.save(role);
     }
 
     private List<Module> initModule(String clientId) throws Exception {
@@ -77,7 +77,7 @@ public class OauthClientDetailsServiceImpl extends AbstractCrudService<OauthClie
         module.setUrl(url);
         module.setClientId(clientId);
         module.setParent(parent);
-        return moduleService.save(module);
+        return moduleRepository.save(module);
     }
 
     @Override
@@ -87,12 +87,12 @@ public class OauthClientDetailsServiceImpl extends AbstractCrudService<OauthClie
 
     @Autowired
     public OauthClientDetailsServiceImpl(
-            AdminService adminService,
-            ModuleService moduleService,
-            RoleService roleService
+            AdminRepository adminRepository,
+            ModuleRepository moduleRepository,
+            RoleRepository roleRepository
     ) {
-        this.adminService = adminService;
-        this.moduleService = moduleService;
-        this.roleService = roleService;
+        this.adminRepository = adminRepository;
+        this.moduleRepository = moduleRepository;
+        this.roleRepository = roleRepository;
     }
 }

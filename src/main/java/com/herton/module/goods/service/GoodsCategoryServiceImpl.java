@@ -1,12 +1,11 @@
 package com.herton.module.goods.service;
 
 import com.herton.common.AbstractCrudService;
-import com.herton.common.PageRepository;
 import com.herton.common.PageResult;
 import com.herton.common.utils.StringUtils;
 import com.herton.exceptions.InvalidParamException;
 import com.herton.module.goods.domain.GoodsCategory;
-import com.herton.module.goods.domain.GoodsCategoryRepository;
+import com.herton.module.goods.dto.GoodsCategoryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
@@ -16,13 +15,13 @@ import java.util.*;
 
 @Component
 @Transactional
-public class GoodsCategoryServiceImpl extends AbstractCrudService<GoodsCategory>
+public class GoodsCategoryServiceImpl extends AbstractCrudService<GoodsCategory, GoodsCategoryDTO>
         implements GoodsCategoryService {
     private final GoodsService goodsService;
 
     @Override
-    public List<GoodsCategory> findAll(Map<String, ?> param) throws Exception {
-        List<GoodsCategory> list = super.findAll(param);
+    public List<GoodsCategoryDTO> findAll(Map<String, ?> param) throws Exception {
+        List<GoodsCategoryDTO> list = super.findAll(param);
         if(param.containsKey("cascadeParent")) {
             cascadeParent(list);
         }
@@ -35,14 +34,14 @@ public class GoodsCategoryServiceImpl extends AbstractCrudService<GoodsCategory>
         return list;
     }
 
-    private void cascadeParent(List<GoodsCategory> list) throws Exception {
+    private void cascadeParent(List<GoodsCategoryDTO> list) throws Exception {
         Set<String> parentIds = new HashSet<>();
 
         list.forEach(item -> {
             if(list.stream().noneMatch(i -> i.getId().equals(item.getParentId())))
                 parentIds.add(item.getParentId());
         });
-        List<GoodsCategory> newList = new ArrayList<>();
+        List<GoodsCategoryDTO> newList = new ArrayList<>();
         for (String parentId : parentIds) {
             if(parentId != null)
                 newList.add(findOne(parentId));
@@ -54,17 +53,17 @@ public class GoodsCategoryServiceImpl extends AbstractCrudService<GoodsCategory>
         cascadeParent(newList);
     }
 
-    private void addExtraData(List<GoodsCategory> list, String extraData) throws Exception {
+    private void addExtraData(List<GoodsCategoryDTO> list, String extraData) throws Exception {
         if(!list.stream().anyMatch(data->data.getId().equals(extraData))) {
             list.add(findOne(extraData));
         }
     }
 
     @Override
-    public PageResult<GoodsCategory> findAll(PageRequest pageRequest, Map<String, ?> param) throws Exception {
-        PageResult<GoodsCategory> pageResult = super.findAll(pageRequest, param);
+    public PageResult<GoodsCategoryDTO> findAll(PageRequest pageRequest, Map<String, ?> param) throws Exception {
+        PageResult<GoodsCategoryDTO> pageResult = super.findAll(pageRequest, param);
         if(param.containsKey("cascadeParent")) {
-            List<GoodsCategory> list = new ArrayList<>(pageResult.getContent());
+            List<GoodsCategoryDTO> list = new ArrayList<>(pageResult.getContent());
             cascadeParent(list);
             if(param.containsKey("extraData")) {
                 String extraData = ((String[])param.get("extraData"))[0];
@@ -84,8 +83,8 @@ public class GoodsCategoryServiceImpl extends AbstractCrudService<GoodsCategory>
     }
 
     @Override
-    public void delete(Iterable<? extends GoodsCategory> goodsCategories) throws Exception {
-        for (GoodsCategory goodsCategory : goodsCategories) {
+    public void delete(Iterable<? extends GoodsCategoryDTO> goodsCategories) throws Exception {
+        for (GoodsCategoryDTO goodsCategory : goodsCategories) {
             this.checkUsed(goodsCategory.getId());
         }
         super.delete(goodsCategories);

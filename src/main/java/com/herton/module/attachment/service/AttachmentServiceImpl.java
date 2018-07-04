@@ -8,6 +8,7 @@ import com.herton.config.FrameworkProperties;
 import com.herton.entity.BaseUser;
 import com.herton.module.attachment.domain.Attachment;
 import com.herton.module.attachment.domain.AttachmentRepository;
+import com.herton.module.attachment.dto.AttachmentDTO;
 import com.herton.module.auth.UserThread;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +24,15 @@ import java.util.List;
 
 @Component
 @Transactional
-public class AttachmentServiceImpl extends AbstractCrudService<Attachment> implements AttachmentService {
+public class AttachmentServiceImpl extends AbstractCrudService<Attachment, AttachmentDTO> implements AttachmentService {
     public static final String prefixPath = "C:";
 
     @Override
-    public Attachment save(MultipartFile multipartFile) throws Exception {
+    public AttachmentDTO save(MultipartFile multipartFile) throws Exception {
         if(multipartFile == null || multipartFile.isEmpty()) {
             return null;
         }
-        Attachment attachment = new Attachment();
+        AttachmentDTO attachment = new AttachmentDTO();
         String path = "/nfs-client/%s/%s/%s/%s.%s";
         if(multipartFile.getOriginalFilename().lastIndexOf(".") >= 0) {
             String format = multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf("."));
@@ -65,8 +66,8 @@ public class AttachmentServiceImpl extends AbstractCrudService<Attachment> imple
     }
 
     @Override
-    public List<Attachment> save(List<MultipartFile> multipartFiles) throws Exception {
-        List<Attachment> attachments = new ArrayList<>();
+    public List<AttachmentDTO> save(List<MultipartFile> multipartFiles) throws Exception {
+        List<AttachmentDTO> attachments = new ArrayList<>();
         for (MultipartFile multipartFile : multipartFiles) {
             attachments.add(save(multipartFile));
         }

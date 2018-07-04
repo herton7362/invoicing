@@ -6,6 +6,7 @@ import com.herton.common.utils.StringUtils;
 import com.herton.exceptions.InvalidParamException;
 import com.herton.module.basicdata.store.domain.Counter;
 import com.herton.module.basicdata.store.domain.CounterRepository;
+import com.herton.module.basicdata.store.dto.CounterDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +16,7 @@ import java.util.Map;
 
 @Component
 @Transactional
-public class CounterServiceImpl extends AbstractCrudService<Counter> implements CounterService {
+public class CounterServiceImpl extends AbstractCrudService<Counter, CounterDTO> implements CounterService {
     @Override
     public Integer getStoreCounterCount(String storeId) throws Exception {
         if(StringUtils.isBlank(storeId)) {

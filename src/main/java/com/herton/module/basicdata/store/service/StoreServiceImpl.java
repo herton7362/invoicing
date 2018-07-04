@@ -6,13 +6,14 @@ import com.herton.common.utils.StringUtils;
 import com.herton.exceptions.InvalidParamException;
 import com.herton.module.basicdata.store.domain.Store;
 import com.herton.module.basicdata.store.domain.StoreRepository;
+import com.herton.module.basicdata.store.dto.StoreDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional
-public class StoreServiceImpl extends AbstractCrudService<Store> implements StoreService {
+public class StoreServiceImpl extends AbstractCrudService<Store, StoreDTO> implements StoreService {
     private final CounterService counterService;
 
     @Override

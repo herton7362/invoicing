@@ -3,6 +3,7 @@ package com.herton.module.basicdata.store.web;
 import com.herton.common.AbstractCrudController;
 import com.herton.common.CrudService;
 import com.herton.module.basicdata.store.domain.Store;
+import com.herton.module.basicdata.store.dto.StoreDTO;
 import com.herton.module.basicdata.store.service.StoreService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "门店管理")
 @RestController
 @RequestMapping("/api/store")
-public class StoreController extends AbstractCrudController<Store> {
+public class StoreController extends AbstractCrudController<Store, StoreDTO> {
     private StoreService getService() {
         return (StoreService) crudService;
     }

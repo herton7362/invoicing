@@ -6,6 +6,7 @@ import com.herton.common.utils.StringUtils;
 import com.herton.exceptions.InvalidParamException;
 import com.herton.module.basicdata.member.domain.MemberCard;
 import com.herton.module.basicdata.member.domain.MemberCardRepository;
+import com.herton.module.basicdata.member.dto.MemberCardDTO;
 import com.herton.module.basicdata.member.web.ChangePointsParam;
 import com.herton.module.basicdata.member.web.ChangeBalanceParam;
 import com.herton.module.basicdata.member.web.ExchangePointsToBalanceParam;
@@ -21,7 +22,7 @@ import java.util.Map;
 
 @Component
 @Transactional
-public class MemberCardServiceImpl extends AbstractCrudService<MemberCard> implements MemberCardService {
+public class MemberCardServiceImpl extends AbstractCrudService<MemberCard, MemberCardDTO> implements MemberCardService {
 
     @Override
     public Double getMemberTotalBalance(String memberId) throws Exception {
@@ -31,9 +32,9 @@ public class MemberCardServiceImpl extends AbstractCrudService<MemberCard> imple
         Map<String, String[]> params = new HashMap<>();
         params.put("memberId", new String[]{memberId});
         BigDecimal result = new BigDecimal(0);
-        List<MemberCard> memberCards = findAll(params);
+        List<MemberCardDTO> memberCards = findAll(params);
 
-        for (MemberCard memberCard : memberCards) {
+        for (MemberCardDTO memberCard : memberCards) {
             result = result.add(new BigDecimal(memberCard.getBalance()));
         }
         return result.setScale(2, RoundingMode.HALF_UP).doubleValue();
@@ -47,9 +48,9 @@ public class MemberCardServiceImpl extends AbstractCrudService<MemberCard> imple
         Map<String, String[]> params = new HashMap<>();
         params.put("memberId", new String[]{memberId});
         Integer result = 0;
-        List<MemberCard> memberCards = findAll(params);
+        List<MemberCardDTO> memberCards = findAll(params);
 
-        for (MemberCard memberCard : memberCards) {
+        for (MemberCardDTO memberCard : memberCards) {
             result += memberCard.getPoints();
         }
         return result;

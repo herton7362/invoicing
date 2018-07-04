@@ -1,17 +1,12 @@
 package com.herton.module.goods.sku.service;
 
 import com.herton.common.CrudService;
-import com.herton.common.PageResult;
-import com.herton.module.goods.domain.GoodsAttribute;
 import com.herton.module.goods.sku.domain.GoodsSku;
-import com.herton.module.goods.sku.web.GoodsSkuResult;
-import com.herton.module.goods.web.GoodsSaveParam;
-import org.springframework.data.domain.PageRequest;
+import com.herton.module.goods.sku.dto.GoodsSkuDTO;
 
 import java.util.List;
-import java.util.Map;
 
-public interface GoodsSkuService extends CrudService<GoodsSku> {
+public interface GoodsSkuService extends CrudService<GoodsSku, GoodsSkuDTO> {
     /**
      * 刷新商品sku，如果sku未被使用则删除，如果被占用则改为停用
      * @param goodsId 商品id
@@ -28,27 +23,5 @@ public interface GoodsSkuService extends CrudService<GoodsSku> {
      */
     void refreshGoodsSkuByFormatted(String goodsId, List<String> goodsPropertyValueIdsList) throws Exception;
 
-    /**
-     * 分页查询，并且转译结果
-     * @param pageRequest 分页条件
-     * @param param 查询条件
-     * @return {@link GoodsSkuResult} spring boot 分页类
-     */
-    PageResult<GoodsSkuResult> findAllTranslated(PageRequest pageRequest, Map<String, ?> param) throws Exception;
-
-    /**
-     * 查询，并且转译结果
-     * @param param 查询条件
-     * @return {@link GoodsSkuResult} spring boot 分页类
-     */
-    List<GoodsSkuResult> findAllTranslated(Map<String, ?> param) throws Exception;
-
-    /**
-     * 根据id查询一个
-     * @param id 主键
-     * @return 实体
-     */
-    GoodsSkuResult findOneTranslated(String id) throws Exception;
-
-    void save(Boolean isCreate, String goodsId, List<GoodsSaveParam.GoodsSkuParam> goodsSkuParams, List<GoodsAttribute> goodsAttributes) throws Exception;
+    void save(Boolean isCreate, String goodsId, List<GoodsSkuDTO> goodsSkuParams) throws Exception;
 }

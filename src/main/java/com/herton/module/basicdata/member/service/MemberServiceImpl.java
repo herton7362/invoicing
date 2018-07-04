@@ -8,6 +8,8 @@ import com.herton.exceptions.InvalidParamException;
 import com.herton.module.basicdata.member.domain.Member;
 import com.herton.module.basicdata.member.domain.MemberCard;
 import com.herton.module.basicdata.member.domain.MemberRepository;
+import com.herton.module.basicdata.member.dto.MemberCardDTO;
+import com.herton.module.basicdata.member.dto.MemberDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +21,7 @@ import java.util.Map;
 
 @Component
 @Transactional
-public class MemberServiceImpl extends AbstractCrudService<Member> implements MemberService {
+public class MemberServiceImpl extends AbstractCrudService<Member, MemberDTO> implements MemberService {
     private final MemberCardService memberCardService;
 
     private Map<String, String[]> produceQueryParam(Map<String, String[]> param) throws Exception {
@@ -29,10 +31,10 @@ public class MemberServiceImpl extends AbstractCrudService<Member> implements Me
             Map<String, String[]> paramTemp = new HashMap<>();
             paramTemp.put("cardNumber", param.get("cardNumber"));
             newParam.remove("cardNumber");
-            List<MemberCard> memberCards = memberCardService.findAll(paramTemp);
+            List<MemberCardDTO> memberCards = memberCardService.findAll(paramTemp);
             if(memberCards != null && !memberCards.isEmpty()) {
                 List<String> ids = new ArrayList<>();
-                for (MemberCard memberCard : memberCards) {
+                for (MemberCardDTO memberCard : memberCards) {
                     ids.add(memberCard.getMemberId());
                 }
                 newParam.put("id", ids.toArray(new String[]{}));
@@ -42,7 +44,7 @@ public class MemberServiceImpl extends AbstractCrudService<Member> implements Me
     }
 
     @Override
-    public Member save(Member member) throws Exception {
+    public MemberDTO save(MemberDTO member) throws Exception {
         if(StringUtils.isBlank(member.getId())) {
             member.setCode(NumberUtils.manufactureTradeNumber());
         }

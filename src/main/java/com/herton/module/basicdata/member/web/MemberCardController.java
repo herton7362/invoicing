@@ -3,6 +3,7 @@ package com.herton.module.basicdata.member.web;
 import com.herton.common.AbstractCrudController;
 import com.herton.common.CrudService;
 import com.herton.module.basicdata.member.domain.MemberCard;
+import com.herton.module.basicdata.member.dto.MemberCardDTO;
 import com.herton.module.basicdata.member.service.MemberCardService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @Api(value = "会员卡管理")
 @RestController
 @RequestMapping("/api/memberCard")
-public class MemberCardController extends AbstractCrudController<MemberCard> {
+public class MemberCardController extends AbstractCrudController<MemberCard, MemberCardDTO> {
     private MemberCardService getService() {
         return (MemberCardService) crudService;
     }

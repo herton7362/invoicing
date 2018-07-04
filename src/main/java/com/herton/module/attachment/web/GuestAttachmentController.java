@@ -4,6 +4,7 @@ import com.herton.common.AbstractReadController;
 import com.herton.common.CrudService;
 import com.herton.common.utils.OSUtils;
 import com.herton.module.attachment.domain.Attachment;
+import com.herton.module.attachment.dto.AttachmentDTO;
 import com.herton.module.attachment.service.AttachmentService;
 import com.herton.module.attachment.service.AttachmentServiceImpl;
 import io.swagger.annotations.Api;
@@ -24,7 +25,7 @@ import java.util.List;
 @Api(value = "游客附件接口，无权限过滤")
 @RestController
 @RequestMapping("/attachment")
-public class GuestAttachmentController extends AbstractReadController<Attachment> {
+public class GuestAttachmentController extends AbstractReadController<Attachment, AttachmentDTO> {
     private AttachmentService getService() {
         return (AttachmentService) crudService;
     }
@@ -32,8 +33,8 @@ public class GuestAttachmentController extends AbstractReadController<Attachment
      * 上传文件
      */
     @RequestMapping(value="/upload", method = RequestMethod.POST)
-    public ResponseEntity<List<Attachment>> upload(@RequestParam("attachments") MultipartFile[] attachments) throws Exception {
-        List<Attachment> results = getService().save(Arrays.asList(attachments));
+    public ResponseEntity<List<AttachmentDTO>> upload(@RequestParam("attachments") MultipartFile[] attachments) throws Exception {
+        List<AttachmentDTO> results = getService().save(Arrays.asList(attachments));
         return new ResponseEntity<>(results, HttpStatus.OK);
     }
 
@@ -43,7 +44,7 @@ public class GuestAttachmentController extends AbstractReadController<Attachment
     @ApiOperation(value="下载文件")
     @RequestMapping(value = "/download/{id}", method = RequestMethod.GET)
     public ResponseEntity<byte[]> download(@PathVariable String id) throws Exception {
-        Attachment attachment = getService().findOne(id);
+        AttachmentDTO attachment = getService().findOne(id);
         String prefixPath = null;
         if(OSUtils.isWindows()) {
             prefixPath = AttachmentServiceImpl.prefixPath;

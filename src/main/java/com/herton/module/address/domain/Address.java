@@ -1,8 +1,6 @@
 package com.herton.module.address.domain;
 
 import com.herton.entity.BaseEntity;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,15 +12,11 @@ import javax.persistence.ManyToOne;
 @Entity
 @Setter
 @Getter
-@ApiModel("地址")
 public class Address extends BaseEntity {
-    @ApiModelProperty(value = "上级地址")
     @ManyToOne(fetch = FetchType.EAGER)
     private Address parent;
-    @ApiModelProperty(value = "名称")
     @Column(length = 100)
     private String name;
-    @ApiModelProperty(value = "级别")
     @Column(length = 50)
     private String level;
 

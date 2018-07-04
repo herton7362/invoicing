@@ -6,6 +6,7 @@ import com.herton.common.PageResult;
 import com.herton.entity.BaseUser;
 import com.herton.module.auth.domain.Admin;
 import com.herton.module.auth.domain.AdminRepository;
+import com.herton.module.auth.dto.AdminDTO;
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.ResultTransformer;
 import org.hibernate.transform.Transformers;
@@ -28,18 +29,24 @@ import java.util.Map;
 
 @Component
 @Transactional
-public class AdminServiceImpl extends AbstractCrudService<Admin> implements AdminService, UserService {
+public class AdminServiceImpl extends AbstractCrudService<Admin, AdminDTO> implements AdminService, UserService {
     private final EntityManager entityManager;
     private final AdminRepository adminRepository;
 
     @Override
-    public PageResult<Admin> findAll(PageRequest pageRequest, Map<String, ?> param) throws Exception {
+    public PageResult<AdminDTO> findAll(PageRequest pageRequest, Map<String, ?> param) throws Exception {
         Page<Admin> page = pageRepository.findAll(new AdminSpecification(param), pageRequest);
-        return new PageResult<>(page);
+        List<AdminDTO> dList = new ArrayList<>();
+        for (Admin admin : page.getContent()) {
+            dList.add(baseDTO.convertFor(admin));
+        }
+        PageResult pageResult = new PageResult(page);
+        pageResult.setContent(dList);
+        return pageResult;
     }
 
     @Override
-    public Admin save(Admin admin) throws Exception {
+    public AdminDTO save(AdminDTO admin) throws Exception {
         if(admin.getId() == null) {
             if(admin.getPassword() == null) {
                 admin.setPassword("123456");

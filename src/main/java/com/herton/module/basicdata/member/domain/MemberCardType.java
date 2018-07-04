@@ -12,7 +12,6 @@ import javax.persistence.Entity;
 @Entity
 @Setter
 @Getter
-@ApiModel("会员卡类型")
 public class MemberCardType extends BaseEntity {
     @ApiModelProperty(value = "类型名称")
     @Column(length = 10)

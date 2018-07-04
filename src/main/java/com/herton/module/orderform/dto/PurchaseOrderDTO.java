@@ -3,7 +3,9 @@ package com.herton.module.orderform.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.herton.dto.BaseDTO;
 import com.herton.module.basicdata.businessrelatedunit.domain.BusinessRelatedUnit;
+import com.herton.module.basicdata.businessrelatedunit.dto.BusinessRelatedUnitDTO;
 import com.herton.module.basicdata.warehouse.domain.Warehouse;
+import com.herton.module.basicdata.warehouse.dto.WarehouseDTO;
 import com.herton.module.orderform.domain.PurchaseOrder;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -19,8 +21,6 @@ import java.util.List;
 @Component
 @ApiModel("采购订单")
 public class PurchaseOrderDTO extends BaseDTO<PurchaseOrder> {
-    @ApiModelProperty(value = "主键")
-    private String id;
     @ApiModelProperty(value = "订单号")
     private String orderNumber;
     @ApiModelProperty(value = "经手人")
@@ -32,10 +32,14 @@ public class PurchaseOrderDTO extends BaseDTO<PurchaseOrder> {
     private String summary;
     @ApiModelProperty(value = "附加说明")
     private String remark;
-    @ApiModelProperty(value = "交货到")
-    private Warehouse warehouse;
+    @ApiModelProperty(value = "交货到仓库id")
+    private String warehouseId;
+    @ApiModelProperty(value = "交货到仓库")
+    private WarehouseDTO warehouse;
+    @ApiModelProperty(value = "供应商id")
+    private String businessRelatedUnitId;
     @ApiModelProperty(value = "供应商")
-    private BusinessRelatedUnit businessRelatedUnit;
+    private BusinessRelatedUnitDTO businessRelatedUnit;
     @ApiModelProperty(value = "订单状态")
     private PurchaseOrder.OrderStatus status;
     @ApiModelProperty(value = "订单项目")

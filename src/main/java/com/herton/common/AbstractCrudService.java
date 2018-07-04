@@ -27,6 +27,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * 抽象service提供基本的增删改查操作
@@ -36,7 +37,7 @@ import java.util.*;
  * @param <D> DTO对象
  */
 public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDTO<E>> implements CrudService<E, D> {
-    private final CacheUtils cache = CacheUtils.getInstance();
+    protected final CacheUtils cache = CacheUtils.getInstance();
     @Value("${service.showAllEntities}")
     private Boolean showAllEntities;
 
@@ -47,7 +48,7 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
     private EntityManager em;
 
     @Autowired
-    private D baseDTO;
+    protected D baseDTO;
 
     @PostConstruct
     public void initFactory() {
@@ -120,9 +121,11 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
     }
 
     @Override
-    public void delete(Iterable<? extends E> ts) throws Exception {
-        pageRepository.delete(ts);
-        for (E t : ts) {
+    public void delete(Iterable<? extends D> ts) throws Exception {
+        Iterable<E> es = new ArrayList<>();
+        ts.forEach(d -> ((ArrayList<E>) es).add(d.convert()));
+        pageRepository.delete(es);
+        for (D t : ts) {
             cache.remove(t.getId());
         }
     }

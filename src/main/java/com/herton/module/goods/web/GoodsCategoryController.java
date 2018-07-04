@@ -3,6 +3,7 @@ package com.herton.module.goods.web;
 import com.herton.common.AbstractCrudController;
 import com.herton.common.CrudService;
 import com.herton.module.goods.domain.GoodsCategory;
+import com.herton.module.goods.dto.GoodsCategoryDTO;
 import com.herton.module.goods.service.GoodsCategoryService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,5 +13,5 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "商品管理")
 @RestController
 @RequestMapping("/api/goodsCategory")
-public class GoodsCategoryController extends AbstractCrudController<GoodsCategory> {
+public class GoodsCategoryController extends AbstractCrudController<GoodsCategory, GoodsCategoryDTO> {
 }

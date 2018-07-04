@@ -2,8 +2,9 @@ package com.herton.module.basicdata.member.service;
 
 import com.herton.common.CrudService;
 import com.herton.module.basicdata.member.domain.Member;
+import com.herton.module.basicdata.member.dto.MemberDTO;
 
-public interface MemberService extends CrudService<Member> {
+public interface MemberService extends CrudService<Member, MemberDTO> {
     /**
      * 获取账户储值余额
      * @param id 会员id

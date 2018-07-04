@@ -2,8 +2,9 @@ package com.herton.module.codenumber.service;
 
 import com.herton.common.CrudService;
 import com.herton.module.codenumber.domain.CodeNumber;
+import com.herton.module.codenumber.dto.CodeNumberDTO;
 
-public interface CodeNumberService extends CrudService<CodeNumber> {
+public interface CodeNumberService extends CrudService<CodeNumber, CodeNumberDTO> {
     /**
      * 生成下一个编号
      * @param businessType 业务类型

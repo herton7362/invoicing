@@ -40,7 +40,7 @@ public interface CrudService<E extends BaseEntity, D extends BaseDTO<E>> {
      * 删除
      * @param ts 待删除的列表
      */
-    void delete(Iterable<? extends E> ts) throws Exception;
+    void delete(Iterable<? extends D> ts) throws Exception;
 
     /**
      * 新增或修改

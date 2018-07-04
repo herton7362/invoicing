@@ -3,6 +3,7 @@ package com.herton.module.address.web;
 import com.herton.common.AbstractCrudController;
 import com.herton.common.CrudService;
 import com.herton.module.address.domain.Address;
+import com.herton.module.address.dto.AddressDTO;
 import com.herton.module.address.service.AddressService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,16 +19,16 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "地址管理")
 @RestController
 @RequestMapping("/api/address")
-public class AddressController extends AbstractCrudController<Address> {
+public class AddressController extends AbstractCrudController<Address, AddressDTO> {
 
     /**
      * 保存
      */
     @ApiOperation(value="保存")
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Address> save(@RequestBody Address productCategory) throws Exception {
+    public ResponseEntity<AddressDTO> save(@RequestBody AddressDTO productCategory) throws Exception {
         if(productCategory.getParent() != null && StringUtils.isNotBlank(productCategory.getParent().getId())) {
-            productCategory.setParent(crudService.findOne(productCategory.getParent().getId()));
+            productCategory.setParent(crudService.findOne(productCategory.getParent().getId()).convert());
         } else {
             productCategory.setParent(null);
         }

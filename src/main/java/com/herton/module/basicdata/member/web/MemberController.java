@@ -5,6 +5,7 @@ import com.herton.common.CrudService;
 import com.herton.common.utils.NumberUtils;
 import com.herton.common.utils.StringUtils;
 import com.herton.module.basicdata.member.domain.Member;
+import com.herton.module.basicdata.member.dto.MemberDTO;
 import com.herton.module.basicdata.member.service.MemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "会员管理")
 @RestController
 @RequestMapping("/api/member")
-public class MemberController extends AbstractCrudController<Member> {
+public class MemberController extends AbstractCrudController<Member, MemberDTO> {
     protected MemberService getService() {
         return (MemberService) crudService;
     }

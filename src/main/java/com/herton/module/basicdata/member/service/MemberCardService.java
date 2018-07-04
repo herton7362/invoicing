@@ -2,11 +2,12 @@ package com.herton.module.basicdata.member.service;
 
 import com.herton.common.CrudService;
 import com.herton.module.basicdata.member.domain.MemberCard;
+import com.herton.module.basicdata.member.dto.MemberCardDTO;
 import com.herton.module.basicdata.member.web.ChangePointsParam;
 import com.herton.module.basicdata.member.web.ChangeBalanceParam;
 import com.herton.module.basicdata.member.web.ExchangePointsToBalanceParam;
 
-public interface MemberCardService extends CrudService<MemberCard> {
+public interface MemberCardService extends CrudService<MemberCard, MemberCardDTO> {
     /**
      * 获取会员总余额
      * @param memberId 会员id

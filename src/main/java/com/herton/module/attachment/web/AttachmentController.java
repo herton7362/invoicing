@@ -4,6 +4,7 @@ import com.herton.common.AbstractCrudController;
 import com.herton.common.CrudService;
 import com.herton.exceptions.InvalidParamException;
 import com.herton.module.attachment.domain.Attachment;
+import com.herton.module.attachment.dto.AttachmentDTO;
 import com.herton.module.attachment.service.AttachmentService;
 import com.herton.module.attachment.service.AttachmentServiceImpl;
 import io.swagger.annotations.Api;
@@ -21,7 +22,7 @@ import java.io.File;
 @Api(value = "附件管理")
 @RestController
 @RequestMapping("/api/attachment")
-public class AttachmentController extends AbstractCrudController<Attachment> {
+public class AttachmentController extends AbstractCrudController<Attachment, AttachmentDTO> {
     protected AttachmentService getService() {
         return (AttachmentService) crudService;
     }
@@ -31,9 +32,9 @@ public class AttachmentController extends AbstractCrudController<Attachment> {
      */
     @ApiOperation(value="删除")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Attachment> delete(@PathVariable String id) throws Exception {
-        ResponseEntity<Attachment> responseEntity;
-        Attachment attachment = getService().findOne(id);
+    public ResponseEntity<?> delete(@PathVariable String id) throws Exception {
+        ResponseEntity<?> responseEntity;
+        AttachmentDTO attachment = getService().findOne(id);
         try {
             responseEntity = super.delete(id);
             File temp = new File(AttachmentServiceImpl.prefixPath, attachment.getPath());
