@@ -38,7 +38,7 @@ public class PurchaseOrder extends BaseEntity {
     public enum OrderStatus {
         CANCEL("已取消"),
         DRAFT("草稿"),
-        NORMAL("正常");
+        CONFIRMED("已确认");
         private String displayName;
         OrderStatus(String displayName) {
             this.displayName = displayName;

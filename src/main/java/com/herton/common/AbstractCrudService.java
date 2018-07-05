@@ -27,7 +27,6 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * 抽象service提供基本的增删改查操作
@@ -78,7 +77,7 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
     public PageResult<D> findAll(PageRequest pageRequest, Map<String, ?> param) throws Exception {
         Page<E> page = pageRepository.findAll(getSpecification(param), pageRequest);
         PageResult<D> pageResult = new PageResult<>();
-        pageResult.setContent(convert(page.getContent()));
+        pageResult.setContent(baseDTO.convertFor(page.getContent()));
         pageResult.setTotalElements(page.getTotalElements());
         pageResult.setSize(page.getSize());
         pageResult.setNumber(page.getNumber());
@@ -88,15 +87,7 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
 
     @Override
     public List<D> findAll(Map<String, ?> param) throws Exception {
-        return convert(pageRepository.findAll(getSpecification(param)));
-    }
-
-    private List<D> convert(List<E> eList) {
-        List<D> dList = new ArrayList<>();
-        for (E e : eList) {
-            dList.add(baseDTO.convertFor(e));
-        }
-        return dList;
+        return baseDTO.convertFor(pageRepository.findAll(getSpecification(param)));
     }
 
     @Override
@@ -117,11 +108,26 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
     }
 
     @Override
+    public void deleteByCondition(Map<String, ?> param) throws Exception {
+        delete(findAll(param));
+    }
+
+    @Override
     public D save(D d) throws Exception {
         E e = pageRepository.save(d.convert());
         d = baseDTO.convertFor(e);
         cache.set(e.getId(), d);
         return d;
+    }
+
+    @Override
+    public List<D> save(Iterable<D> dList) throws Exception {
+        Iterable<E> e = pageRepository.save(baseDTO.convert(dList));
+        List<D> result = baseDTO.convertFor(e);
+        for (D d : result) {
+            cache.set(d.getId(), d);
+        }
+        return result;
     }
 
     @Override

@@ -43,11 +43,24 @@ public interface CrudService<E extends BaseEntity, D extends BaseDTO<D, E>> {
     void delete(Iterable<? extends D> ts) throws Exception;
 
     /**
+     * 根据条件删除删除
+     * @param param 删除条件
+     */
+    void deleteByCondition(Map<String, ?> param) throws Exception;
+
+    /**
      * 新增或修改
      * @param d 实体，如果主键不为空则修改，为空则保存
      * @return 保存后的实体
      */
     D save(D d) throws Exception;
+
+    /**
+     * 批量保存
+     * @param dList 需要保存的实体列表
+     * @return 保存后的列表
+     */
+    List<D> save(Iterable<D> dList) throws Exception;
 
     /**
      * 调整排序

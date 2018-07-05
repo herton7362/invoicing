@@ -3,6 +3,8 @@ package com.herton.dto;
 import com.google.common.base.Function;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -17,6 +19,14 @@ public abstract class DTOConverter<A, B> implements Function<A, B> {
 
     public final B convert(A a) {
         return correctedDoForward(a);
+    }
+
+    public final Iterable<B> convert(Iterable<A> aList) {
+        List<B> bList = new ArrayList<>();
+        for (A a : aList) {
+            bList.add(correctedDoForward(a));
+        }
+        return bList;
     }
 
 

@@ -2,6 +2,7 @@ package com.herton.module.orderform.dto;
 
 import com.herton.dto.BaseDTO;
 import com.herton.dto.DTOConverter;
+import com.herton.module.goods.domain.Goods;
 import com.herton.module.orderform.domain.PurchaseOrderSku;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -29,4 +30,9 @@ public class PurchaseOrderSkuDTO extends BaseDTO<PurchaseOrderSkuDTO, PurchaseOr
     private Double sumPrice;
     @ApiModelProperty(value = "备注")
     private Double remark;
+
+    @ApiModelProperty(value = "商品")
+    private Goods goods;
+    @ApiModelProperty(value = "规格")
+    private String attributeName;
 }

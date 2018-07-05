@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @Transactional
@@ -43,15 +44,25 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods, GoodsDTO> imple
         }
         super.save(goodsDTO);
         if(StringUtils.isNotBlank(goodsDTO.getGoodsTypeId())) {
-            goodsAttributeService.save(isCreate, goodsDTO.getId(), goodsDTO.getGoodsAttributes());
-            goodsSkuService.save(isCreate, goodsDTO.getId(), goodsDTO.getGoodsSkus());
+            goodsAttributeService.saveAsChildren(goodsDTO.getGoodsAttributes()
+                    .stream().map(dto -> {
+                        dto.setGoodsId(goodsDTO.getId());
+                        return dto;
+                    }).collect(Collectors.toList()));
+            goodsSkuService.saveAsChildren(goodsDTO.getGoodsSkus().stream().map(dto -> {
+                dto.setGoodsId(goodsDTO.getId());
+                return dto;
+            }).collect(Collectors.toList()));
         } else {
             Map<String, String> param = new HashMap<>();
             param.put("goodsId", goodsDTO.getId());
-            goodsAttributeService.delete(goodsAttributeService.findAll(param));
-            goodsSkuService.delete(goodsSkuService.findAll(param));
+            goodsAttributeService.deleteByCondition(param);
+            goodsSkuService.deleteByCondition(param);
         }
-        goodsSupplierService.save(isCreate, goodsDTO.getId(), goodsDTO.getGoodsSuppliers());
+        goodsSupplierService.saveAsChildren(goodsDTO.getGoodsSuppliers().stream().map(dto -> {
+            dto.setGoodsId(goodsDTO.getId());
+            return dto;
+        }).collect(Collectors.toList()));
         cache.remove(goodsDTO.getId());
         return findOne(goodsDTO.getId());
     }
@@ -61,9 +72,9 @@ public class GoodsServiceImpl extends AbstractCrudService<Goods, GoodsDTO> imple
     public void delete(String id) throws Exception {
         Map<String, String> param = new HashMap<>();
         param.put("goodsId", id);
-        goodsAttributeService.delete(goodsAttributeService.findAll(param));
-        goodsSkuService.delete(goodsSkuService.findAll(param));
-        goodsSupplierService.delete(goodsSupplierService.findAll(param));
+        goodsAttributeService.deleteByCondition(param);
+        goodsSkuService.deleteByCondition(param);
+        goodsSupplierService.deleteByCondition(param);
         super.delete(id);
     }
 

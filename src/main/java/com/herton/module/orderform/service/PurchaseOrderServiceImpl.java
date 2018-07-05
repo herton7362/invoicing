@@ -30,10 +30,13 @@ public class PurchaseOrderServiceImpl extends AbstractCrudService<PurchaseOrder,
         purchaseOrderDTO.setOrderNumber(codeNumberService.getCodeByBusinessType(CodeNumber.BusinessType.JHD));
         PurchaseOrder purchaseOrder = pageRepository.save(purchaseOrderDTO.convert());
         final List<PurchaseOrderSkuDTO> purchaseOrderSkuDTOList =  purchaseOrderDTO.getItems();
-        for (PurchaseOrderSkuDTO purchaseOrderSkuDTO : purchaseOrderSkuDTOList) {
-            purchaseOrderSkuDTO.setPurchaseOrderId(purchaseOrderDTO.getId());
-            purchaseOrderSkuService.save(purchaseOrderSkuDTO);
+        if(purchaseOrderSkuDTOList != null) {
+            for (PurchaseOrderSkuDTO purchaseOrderSkuDTO : purchaseOrderSkuDTOList) {
+                purchaseOrderSkuDTO.setPurchaseOrderId(purchaseOrderDTO.getId());
+                purchaseOrderSkuService.save(purchaseOrderSkuDTO);
+            }
         }
+
         purchaseOrderDTO = purchaseOrderDTO.convertFor(purchaseOrder);
         cache.set(purchaseOrderDTO.getId(), purchaseOrderDTO);
         return purchaseOrderDTO;
