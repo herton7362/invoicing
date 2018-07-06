@@ -1,8 +1,12 @@
 package com.herton.module.goods.dto;
 
 import com.herton.dto.BaseDTO;
+import com.herton.dto.Children;
 import com.herton.module.goods.domain.Goods;
+import com.herton.module.goods.service.GoodsAttributeService;
+import com.herton.module.goods.service.GoodsSupplierService;
 import com.herton.module.goods.sku.dto.GoodsSkuDTO;
+import com.herton.module.goods.sku.service.GoodsSkuService;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -59,10 +63,13 @@ public class GoodsDTO extends BaseDTO<GoodsDTO, Goods> {
     @ApiModelProperty(value = "备注")
     private String remark;
 
+    @Children(service = GoodsAttributeService.class)
     @ApiModelProperty(value = "商品属性")
     private List<GoodsAttributeDTO> goodsAttributes;
+    @Children(service = GoodsSkuService.class)
     @ApiModelProperty(value = "商品sku")
     private List<GoodsSkuDTO> goodsSkus;
+    @Children(service = GoodsSupplierService.class)
     @ApiModelProperty(value = "商品供应商")
     private List<GoodsSupplierDTO> goodsSuppliers;
 }

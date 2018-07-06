@@ -1,12 +1,16 @@
 package com.herton.common;
 
 import com.herton.common.utils.CacheUtils;
+import com.herton.common.utils.ReflectionUtils;
 import com.herton.common.utils.SpringUtils;
 import com.herton.common.utils.StringUtils;
 import com.herton.dto.BaseDTO;
+import com.herton.dto.Children;
+import com.herton.dto.Parent;
 import com.herton.entity.BaseEntity;
 import com.herton.exceptions.InvalidParamException;
 import com.herton.module.auth.UserThread;
+import com.herton.module.basicdata.businessrelatedunit.domain.BusinessRelatedUnit;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,10 +27,12 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.Attribute;
+import java.lang.reflect.Field;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 抽象service提供基本的增删改查操作
@@ -63,6 +69,9 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
 
     private Map<String, String[]> manufactureQueryParam(Map<String, ?> param) {
         Map<String, String[]> newParam = new HashMap<>();
+        if(param == null) {
+            return newParam;
+        }
         param.forEach((key, entry) ->{
             if(entry.getClass().isArray()) {
                 newParam.put(key, (String[]) entry);
@@ -92,6 +101,9 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
 
     @Override
     public D findOne(String id) throws Exception {
+        if(id == null) {
+            return null;
+        }
         if(cache.get(id) != null) {
             return (D) cache.get(id);
         }
@@ -103,39 +115,83 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
 
     @Override
     public void delete(String id) throws Exception {
+        if(id == null) {
+            return;
+        }
+        D d = findOne(id);
+        List<Field> childrenFields = d.getChildrenFields((Class<D>) d.getClass());
+        if(!childrenFields.isEmpty()) {
+            for (Field childrenField : childrenFields) {
+                Children children = childrenField.getAnnotation(Children.class);
+                ChildCurdService childCurdService = SpringUtils.getBean(children.service());
+                List list = (List) ReflectionUtils.getFieldValue(d, childrenField.getName());
+                if(list == null) {
+                    continue;
+                }
+                childCurdService.delete(list);
+            }
+
+        }
         pageRepository.delete(id);
         cache.remove(id);
     }
 
     @Override
     public void deleteByCondition(Map<String, ?> param) throws Exception {
+        if(param == null) {
+            throw new InvalidParamException("删除条件不能为空");
+        }
         delete(findAll(param));
     }
 
     @Override
     public D save(D d) throws Exception {
+        if(d == null) {
+            return null;
+        }
+        List<Field> childrenFields = d.getChildrenFields((Class<D>) d.getClass());
+        if(!childrenFields.isEmpty()) {
+            for (Field childrenField : childrenFields) {
+               saveChildren(d, childrenField);
+            }
+        }
         E e = pageRepository.save(d.convert());
         d = baseDTO.convertFor(e);
         cache.set(e.getId(), d);
         return d;
     }
 
+    /**
+     * 保存实体d中的子集，需要在DTO中在子集上使用@Children注解并指明service类
+     * @param d 父实体
+     * @param childrenField 子集的字段
+     */
+    private void saveChildren(final D d, Field childrenField) throws Exception {
+        Children children = childrenField.getAnnotation(Children.class);
+        ChildCurdService childCurdService = SpringUtils.getBean(children.service());
+        List list = (List) ReflectionUtils.getFieldValue(d, childrenField.getName());
+        childCurdService.saveAsChildren((String) ReflectionUtils.getFieldValue(d, "id"), list);
+    }
+
     @Override
     public List<D> save(Iterable<D> dList) throws Exception {
-        Iterable<E> e = pageRepository.save(baseDTO.convert(dList));
-        List<D> result = baseDTO.convertFor(e);
-        for (D d : result) {
-            cache.set(d.getId(), d);
+        if(dList == null) {
+            return null;
+        }
+        List<D> result = new ArrayList<>();
+        for (D d : dList) {
+            result.add(save(d));
         }
         return result;
     }
 
     @Override
     public void delete(Iterable<? extends D> ts) throws Exception {
-        Iterable<E> es = new ArrayList<>();
-        ts.forEach(d -> ((ArrayList<E>) es).add(d.convert()));
-        pageRepository.delete(es);
+        if(ts == null) {
+            return;
+        }
         for (D t : ts) {
+            delete(t.getId());
             cache.remove(t.getId());
         }
     }

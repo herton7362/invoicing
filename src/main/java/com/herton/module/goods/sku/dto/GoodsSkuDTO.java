@@ -2,7 +2,7 @@ package com.herton.module.goods.sku.dto;
 
 import com.herton.common.utils.StringUtils;
 import com.herton.dto.BaseDTO;
-import com.herton.dto.ParentField;
+import com.herton.dto.Parent;
 import com.herton.module.goods.domain.Goods;
 import com.herton.module.goods.sku.domain.GoodsSku;
 import io.swagger.annotations.ApiModel;
@@ -19,7 +19,7 @@ import java.util.List;
 @Component
 @ApiModel("商品最小库存单元")
 public class GoodsSkuDTO extends BaseDTO<GoodsSkuDTO, GoodsSku> {
-    @ParentField
+    @Parent
     @ApiModelProperty(value = "商品id")
     private String goodsId;
     @ApiModelProperty(value = "商品")
@@ -36,7 +36,7 @@ public class GoodsSkuDTO extends BaseDTO<GoodsSkuDTO, GoodsSku> {
     private Double stockNumber;
     @ApiModelProperty(value = "库存预警值")
     private Double stockWarnNumber;
-    @ApiModelProperty("商品属性值，用逗号分隔 例 attrId:红色")
+    @ApiModelProperty("商品属性值，用逗号分隔 例 attrTypeId:红色")
     private String goodsAttributes;
 
     @Override

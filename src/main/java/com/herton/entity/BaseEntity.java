@@ -1,5 +1,6 @@
 package com.herton.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.herton.common.utils.IteratorUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,7 +24,9 @@ public abstract class BaseEntity implements Cloneable, Serializable {
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
     private String id;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "GMT+8")
     private Date createdDate;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "GMT+8")
     private Date updatedDate;
     private Boolean logicallyDeleted = false;
     private Integer sortNumber;

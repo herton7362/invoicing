@@ -1,7 +1,9 @@
 package com.herton.module.orderform.dto;
 
+import com.herton.common.utils.StringUtils;
 import com.herton.dto.BaseDTO;
 import com.herton.dto.DTOConverter;
+import com.herton.dto.Parent;
 import com.herton.module.goods.domain.Goods;
 import com.herton.module.orderform.domain.PurchaseOrderSku;
 import io.swagger.annotations.ApiModel;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Component;
 @Component
 @ApiModel("采购订单商品")
 public class PurchaseOrderSkuDTO extends BaseDTO<PurchaseOrderSkuDTO, PurchaseOrderSku> {
+    @Parent
     @ApiModelProperty(value = "采购订单 id")
     private String purchaseOrderId;
     @ApiModelProperty(value = "商品 id")
@@ -35,4 +38,18 @@ public class PurchaseOrderSkuDTO extends BaseDTO<PurchaseOrderSkuDTO, PurchaseOr
     private Goods goods;
     @ApiModelProperty(value = "规格")
     private String attributeName;
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof PurchaseOrderSkuDTO)) {
+            return false;
+        }
+        PurchaseOrderSkuDTO dto = (PurchaseOrderSkuDTO) obj;
+        if(StringUtils.isNotBlank(this.getSkuId())
+                && StringUtils.isNotBlank(this.getGoodsId())) {
+            return this.getSkuId().equals(dto.getSkuId())
+                    && this.getGoodsId().equals(dto.getGoodsId());
+        }
+        return super.equals(obj);
+    }
 }

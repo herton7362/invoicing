@@ -2,11 +2,13 @@ package com.herton.module.orderform.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.herton.dto.BaseDTO;
+import com.herton.dto.Children;
 import com.herton.module.basicdata.businessrelatedunit.domain.BusinessRelatedUnit;
 import com.herton.module.basicdata.businessrelatedunit.dto.BusinessRelatedUnitDTO;
 import com.herton.module.basicdata.warehouse.domain.Warehouse;
 import com.herton.module.basicdata.warehouse.dto.WarehouseDTO;
 import com.herton.module.orderform.domain.PurchaseOrder;
+import com.herton.module.orderform.service.PurchaseOrderSkuService;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -42,6 +44,7 @@ public class PurchaseOrderDTO extends BaseDTO<PurchaseOrderDTO, PurchaseOrder> {
     private BusinessRelatedUnitDTO businessRelatedUnit;
     @ApiModelProperty(value = "订单状态")
     private PurchaseOrder.OrderStatus status;
+    @Children(service = PurchaseOrderSkuService.class)
     @ApiModelProperty(value = "订单项目")
     private List<PurchaseOrderSkuDTO> items;
 }

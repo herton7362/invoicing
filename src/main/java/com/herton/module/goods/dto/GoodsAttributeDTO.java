@@ -2,7 +2,7 @@ package com.herton.module.goods.dto;
 
 import com.herton.common.utils.StringUtils;
 import com.herton.dto.BaseDTO;
-import com.herton.dto.ParentField;
+import com.herton.dto.Parent;
 import com.herton.module.goods.domain.GoodsAttribute;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 @ApiModel("商品属性")
 public class GoodsAttributeDTO extends BaseDTO<GoodsAttributeDTO, GoodsAttribute> {
-    @ParentField
+    @Parent
     @ApiModelProperty(value = "商品id")
     private String goodsId;
     @ApiModelProperty(value = "商品属性id")
