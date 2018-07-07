@@ -6,11 +6,9 @@ import com.herton.common.utils.SpringUtils;
 import com.herton.common.utils.StringUtils;
 import com.herton.dto.BaseDTO;
 import com.herton.dto.Children;
-import com.herton.dto.Parent;
 import com.herton.entity.BaseEntity;
 import com.herton.exceptions.InvalidParamException;
 import com.herton.module.auth.UserThread;
-import com.herton.module.basicdata.businessrelatedunit.domain.BusinessRelatedUnit;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +30,6 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 抽象service提供基本的增删改查操作
@@ -62,7 +59,7 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
 
     /**
      * 获取实体Repository
-     * @return {@link PageRepository} 实现类
+     * {@link PageRepository} 实现类
      */
     @Autowired
     protected PageRepository<E> pageRepository;
@@ -73,6 +70,9 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
             return newParam;
         }
         param.forEach((key, entry) ->{
+            if(entry == null) {
+                return;
+            }
             if(entry.getClass().isArray()) {
                 newParam.put(key, (String[]) entry);
             } else {
@@ -100,7 +100,8 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
     }
 
     @Override
-    public D findOne(String id) throws Exception {
+    @SuppressWarnings("unchecked")
+    public D findOne(String id) {
         if(id == null) {
             return null;
         }
@@ -114,6 +115,7 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void delete(String id) throws Exception {
         if(id == null) {
             return;
@@ -145,17 +147,19 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public D save(D d) throws Exception {
         if(d == null) {
             return null;
         }
+        E e = pageRepository.save(d.convert());
+        d.setId(e.getId());
         List<Field> childrenFields = d.getChildrenFields((Class<D>) d.getClass());
         if(!childrenFields.isEmpty()) {
             for (Field childrenField : childrenFields) {
                saveChildren(d, childrenField);
             }
         }
-        E e = pageRepository.save(d.convert());
         d = baseDTO.convertFor(e);
         cache.set(e.getId(), d);
         return d;
@@ -166,6 +170,7 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
      * @param d 父实体
      * @param childrenField 子集的字段
      */
+    @SuppressWarnings("unchecked")
     private void saveChildren(final D d, Field childrenField) throws Exception {
         Children children = childrenField.getAnnotation(Children.class);
         ChildCurdService childCurdService = SpringUtils.getBean(children.service());
@@ -412,7 +417,7 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
     }
 
     @Override
-    public Long count(Map<String, ?> param) throws Exception {
+    public Long count(Map<String, ?> param) {
         return pageRepository.count(getSpecification(manufactureQueryParam(param)));
     }
 }

@@ -1,7 +1,6 @@
 package com.herton.module.orderform.service;
 
 import com.herton.common.AbstractCrudService;
-import com.herton.common.utils.CacheUtils;
 import com.herton.module.codenumber.domain.CodeNumber;
 import com.herton.module.codenumber.service.CodeNumberService;
 import com.herton.module.orderform.domain.PurchaseOrder;
@@ -13,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @Transactional
 public class PurchaseOrderServiceImpl extends AbstractCrudService<PurchaseOrder, PurchaseOrderDTO> implements PurchaseOrderService {
-    private final CacheUtils cache = CacheUtils.getInstance();
     private final CodeNumberService codeNumberService;
 
     @Override
