@@ -1,16 +1,14 @@
-package com.herton.module.orderform.dto;
+package com.herton.module.orderform.purchase.dto;
 
 import com.herton.common.utils.StringUtils;
 import com.herton.dto.BaseDTO;
-import com.herton.dto.DTOConverter;
 import com.herton.dto.Parent;
 import com.herton.module.goods.domain.Goods;
-import com.herton.module.orderform.domain.PurchaseOrderSku;
+import com.herton.module.orderform.purchase.domain.PurchaseOrderSku;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 @Setter

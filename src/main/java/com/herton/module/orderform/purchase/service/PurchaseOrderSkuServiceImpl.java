@@ -1,8 +1,8 @@
-package com.herton.module.orderform.service;
+package com.herton.module.orderform.purchase.service;
 
 import com.herton.common.AbstractChildCrudService;
-import com.herton.module.orderform.domain.PurchaseOrderSku;
-import com.herton.module.orderform.dto.PurchaseOrderSkuDTO;
+import com.herton.module.orderform.purchase.domain.PurchaseOrderSku;
+import com.herton.module.orderform.purchase.dto.PurchaseOrderSkuDTO;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 

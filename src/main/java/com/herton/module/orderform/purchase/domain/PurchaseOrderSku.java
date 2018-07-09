@@ -1,4 +1,4 @@
-package com.herton.module.orderform.domain;
+package com.herton.module.orderform.purchase.domain;
 
 import com.herton.entity.BaseEntity;
 import io.swagger.annotations.ApiModel;

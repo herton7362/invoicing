@@ -1,9 +1,7 @@
-package com.herton.module.orderform.domain;
+package com.herton.module.orderform.purchase.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.herton.entity.BaseEntity;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 

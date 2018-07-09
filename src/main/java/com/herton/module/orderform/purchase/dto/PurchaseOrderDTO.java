@@ -1,14 +1,12 @@
-package com.herton.module.orderform.dto;
+package com.herton.module.orderform.purchase.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.herton.dto.BaseDTO;
 import com.herton.dto.Children;
-import com.herton.module.basicdata.businessrelatedunit.domain.BusinessRelatedUnit;
 import com.herton.module.basicdata.businessrelatedunit.dto.BusinessRelatedUnitDTO;
-import com.herton.module.basicdata.warehouse.domain.Warehouse;
 import com.herton.module.basicdata.warehouse.dto.WarehouseDTO;
-import com.herton.module.orderform.domain.PurchaseOrder;
-import com.herton.module.orderform.service.PurchaseOrderSkuService;
+import com.herton.module.orderform.purchase.domain.PurchaseOrder;
+import com.herton.module.orderform.purchase.service.PurchaseOrderSkuService;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;

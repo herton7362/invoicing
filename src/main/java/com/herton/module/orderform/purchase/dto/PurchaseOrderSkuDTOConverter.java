@@ -1,4 +1,4 @@
-package com.herton.module.orderform.dto;
+package com.herton.module.orderform.purchase.dto;
 
 import com.herton.common.utils.StringUtils;
 import com.herton.dto.SimpleDTOConverter;
@@ -9,7 +9,7 @@ import com.herton.module.goods.sku.dto.GoodsSkuDTO;
 import com.herton.module.goods.sku.service.GoodsSkuService;
 import com.herton.module.goods.type.dto.GoodsTypeAttributeDTO;
 import com.herton.module.goods.type.service.GoodsTypeAttributeService;
-import com.herton.module.orderform.domain.PurchaseOrderSku;
+import com.herton.module.orderform.purchase.domain.PurchaseOrderSku;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

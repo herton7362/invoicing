@@ -1,10 +1,10 @@
-package com.herton.module.orderform.service;
+package com.herton.module.orderform.purchase.service;
 
 import com.herton.common.AbstractCrudService;
 import com.herton.module.codenumber.domain.CodeNumber;
 import com.herton.module.codenumber.service.CodeNumberService;
-import com.herton.module.orderform.domain.PurchaseOrder;
-import com.herton.module.orderform.dto.PurchaseOrderDTO;
+import com.herton.module.orderform.purchase.domain.PurchaseOrder;
+import com.herton.module.orderform.purchase.dto.PurchaseOrderDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
