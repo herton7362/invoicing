@@ -8,7 +8,6 @@ import com.herton.kits.notification.config.annotation.configurer.provider.Aliday
 import com.herton.kits.notification.config.annotation.configurer.provider.IpyyProviderConfigurer;
 import com.herton.kits.notification.message.SmsVerifyCodeMessage;
 import com.herton.kits.notification.provider.SmsVerifyCodeAlidayuProvider;
-import com.herton.kits.notification.provider.SmsVerifyCodeIpyyProvider;
 
 /**
  * 短信验证码配置，需要注入 {@link NotificationProviders} 用来获取通知提供商的配置
@@ -27,15 +26,6 @@ public final class SmsVerifyCodeConfigurer<B extends NotificationBuilder, H exte
      */
     public SmsVerifyCodeConfigurer<B, H> alidayuProvider() throws Exception {
         this.setProvider(new SmsVerifyCodeAlidayuProvider<>(providerConfigurer.getConfigurer(AlidayuProviderConfigurer.class)));
-        return this;
-    }
-
-    /**
-     * 配置为ipyy通知提供商
-     * @return {@link SmsVerifyCodeIpyyProvider}
-     */
-    public SmsVerifyCodeConfigurer<B, H> ipyyProvider() throws Exception {
-        this.setProvider(new SmsVerifyCodeIpyyProvider<>(providerConfigurer.getConfigurer(IpyyProviderConfigurer.class)));
         return this;
     }
 }

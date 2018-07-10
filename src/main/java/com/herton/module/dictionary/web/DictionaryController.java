@@ -2,6 +2,7 @@ package com.herton.module.dictionary.web;
 
 import com.herton.common.AbstractCrudController;
 import com.herton.common.CrudService;
+import com.herton.common.utils.StringUtils;
 import com.herton.module.dictionary.domain.Dictionary;
 import com.herton.module.dictionary.domain.DictionaryCategory;
 import com.herton.module.dictionary.dto.DictionaryCategoryDTO;
@@ -10,7 +11,6 @@ import com.herton.module.dictionary.service.DictionaryCategoryService;
 import com.herton.module.dictionary.service.DictionaryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

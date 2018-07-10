@@ -7,7 +7,6 @@ import com.herton.kits.notification.config.annotation.configurer.provider.Aliday
 import com.herton.kits.notification.config.annotation.configurer.provider.IpyyProviderConfigurer;
 import com.herton.kits.notification.message.SmsBroadcastMessage;
 import com.herton.kits.notification.provider.SmsBroadcastAlidayuProvider;
-import com.herton.kits.notification.provider.SmsBroadcastIpyyProvider;
 
 /**
  * 推广短信配置，需要注入 {@link NotificationProviders} 用来获取通知提供商的配置
@@ -26,15 +25,6 @@ public class SmsBroadcastConfigurer<B extends NotificationBuilder, H extends Sms
      */
     public SmsBroadcastConfigurer<B, H> alidayuProvider() throws Exception {
         this.setProvider(new SmsBroadcastAlidayuProvider<>(providerConfigurer.getConfigurer(AlidayuProviderConfigurer.class)));
-        return this;
-    }
-
-    /**
-     * 配置为ipyy通知提供商
-     * @return {@link SmsBroadcastIpyyProvider}
-     */
-    public SmsBroadcastConfigurer<B, H> ipyyProvider() throws Exception {
-        this.setProvider(new SmsBroadcastIpyyProvider<>(providerConfigurer.getConfigurer(IpyyProviderConfigurer.class)));
         return this;
     }
 }

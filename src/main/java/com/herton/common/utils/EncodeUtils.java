@@ -3,7 +3,7 @@ package com.herton.common.utils;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -51,11 +51,11 @@ public class EncodeUtils {
     }
 
     public static String escapeHtml(String html) {
-        return StringEscapeUtils.escapeHtml(html);
+        return StringEscapeUtils.escapeHtml3(html);
     }
 
     public static String unescapeHtml(String htmlEscaped) {
-        return StringEscapeUtils.unescapeHtml(htmlEscaped);
+        return StringEscapeUtils.unescapeHtml3(htmlEscaped);
     }
 
     public static String escapeXml(String xml) {

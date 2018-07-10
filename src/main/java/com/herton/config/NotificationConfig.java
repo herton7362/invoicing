@@ -28,9 +28,9 @@ public class NotificationConfig extends NotificationKitConfigurerAdaptor {
     @Override
     public void configure(NotificationTypes notificationTypes) throws Exception {
         notificationTypes
-                .smsVerifyCode().ipyyProvider()
+                .smsVerifyCode().alidayuProvider()
                 .and()
-                .smsBroadcast().ipyyProvider()
+                .smsBroadcast().alidayuProvider()
                 .and()
                 .voiceVerifyCode().alidayuProvider();
     }

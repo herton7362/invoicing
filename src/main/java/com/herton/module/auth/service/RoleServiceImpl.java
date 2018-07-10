@@ -1,12 +1,12 @@
 package com.herton.module.auth.service;
 
 import com.herton.common.AbstractCrudService;
+import com.herton.common.utils.StringUtils;
 import com.herton.exceptions.InvalidParamException;
 import com.herton.module.auth.domain.Module;
 import com.herton.module.auth.domain.Role;
 import com.herton.module.auth.domain.RoleRepository;
 import com.herton.module.auth.dto.RoleDTO;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

@@ -55,35 +55,6 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 		super.addInterceptors(registry);
 	}
 
-	@Configuration
-	@EnableOAuth2Client
-	protected static class ResourceConfiguration {
-		@Autowired
-		private OAuth2Properties oAuth2Properties;
-
-		@Bean
-		public OAuth2ProtectedResourceDetails framework() {
-			ClientCredentialsResourceDetails details = new ClientCredentialsResourceDetails();
-			details.setId("framework/tonr");
-			details.setClientId("tonr");
-			details.setClientSecret("secret");
-			details.setAccessTokenUri(oAuth2Properties.getAccessTokenUri());
-			details.setScope(Arrays.asList("read", "write"));
-			return details;
-		}
-
-		@Bean
-		public OAuth2RestTemplate frameworkTemplate(OAuth2ClientContext clientContext) {
-			OAuth2RestTemplate template = new OAuth2RestTemplate(framework(), clientContext);
-			MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-			converter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON,
-					MediaType.valueOf("text/javascript")));
-			template.setMessageConverters(Arrays.<HttpMessageConverter<?>> asList(converter));
-			return template;
-		}
-
-	}
-
 	@Override
 	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
 		configurer.enable();
