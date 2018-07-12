@@ -1,4 +1,4 @@
-package com.herton.module.orderform.purchase.domain;
+package com.herton.module.orderform.transfer.domain;
 
 import com.herton.entity.BaseEntity;
 import lombok.Getter;
@@ -10,19 +10,15 @@ import javax.persistence.Entity;
 @Entity
 @Setter
 @Getter
-public class PurchaseOrderSku extends BaseEntity {
+public class TransferOrderSku extends BaseEntity {
     @Column(length = 36)
-    private String purchaseOrderId;
+    private String transferOrderId;
     @Column(length = 36)
     private String goodsId;
     @Column(length = 36)
     private String skuId;
     @Column(length = 11, scale = 2, precision = 13)
-    private Double count;
+    private Double needTransferCount;
     @Column(length = 11, scale = 2, precision = 13)
-    private Double price;
-    @Column(length = 11, scale = 2, precision = 13)
-    private Double sumPrice;
-    @Column(length = 200)
-    private Double remark;
+    private Double transferredCount;
 }

@@ -20,7 +20,7 @@ public class PurchaseOrder extends BaseEntity {
     @Column(length = 36)
     private String operator;
     @JsonFormat(pattern = "yyyy-MM-dd", locale = "zh", timezone = "GMT+8")
-    private Date deliveryDate;
+    private Date bookTransferDate;
     @Column(length = 500)
     private String summary;
     @Column(length = 500)

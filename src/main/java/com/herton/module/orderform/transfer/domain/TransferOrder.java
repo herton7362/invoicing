@@ -1,8 +1,7 @@
-package com.herton.module.orderform.deliver.domain;
+package com.herton.module.orderform.transfer.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.herton.entity.BaseEntity;
-import com.herton.module.orderform.purchase.domain.PurchaseOrder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,13 +14,15 @@ import java.util.Date;
 @Entity
 @Setter
 @Getter
-public class DeliverOrder extends BaseEntity {
+public class TransferOrder extends BaseEntity {
+    @Column(length = 36)
+    private String orderNumber;
     @Column(length = 36)
     private String originOrderId;
     @Column(length = 36)
     private String originOrderNumber;
     @JsonFormat(pattern = "yyyy-MM-dd", locale = "zh", timezone = "GMT+8")
-    private Date deliveryDate;
+    private Date transferDate;
     @Column(length = 36)
     private String warehouseId;
     @Column(length = 36)

@@ -7,10 +7,10 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@SpringBootApplication(scanBasePackages={"com.herton"})
-@EnableJpaRepositories(repositoryBaseClass = ExtendedJpaRepository.class, basePackages = {"com.herton"})
+@SpringBootApplication
+@EnableJpaRepositories(repositoryBaseClass = ExtendedJpaRepository.class)
 @ServletComponentScan
-@EntityScan({"com.herton"})
+@EntityScan
 public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);

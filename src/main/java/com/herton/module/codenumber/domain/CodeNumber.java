@@ -20,7 +20,8 @@ public class CodeNumber extends BaseEntity {
     private String nextCode;
 
     public enum BusinessType {
-        JHD("进货订单");
+        JHD("进货订单"),
+        SHD("送货单");
         private String displayName;
         BusinessType(String displayName) {
             this.displayName = displayName;

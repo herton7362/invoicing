@@ -27,7 +27,7 @@ public class PurchaseOrderDTO extends BaseDTO<PurchaseOrderDTO, PurchaseOrder> {
     private String operator;
     @ApiModelProperty(value = "预定交货日期")
     @JsonFormat(pattern = "yyyy-MM-dd", locale = "zh", timezone = "GMT+8")
-    private Date deliveryDate;
+    private Date bookTransferDate;
     @ApiModelProperty(value = "摘要")
     private String summary;
     @ApiModelProperty(value = "附加说明")
