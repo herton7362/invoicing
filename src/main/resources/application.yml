@@ -28,11 +28,17 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5Dialect
+  boot:
+    admin:
+      url: http://localhost:1010
 server:
   port: 8080
   context-path:
 service:
   showAllEntities: false
+management:
+  security:
+    enabled: false
 ---
 spring:
   profiles: dev
