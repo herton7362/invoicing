@@ -8,6 +8,6 @@ class ExceptionMessageProvider {
         return new RestExceptionMessage();
     }
     private static boolean isAjax(HttpServletRequest request) {
-        return "XMLHttpRequest".equalsIgnoreCase(request.getHeader("X-Requested-With"));
+        return true;
     }
 }

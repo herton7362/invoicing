@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 /**
  * Base Exception
- * 
+ *
  * @author tang he
  * @since 1.0.0
  */
@@ -18,6 +18,6 @@ public class InvalidParamException extends BusinessException implements Serializ
     }
 
     public HttpStatus getStatus() {
-        return HttpStatus.NOT_ACCEPTABLE;
+        return HttpStatus.BAD_REQUEST;
     }
 }

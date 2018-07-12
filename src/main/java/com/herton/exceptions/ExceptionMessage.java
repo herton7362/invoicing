@@ -26,6 +26,10 @@ abstract class ExceptionMessage  {
             message = e.getMessage();
             status = ((BusinessException) e).getStatus().value();
             error = "Business Error";
+        } else if(e instanceof InvalidParamException) {
+            message = e.getMessage();
+            status = ((InvalidParamException) e).getStatus().value();
+            error = "Invalid Param Error";
         } else {
             message = "系统内部错误！";
             status = HttpStatus.INTERNAL_SERVER_ERROR.value();
