@@ -45,4 +45,7 @@ public class PurchaseOrderDTO extends BaseDTO<PurchaseOrderDTO, PurchaseOrder> {
     @Children(service = PurchaseOrderSkuService.class)
     @ApiModelProperty(value = "订单项目")
     private List<PurchaseOrderSkuDTO> items;
+
+    @ApiModelProperty(value = "总计")
+    private Double sumPrice;
 }

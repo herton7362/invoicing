@@ -36,6 +36,11 @@ public class PurchaseOrderDTOConverter extends SimpleDTOConverter<PurchaseOrderD
             Map<String, String> param = new HashMap<>();
             param.put("purchaseOrderId", purchaseOrderDTO.getId());
             purchaseOrderDTO.setItems(purchaseOrderSkuService.findAll(param));
+            purchaseOrderDTO.setSumPrice(purchaseOrderDTO
+                    .getItems()
+                    .stream()
+                    .map(item -> item.getSumPrice())
+                    .reduce(0D, (sum, item) -> sum + item));
         } catch (Exception e) {
             log.error("订单管理DTO转换出现错误", e);
         }
