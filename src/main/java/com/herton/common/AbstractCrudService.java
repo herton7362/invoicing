@@ -5,6 +5,7 @@ import com.herton.common.utils.ReflectionUtils;
 import com.herton.common.utils.SpringUtils;
 import com.herton.common.utils.StringUtils;
 import com.herton.dto.BaseDTO;
+import com.herton.dto.CascadePersistHelper;
 import com.herton.dto.Children;
 import com.herton.entity.BaseEntity;
 import com.herton.exceptions.InvalidParamException;
@@ -154,29 +155,12 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
         }
         E e = pageRepository.save(d.convert());
         d.setId(e.getId());
-        List<Field> childrenFields = d.getChildrenFields((Class<D>) d.getClass());
-        if(!childrenFields.isEmpty()) {
-            for (Field childrenField : childrenFields) {
-               saveChildren(d, childrenField);
-            }
-        }
+        CascadePersistHelper.saveChildren(d);
         d = baseDTO.convertFor(e);
         cache.set(e.getId(), d);
         return d;
     }
 
-    /**
-     * 保存实体d中的子集，需要在DTO中在子集上使用@Children注解并指明service类
-     * @param d 父实体
-     * @param childrenField 子集的字段
-     */
-    @SuppressWarnings("unchecked")
-    private void saveChildren(final D d, Field childrenField) throws Exception {
-        Children children = childrenField.getAnnotation(Children.class);
-        ChildCurdService childCurdService = SpringUtils.getBean(children.service());
-        List list = (List) ReflectionUtils.getFieldValue(d, childrenField.getName());
-        childCurdService.saveAsChildren((String) ReflectionUtils.getFieldValue(d, "id"), list);
-    }
 
     @Override
     public List<D> save(Iterable<D> dList) throws Exception {

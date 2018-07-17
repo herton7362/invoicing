@@ -118,7 +118,7 @@ public abstract class BaseDTO<D extends BaseDTO, E extends BaseEntity> {
         return (List<D>) getConverter().reverse().convert(eList);
     }
 
-    public List<Field> getChildrenFields(Class<D> clazz) {
+    public static <D extends BaseDTO> List<Field> getChildrenFields(Class<D> clazz) {
         Field[] fields = ReflectionUtils.getDeclaredFields(clazz);
         List<Field> childrenFields = new ArrayList<>();
         Children children;
@@ -131,7 +131,7 @@ public abstract class BaseDTO<D extends BaseDTO, E extends BaseEntity> {
         return childrenFields;
     }
 
-    public Field getParentField(Class<D> clazz) {
+    public static <D extends BaseDTO> Field getParentField(Class<D> clazz) {
         Field[] fields = ReflectionUtils.getDeclaredFields(clazz);
         Field parentField = null;
         for (Field tempField : fields) {
