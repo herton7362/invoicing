@@ -12,7 +12,8 @@ import java.io.Serializable;
  * @author tang he
  * @since 1.0.0
  */
-public class InvalidParamException extends BusinessException implements Serializable {
+public class InvalidParamException extends RuntimeException implements Serializable {
+    private InvalidParamException() {}
     public InvalidParamException(String message) {
         super(message);
     }
