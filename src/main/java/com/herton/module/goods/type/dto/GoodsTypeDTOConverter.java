@@ -20,11 +20,7 @@ public class GoodsTypeDTOConverter extends SimpleDTOConverter<GoodsTypeDTO, Good
         GoodsTypeDTO goodsTypeDTO = super.doBackward(goodsType);
         Map<String, String> param = new HashMap<>();
         param.put("goodsTypeId", goodsType.getId());
-        try {
-            goodsTypeDTO.setGoodsTypeAttributes(goodsTypeAttributeService.findAll(param));
-        } catch (Exception e) {
-            log.error("DTO，转换错误", e);
-        }
+        goodsTypeDTO.setGoodsTypeAttributes(goodsTypeAttributeService.findAll(param));
         return goodsTypeDTO;
     }
 

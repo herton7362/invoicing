@@ -49,25 +49,21 @@ public class GoodsSkuDTOConverter extends SimpleDTOConverter<GoodsSkuDTO, GoodsS
     @Override
     protected GoodsSkuDTO doBackward(GoodsSku goodsSku) {
         GoodsSkuDTO goodsSkuDTO = super.doBackward(goodsSku);
-        try {
-            goodsSkuDTO.setGoods(goodsRepository.findOne(goodsSku.getGoodsId()));
-            String[] goodsAttrIds = goodsSku.getGoodsAttributeIds().split(",");
-            List<String> goodsAttrIdList = Arrays.asList(goodsAttrIds);
-            goodsSkuDTO.setGoodsAttributes(String.join(",", goodsAttrIdList
-                    .stream()
-                    .map(goodsAttrId -> {
-                        try {
-                            GoodsAttributeDTO goodsAttribute = goodsAttributeService.findOne(goodsAttrId);
-                            return goodsAttribute.getGoodsTypeAttributeId() + ":" + goodsAttribute.getGoodsTypeAttributeValue();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        return "";
-                    })
-                    .collect(Collectors.toList())));
-        } catch (Exception e) {
-            log.error("商品sku DTO 转换出错", e);
-        }
+        goodsSkuDTO.setGoods(goodsRepository.findOne(goodsSku.getGoodsId()));
+        String[] goodsAttrIds = goodsSku.getGoodsAttributeIds().split(",");
+        List<String> goodsAttrIdList = Arrays.asList(goodsAttrIds);
+        goodsSkuDTO.setGoodsAttributes(String.join(",", goodsAttrIdList
+                .stream()
+                .map(goodsAttrId -> {
+                    try {
+                        GoodsAttributeDTO goodsAttribute = goodsAttributeService.findOne(goodsAttrId);
+                        return goodsAttribute.getGoodsTypeAttributeId() + ":" + goodsAttribute.getGoodsTypeAttributeValue();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return "";
+                })
+                .collect(Collectors.toList())));
         return goodsSkuDTO;
     }
 

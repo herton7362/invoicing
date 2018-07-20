@@ -28,30 +28,26 @@ public class PurchaseOrderSkuDTOConverter extends SimpleDTOConverter<PurchaseOrd
     protected PurchaseOrderSkuDTO doBackward(PurchaseOrderSku purchaseOrderSku) {
         PurchaseOrderSkuDTO purchaseOrderSkuDTO = super.doBackward(purchaseOrderSku);
         purchaseOrderSkuDTO.setGoods(goodsRepository.findOne(purchaseOrderSkuDTO.getGoodsId()));
-        try {
-            GoodsSkuDTO goodsSkuDTO = goodsSkuService.findOne(purchaseOrderSkuDTO.getSkuId());
-            String goodsAttributeIds = goodsSkuDTO.getGoodsAttributeIds();
-            List<String> attributeName = new ArrayList<>();
-            if(StringUtils.isNotBlank(goodsAttributeIds)) {
-                String[] goodsAttributeIdArray = goodsAttributeIds.split(",");
-                for (String goodsAttributeId : goodsAttributeIdArray) {
-                    GoodsAttributeDTO goodsAttributeDTO = goodsAttributeService.findOne(goodsAttributeId);
-                    if(goodsAttributeDTO == null) {
-                        continue;
-                    }
-                    GoodsTypeAttributeDTO goodsTypeAttributeDTO = goodsTypeAttributeService
-                            .findOne(goodsAttributeDTO.getGoodsTypeAttributeId());
-                    if(goodsTypeAttributeDTO == null) {
-                        continue;
-                    }
-
-                    attributeName.add(String.format("%s：%s",
-                            goodsTypeAttributeDTO.getName(), goodsAttributeDTO.getGoodsTypeAttributeValue()));
+        GoodsSkuDTO goodsSkuDTO = goodsSkuService.findOne(purchaseOrderSkuDTO.getSkuId());
+        String goodsAttributeIds = goodsSkuDTO.getGoodsAttributeIds();
+        List<String> attributeName = new ArrayList<>();
+        if(StringUtils.isNotBlank(goodsAttributeIds)) {
+            String[] goodsAttributeIdArray = goodsAttributeIds.split(",");
+            for (String goodsAttributeId : goodsAttributeIdArray) {
+                GoodsAttributeDTO goodsAttributeDTO = goodsAttributeService.findOne(goodsAttributeId);
+                if(goodsAttributeDTO == null) {
+                    continue;
                 }
-                purchaseOrderSkuDTO.setAttributeName(String.join("，", attributeName));
+                GoodsTypeAttributeDTO goodsTypeAttributeDTO = goodsTypeAttributeService
+                        .findOne(goodsAttributeDTO.getGoodsTypeAttributeId());
+                if(goodsTypeAttributeDTO == null) {
+                    continue;
+                }
+
+                attributeName.add(String.format("%s：%s",
+                        goodsTypeAttributeDTO.getName(), goodsAttributeDTO.getGoodsTypeAttributeValue()));
             }
-        } catch (Exception e) {
-            log.error("DTO转换出错", e);
+            purchaseOrderSkuDTO.setAttributeName(String.join("，", attributeName));
         }
         return purchaseOrderSkuDTO;
     }

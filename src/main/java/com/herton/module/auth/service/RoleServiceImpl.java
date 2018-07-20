@@ -21,7 +21,7 @@ public class RoleServiceImpl extends AbstractCrudService<Role, RoleDTO> implemen
     private final RoleRepository roleRepository;
 
     @Override
-    public void authorize(String roleId, List<String> moduleIds) throws Exception {
+    public void authorize(String roleId, List<String> moduleIds) {
         if(StringUtils.isBlank(roleId)) {
             throw new InvalidParamException("roleId is required");
         }
@@ -39,20 +39,20 @@ public class RoleServiceImpl extends AbstractCrudService<Role, RoleDTO> implemen
     }
 
     @Override
-    public void delete(String id) throws Exception {
+    public void delete(String id) {
         this.checkUsed(id);
         super.delete(id);
     }
 
     @Override
-    public void delete(Iterable<? extends RoleDTO> roles) throws Exception {
+    public void delete(Iterable<? extends RoleDTO> roles) {
         for (RoleDTO role : roles) {
             this.checkUsed(role.getId());
         }
         super.delete(roles);
     }
 
-    private void checkUsed(String id) throws Exception {
+    private void checkUsed(String id) {
         int count = roleRepository.getStaffAccountMount(id);
         if(count > 0) {
             throw new InvalidParamException("有员工归属于当前角色，请先删除员工");

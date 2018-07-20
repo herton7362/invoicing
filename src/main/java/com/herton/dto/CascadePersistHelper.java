@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  * </code>
  */
 public class CascadePersistHelper {
-    public static <D extends BaseDTO> void saveChildren(D d) throws Exception {
+    public static <D extends BaseDTO> void saveChildren(D d) {
         List<Field> childrenFields = BaseDTO.getChildrenFields(d.getClass());
         if (!childrenFields.isEmpty()) {
             for (Field childrenField : childrenFields) {
@@ -49,7 +49,7 @@ public class CascadePersistHelper {
      * @param d 父实体
      * @param childrenField 子集的字段
      */
-    private static <D extends BaseDTO> void saveChildren(final D d, Field childrenField) throws Exception {
+    private static <D extends BaseDTO> void saveChildren(final D d, Field childrenField) {
         Children children = childrenField.getAnnotation(Children.class);
         ChildCurdService childCurdService = SpringUtils.getBean(children.service());
         List list = (List) ReflectionUtils.getFieldValue(d, childrenField.getName());
@@ -71,7 +71,7 @@ public class CascadePersistHelper {
      */
     public static <P extends BaseDTO,
             D extends BaseDTO> List<D> saveAsChildren(P parent, Class<D> childClass,
-                                                      List<D> dList, CrudService crudService) throws Exception {
+                                                      List<D> dList, CrudService crudService) {
         Field parentField = BaseDTO.getParentField(childClass);
         String parentFieldName = parentField.getName();
         if (dList != null) {

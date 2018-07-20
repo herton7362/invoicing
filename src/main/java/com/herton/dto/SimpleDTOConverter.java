@@ -23,7 +23,6 @@ public class SimpleDTOConverter<A, B> extends DTOConverter<A, B> {
             BeanUtils.copyProperties(a, b);
             return b;
         } catch (InstantiationException | IllegalAccessException e) {
-
             log.error("DTO转换出现错误", e);
         }
         return null;
@@ -31,7 +30,6 @@ public class SimpleDTOConverter<A, B> extends DTOConverter<A, B> {
 
     @Override
     protected A doBackward(B b) {
-
         try {
             A a = clazzA.newInstance();
             BeanUtils.copyProperties(b, a);

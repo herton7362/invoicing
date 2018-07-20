@@ -24,27 +24,8 @@ import java.util.Map;
 public class MemberServiceImpl extends AbstractCrudService<Member, MemberDTO> implements MemberService {
     private final MemberCardService memberCardService;
 
-    private Map<String, String[]> produceQueryParam(Map<String, String[]> param) throws Exception {
-        Map<String, String[]> newParam = new HashMap<>();
-        param.entrySet().forEach((stringEntry -> newParam.put(stringEntry.getKey(), stringEntry.getValue())));
-        if(param.containsKey("cardNumber") && StringUtils.isNotBlank(param.get("cardNumber")[0])) {
-            Map<String, String[]> paramTemp = new HashMap<>();
-            paramTemp.put("cardNumber", param.get("cardNumber"));
-            newParam.remove("cardNumber");
-            List<MemberCardDTO> memberCards = memberCardService.findAll(paramTemp);
-            if(memberCards != null && !memberCards.isEmpty()) {
-                List<String> ids = new ArrayList<>();
-                for (MemberCardDTO memberCard : memberCards) {
-                    ids.add(memberCard.getMemberId());
-                }
-                newParam.put("id", ids.toArray(new String[]{}));
-            }
-        }
-        return newParam;
-    }
-
     @Override
-    public MemberDTO save(MemberDTO member) throws Exception {
+    public MemberDTO save(MemberDTO member) {
         if(StringUtils.isBlank(member.getId())) {
             member.setCode(NumberUtils.manufactureTradeNumber());
         }
@@ -52,7 +33,7 @@ public class MemberServiceImpl extends AbstractCrudService<Member, MemberDTO> im
     }
 
     @Override
-    public Double getBalance(String id) throws Exception {
+    public Double getBalance(String id) {
         if(StringUtils.isBlank(id)) {
             throw new InvalidParamException("会员id不能为空");
         }
@@ -60,7 +41,7 @@ public class MemberServiceImpl extends AbstractCrudService<Member, MemberDTO> im
     }
 
     @Override
-    public Integer getPoints(String id) throws Exception {
+    public Integer getPoints(String id) {
         if(StringUtils.isBlank(id)) {
             throw new InvalidParamException("会员id不能为空");
         }
@@ -68,7 +49,7 @@ public class MemberServiceImpl extends AbstractCrudService<Member, MemberDTO> im
     }
 
     @Override
-    public Integer getCardCount(String id) throws Exception {
+    public Integer getCardCount(String id) {
         if(StringUtils.isBlank(id)) {
             throw new InvalidParamException("会员id不能为空");
         }

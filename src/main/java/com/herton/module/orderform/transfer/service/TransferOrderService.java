@@ -10,5 +10,5 @@ public interface TransferOrderService extends CrudService<TransferOrder, Transfe
      * 从采购订单生成送货单
      * @param purchaseOrderDTO 采购订单
      */
-    void generateDeliverOrder(PurchaseOrderDTO purchaseOrderDTO) throws Exception;
+    void generateDeliverOrder(PurchaseOrderDTO purchaseOrderDTO);
 }

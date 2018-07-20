@@ -22,7 +22,7 @@ public class CodeNumberServiceImpl extends AbstractCrudService<CodeNumber, CodeN
     private final SimpleDateFormat s = new SimpleDateFormat("yyyyMMdd");
 
     @Override
-    public CodeNumber generateNextCode(CodeNumber.BusinessType businessType) throws Exception {
+    public CodeNumber generateNextCode(CodeNumber.BusinessType businessType) {
         if(businessType == null) {
             throw new InvalidParamException("业务类型不能为空");
         }
@@ -52,7 +52,7 @@ public class CodeNumberServiceImpl extends AbstractCrudService<CodeNumber, CodeN
     }
 
     @Override
-    public String getCodeByBusinessType(CodeNumber.BusinessType businessType) throws Exception {
+    public String getCodeByBusinessType(CodeNumber.BusinessType businessType) {
         if(businessType == null) {
             throw new InvalidParamException("业务类型不能为空");
         }

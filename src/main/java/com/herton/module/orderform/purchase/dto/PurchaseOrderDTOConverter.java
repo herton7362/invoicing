@@ -26,24 +26,20 @@ public class PurchaseOrderDTOConverter extends SimpleDTOConverter<PurchaseOrderD
     @Override
     protected PurchaseOrderDTO doBackward(PurchaseOrder purchaseOrder) {
         PurchaseOrderDTO purchaseOrderDTO = super.doBackward(purchaseOrder);
-        try {
-            if(StringUtils.isNotBlank(purchaseOrder.getWarehouseId())) {
-                purchaseOrderDTO.setWarehouse(warehouseService.findOne(purchaseOrder.getWarehouseId()));
-            }
-            if(StringUtils.isNotBlank(purchaseOrder.getBusinessRelatedUnitId())) {
-                purchaseOrderDTO.setBusinessRelatedUnit(businessRelatedUnitService.findOne(purchaseOrder.getBusinessRelatedUnitId()));
-            }
-            Map<String, String> param = new HashMap<>();
-            param.put("purchaseOrderId", purchaseOrderDTO.getId());
-            purchaseOrderDTO.setItems(purchaseOrderSkuService.findAll(param));
-            purchaseOrderDTO.setSumPrice(purchaseOrderDTO
-                    .getItems()
-                    .stream()
-                    .map(item -> item.getSumPrice())
-                    .reduce(0D, (sum, item) -> sum + item));
-        } catch (Exception e) {
-            log.error("订单管理DTO转换出现错误", e);
+        if(StringUtils.isNotBlank(purchaseOrder.getWarehouseId())) {
+            purchaseOrderDTO.setWarehouse(warehouseService.findOne(purchaseOrder.getWarehouseId()));
         }
+        if(StringUtils.isNotBlank(purchaseOrder.getBusinessRelatedUnitId())) {
+            purchaseOrderDTO.setBusinessRelatedUnit(businessRelatedUnitService.findOne(purchaseOrder.getBusinessRelatedUnitId()));
+        }
+        Map<String, String> param = new HashMap<>();
+        param.put("purchaseOrderId", purchaseOrderDTO.getId());
+        purchaseOrderDTO.setItems(purchaseOrderSkuService.findAll(param));
+        purchaseOrderDTO.setSumPrice(purchaseOrderDTO
+                .getItems()
+                .stream()
+                .map(item -> item.getSumPrice())
+                .reduce(0D, (sum, item) -> sum + item));
         return purchaseOrderDTO;
     }
 }

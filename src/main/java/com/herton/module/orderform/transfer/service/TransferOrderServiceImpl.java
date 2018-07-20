@@ -23,7 +23,7 @@ public class TransferOrderServiceImpl extends AbstractCrudService<TransferOrder,
         implements TransferOrderService {
     private final CodeNumberService codeNumberService;
     @Override
-    public void generateDeliverOrder(PurchaseOrderDTO purchaseOrderDTO) throws Exception {
+    public void generateDeliverOrder(PurchaseOrderDTO purchaseOrderDTO) {
         if(StringUtils.isBlank(purchaseOrderDTO.getBusinessRelatedUnitId())) {
             throw new InvalidParamException("供应商id不能为空");
         }

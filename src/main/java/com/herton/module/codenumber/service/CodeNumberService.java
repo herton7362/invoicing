@@ -10,12 +10,12 @@ public interface CodeNumberService extends CrudService<CodeNumber, CodeNumberDTO
      * @param businessType 业务类型
      * @return 编号类
      */
-    CodeNumber generateNextCode(CodeNumber.BusinessType businessType) throws Exception;
+    CodeNumber generateNextCode(CodeNumber.BusinessType businessType);
 
     /**
      * 获取编号
      * @param businessType 业务类型
      * @return 编号
      */
-    String getCodeByBusinessType(CodeNumber.BusinessType businessType) throws Exception;
+    String getCodeByBusinessType(CodeNumber.BusinessType businessType);
 }

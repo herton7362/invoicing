@@ -20,7 +20,7 @@ public class GoodsCategoryServiceImpl extends AbstractCrudService<GoodsCategory,
     private final GoodsService goodsService;
 
     @Override
-    public List<GoodsCategoryDTO> findAll(Map<String, ?> param) throws Exception {
+    public List<GoodsCategoryDTO> findAll(Map<String, ?> param) {
         List<GoodsCategoryDTO> list = super.findAll(param);
         if(param.containsKey("cascadeParent")) {
             cascadeParent(list);
@@ -34,7 +34,7 @@ public class GoodsCategoryServiceImpl extends AbstractCrudService<GoodsCategory,
         return list;
     }
 
-    private void cascadeParent(List<GoodsCategoryDTO> list) throws Exception {
+    private void cascadeParent(List<GoodsCategoryDTO> list) {
         Set<String> parentIds = new HashSet<>();
 
         list.forEach(item -> {
@@ -53,14 +53,14 @@ public class GoodsCategoryServiceImpl extends AbstractCrudService<GoodsCategory,
         cascadeParent(newList);
     }
 
-    private void addExtraData(List<GoodsCategoryDTO> list, String extraData) throws Exception {
+    private void addExtraData(List<GoodsCategoryDTO> list, String extraData) {
         if(!list.stream().anyMatch(data->data.getId().equals(extraData))) {
             list.add(findOne(extraData));
         }
     }
 
     @Override
-    public PageResult<GoodsCategoryDTO> findAll(PageRequest pageRequest, Map<String, ?> param) throws Exception {
+    public PageResult<GoodsCategoryDTO> findAll(PageRequest pageRequest, Map<String, ?> param) {
         PageResult<GoodsCategoryDTO> pageResult = super.findAll(pageRequest, param);
         if(param.containsKey("cascadeParent")) {
             List<GoodsCategoryDTO> list = new ArrayList<>(pageResult.getContent());
@@ -77,20 +77,20 @@ public class GoodsCategoryServiceImpl extends AbstractCrudService<GoodsCategory,
     }
 
     @Override
-    public void delete(String id) throws Exception {
+    public void delete(String id) {
         this.checkUsed(id);
         super.delete(id);
     }
 
     @Override
-    public void delete(Iterable<? extends GoodsCategoryDTO> goodsCategories) throws Exception {
+    public void delete(Iterable<? extends GoodsCategoryDTO> goodsCategories) {
         for (GoodsCategoryDTO goodsCategory : goodsCategories) {
             this.checkUsed(goodsCategory.getId());
         }
         super.delete(goodsCategories);
     }
 
-    private void checkUsed(String id) throws Exception {
+    private void checkUsed(String id) {
         Map<String, String> param = new HashMap<>();
         param.put("goodsCategoryId", id);
         Long count = goodsService.count(param);

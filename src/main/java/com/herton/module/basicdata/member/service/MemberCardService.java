@@ -13,52 +13,52 @@ public interface MemberCardService extends CrudService<MemberCard, MemberCardDTO
      * @param memberId 会员id
      * @return 会员总余额
      */
-    Double getMemberTotalBalance(String memberId) throws Exception;
+    Double getMemberTotalBalance(String memberId);
 
     /**
      * 获取会员总积分
      * @param memberId 会员id
      * @return 会员总积分
      */
-    Integer getMemberTotalPoints(String memberId) throws Exception;
+    Integer getMemberTotalPoints(String memberId);
 
     /**
      * 获取会员的会员卡数量
      * @param memberId 会员id
      * @return 会员的会员卡数量
      */
-    Integer getMemberCardCount(String memberId) throws Exception;
+    Integer getMemberCardCount(String memberId);
 
     /**
      * 启用
      * @param id 会员卡id
      */
-    void enable(String id) throws Exception;
+    void enable(String id);
 
     /**
      * 停用
      * @param id 会员卡id
      */
-    void disable(String id) throws Exception;
+    void disable(String id);
 
     /**
      * 充值
      * @param id 会员卡id
      * @param changeBalanceParam 充值参数
      */
-    void changeBalance(String id, ChangeBalanceParam changeBalanceParam) throws Exception;
+    void changeBalance(String id, ChangeBalanceParam changeBalanceParam);
 
     /**
      * 变更积分
      * @param id 会员卡id
      * @param changePointsParam 变更积分参数
      */
-    void changePoints(String id, ChangePointsParam changePointsParam) throws Exception;
+    void changePoints(String id, ChangePointsParam changePointsParam);
 
     /**
      * 积分转换储值
      * @param id 会员卡id
      * @param exchangePointsToBalanceParam 积分转换储值参数
      */
-    void exchangePointsToBalance(String id, ExchangePointsToBalanceParam exchangePointsToBalanceParam) throws Exception;
+    void exchangePointsToBalance(String id, ExchangePointsToBalanceParam exchangePointsToBalanceParam);
 }

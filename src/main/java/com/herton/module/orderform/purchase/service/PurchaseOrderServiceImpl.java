@@ -19,7 +19,7 @@ public class PurchaseOrderServiceImpl extends AbstractCrudService<PurchaseOrder,
     private final TransferOrderService transferOrderService;
 
     @Override
-    public PurchaseOrderDTO save(PurchaseOrderDTO purchaseOrderDTO) throws Exception {
+    public PurchaseOrderDTO save(PurchaseOrderDTO purchaseOrderDTO) {
         if(StringUtils.isBlank(purchaseOrderDTO.getBusinessRelatedUnitId())) {
             throw new InvalidParamException("供应商id不能为空");
         }

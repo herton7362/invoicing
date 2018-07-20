@@ -34,7 +34,7 @@ public class AdminServiceImpl extends AbstractCrudService<Admin, AdminDTO> imple
     private final AdminRepository adminRepository;
 
     @Override
-    public PageResult<AdminDTO> findAll(PageRequest pageRequest, Map<String, ?> param) throws Exception {
+    public PageResult<AdminDTO> findAll(PageRequest pageRequest, Map<String, ?> param) {
         Page<Admin> page = pageRepository.findAll(new AdminSpecification(param), pageRequest);
         List<AdminDTO> dList = new ArrayList<>();
         for (Admin admin : page.getContent()) {
@@ -46,7 +46,7 @@ public class AdminServiceImpl extends AbstractCrudService<Admin, AdminDTO> imple
     }
 
     @Override
-    public AdminDTO save(AdminDTO admin) throws Exception {
+    public AdminDTO save(AdminDTO admin) {
         if(admin.getId() == null) {
             if(admin.getPassword() == null) {
                 admin.setPassword("123456");
@@ -64,12 +64,12 @@ public class AdminServiceImpl extends AbstractCrudService<Admin, AdminDTO> imple
     }
 
     @Override
-    public BaseUser findOneByLoginName(String account) throws Exception {
+    public BaseUser findOneByLoginName(String account) {
         return adminRepository.findOneByLoginName(account);
     }
 
     @Override
-    public BaseUser findOneByLoginNameAndClientId(String account, String clientId) throws Exception {
+    public BaseUser findOneByLoginNameAndClientId(String account, String clientId) {
         return adminRepository.findOneByLoginNameAndClientId(account, clientId);
     }
 

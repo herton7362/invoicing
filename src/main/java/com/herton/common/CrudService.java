@@ -14,76 +14,76 @@ public interface CrudService<E extends BaseEntity, D extends BaseDTO<D, E>> {
      * @param param 查询条件
      * @return {@link PageResult} spring boot 分页类
      */
-    PageResult<D> findAll(PageRequest pageRequest, Map<String, ?> param) throws Exception;
+    PageResult<D> findAll(PageRequest pageRequest, Map<String, ?> param);
 
     /**
      * 列表查询
      * @param param 查询条件
      * @return 实体列表
      */
-    List<D> findAll(Map<String, ?> param) throws Exception;
+    List<D> findAll(Map<String, ?> param);
 
     /**
      * 查询一个
      * @param id 主键
      * @return 实体
      */
-    D findOne(String id) throws Exception;
+    D findOne(String id);
 
     /**
      * 删除
      * @param id 主键
      */
-    void delete(String id) throws Exception;
+    void delete(String id);
 
     /**
      * 删除
      * @param ts 待删除的列表
      */
-    void delete(Iterable<? extends D> ts) throws Exception;
+    void delete(Iterable<? extends D> ts);
 
     /**
      * 根据条件删除删除
      * @param param 删除条件
      */
-    void deleteByCondition(Map<String, ?> param) throws Exception;
+    void deleteByCondition(Map<String, ?> param);
 
     /**
      * 新增或修改
      * @param d 实体，如果主键不为空则修改，为空则保存
      * @return 保存后的实体
      */
-    D save(D d) throws Exception;
+    D save(D d);
 
     /**
      * 批量保存
      * @param dList 需要保存的实体列表
      * @return 保存后的列表
      */
-    List<D> save(Iterable<D> dList) throws Exception;
+    List<D> save(Iterable<D> dList);
 
     /**
      * 调整排序
      * @param ts 调整后的顺序列表
      */
-    void sort(List<E> ts) throws Exception;
+    void sort(List<E> ts);
 
     /**
      * 启用
      * @param id 主键
      */
-    void enable(String id) throws Exception;
+    void enable(String id);
 
     /**
      * 停用
      * @param id 主键
      */
-    void disable(String id) throws Exception;
+    void disable(String id);
 
     /**
      * 获取数量
      * @param param 查询条件
      * @return 数量
      */
-    Long count(Map<String, ?> param) throws Exception;
+    Long count(Map<String, ?> param);
 }

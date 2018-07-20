@@ -20,7 +20,7 @@ import java.util.Map;
 @Transactional
 public class GoodsServiceImpl extends AbstractCrudService<Goods, GoodsDTO> implements GoodsService {
     @Override
-    public GoodsDTO save(GoodsDTO goodsDTO) throws Exception {
+    public GoodsDTO save(GoodsDTO goodsDTO) {
         if(StringUtils.isBlank(goodsDTO.getName())) {
             throw new InvalidParamException("商品名称不能为空");
         }

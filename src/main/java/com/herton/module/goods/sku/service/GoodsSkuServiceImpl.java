@@ -15,7 +15,7 @@ public class GoodsSkuServiceImpl extends AbstractChildCrudService<GoodsSku, Good
     private final GoodsService goodsService;
 
     @Override
-    public void delete(String id) throws Exception {
+    public void delete(String id) {
         GoodsSkuDTO goodsSku = findOne(id);
         if(this.checkUsed(id)) {
             goodsSku.setLogicallyDeleted(true);
@@ -26,7 +26,7 @@ public class GoodsSkuServiceImpl extends AbstractChildCrudService<GoodsSku, Good
     }
 
     @Override
-    public void delete(Iterable<? extends GoodsSkuDTO> goodsSkus) throws Exception {
+    public void delete(Iterable<? extends GoodsSkuDTO> goodsSkus) {
         for (GoodsSkuDTO skus : goodsSkus) {
             super.delete(skus.getId());
         }

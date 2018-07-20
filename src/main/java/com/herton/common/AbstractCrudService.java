@@ -84,7 +84,7 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
     }
 
     @Override
-    public PageResult<D> findAll(PageRequest pageRequest, Map<String, ?> param) throws Exception {
+    public PageResult<D> findAll(PageRequest pageRequest, Map<String, ?> param) {
         Page<E> page = pageRepository.findAll(getSpecification(param), pageRequest);
         PageResult<D> pageResult = new PageResult<>();
         pageResult.setContent(baseDTO.convertFor(page.getContent()));
@@ -96,7 +96,7 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
     }
 
     @Override
-    public List<D> findAll(Map<String, ?> param) throws Exception {
+    public List<D> findAll(Map<String, ?> param) {
         return baseDTO.convertFor(pageRepository.findAll(getSpecification(param)));
     }
 
@@ -117,7 +117,7 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
 
     @Override
     @SuppressWarnings("unchecked")
-    public void delete(String id) throws Exception {
+    public void delete(String id) {
         if(id == null) {
             return;
         }
@@ -140,7 +140,7 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
     }
 
     @Override
-    public void deleteByCondition(Map<String, ?> param) throws Exception {
+    public void deleteByCondition(Map<String, ?> param) {
         if(param == null) {
             throw new InvalidParamException("删除条件不能为空");
         }
@@ -149,7 +149,7 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
 
     @Override
     @SuppressWarnings("unchecked")
-    public D save(D d) throws Exception {
+    public D save(D d) {
         if(d == null) {
             return null;
         }
@@ -163,7 +163,7 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
 
 
     @Override
-    public List<D> save(Iterable<D> dList) throws Exception {
+    public List<D> save(Iterable<D> dList) {
         if(dList == null) {
             return null;
         }
@@ -175,7 +175,7 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
     }
 
     @Override
-    public void delete(Iterable<? extends D> ts) throws Exception {
+    public void delete(Iterable<? extends D> ts) {
         if(ts == null) {
             return;
         }
@@ -364,7 +364,7 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
         }
     }
 
-    public void sort(List<E> ts) throws Exception {
+    public void sort(List<E> ts) {
         E t;
         for (int i = 0; i < ts.size(); i++) {
             if(StringUtils.isBlank(ts.get(i).getId())) {
@@ -376,7 +376,7 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
         }
     }
 
-    public void enable(String id) throws Exception {
+    public void enable(String id) {
         if(StringUtils.isBlank(id)) {
             throw new InvalidParamException("id不能为空");
         }
@@ -388,7 +388,7 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
         pageRepository.save(t);
     }
 
-    public void disable(String id) throws Exception {
+    public void disable(String id) {
         if(StringUtils.isBlank(id)) {
             throw new InvalidParamException("id不能为空");
         }
