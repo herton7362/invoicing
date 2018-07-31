@@ -7,6 +7,7 @@ import com.herton.module.basicdata.businessrelatedunit.dto.BusinessRelatedUnitDT
 import com.herton.module.basicdata.warehouse.dto.WarehouseDTO;
 import com.herton.module.orderform.purchase.domain.PurchaseOrder;
 import com.herton.module.orderform.purchase.service.PurchaseOrderSkuService;
+import com.herton.module.orderform.transfer.dto.TransferOrderDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -48,4 +49,12 @@ public class PurchaseOrderDTO extends BaseDTO<PurchaseOrderDTO, PurchaseOrder> {
 
     @ApiModelProperty(value = "总计")
     private Double sumPrice;
+    @ApiModelProperty(value = "送货单id")
+    private String transferOrderId;
+    @ApiModelProperty(value = "创建人名称")
+    private String createUserName;
+    @ApiModelProperty(value = "状态名称")
+    private String statusName;
+    @ApiModelProperty(value = "收货状态名称")
+    private String transferStatusName;
 }

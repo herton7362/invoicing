@@ -5,8 +5,9 @@ import com.herton.dto.SimpleDTOConverter;
 import com.herton.module.goods.domain.GoodsRepository;
 import com.herton.module.goods.dto.GoodsAttributeDTO;
 import com.herton.module.goods.service.GoodsAttributeService;
-import com.herton.module.goods.service.GoodsService;
 import com.herton.module.goods.sku.domain.GoodsSku;
+import com.herton.module.goods.type.dto.GoodsTypeAttributeDTO;
+import com.herton.module.goods.type.service.GoodsTypeAttributeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 public class GoodsSkuDTOConverter extends SimpleDTOConverter<GoodsSkuDTO, GoodsSku> {
     private final GoodsRepository goodsRepository;
     private final GoodsAttributeService goodsAttributeService;
+    private final GoodsTypeAttributeService goodsTypeAttributeService;
 
     @Override
     protected GoodsSku doForward(GoodsSkuDTO goodsSkuDTO) {
@@ -64,15 +66,36 @@ public class GoodsSkuDTOConverter extends SimpleDTOConverter<GoodsSkuDTO, GoodsS
                     return "";
                 })
                 .collect(Collectors.toList())));
+        String goodsAttributeIds = goodsSkuDTO.getGoodsAttributeIds();
+        List<String> attributeName = new ArrayList<>();
+        if(StringUtils.isNotBlank(goodsAttributeIds)) {
+            String[] goodsAttributeIdArray = goodsAttributeIds.split(",");
+            for (String goodsAttributeId : goodsAttributeIdArray) {
+                GoodsAttributeDTO goodsAttributeDTO = goodsAttributeService.findOne(goodsAttributeId);
+                if(goodsAttributeDTO == null) {
+                    continue;
+                }
+                GoodsTypeAttributeDTO goodsTypeAttributeDTO = goodsTypeAttributeService
+                        .findOne(goodsAttributeDTO.getGoodsTypeAttributeId());
+                if(goodsTypeAttributeDTO == null) {
+                    continue;
+                }
+
+                attributeName.add(String.format("%s：%s",
+                        goodsTypeAttributeDTO.getName(), goodsAttributeDTO.getGoodsTypeAttributeValue()));
+            }
+            goodsSkuDTO.setAttributeName(String.join("，", attributeName));
+        }
         return goodsSkuDTO;
     }
 
     @Autowired
     public GoodsSkuDTOConverter(
             GoodsRepository goodsRepository,
-            GoodsAttributeService goodsAttributeService
-    ) {
+            GoodsAttributeService goodsAttributeService,
+            GoodsTypeAttributeService goodsTypeAttributeService) {
         this.goodsRepository = goodsRepository;
         this.goodsAttributeService = goodsAttributeService;
+        this.goodsTypeAttributeService = goodsTypeAttributeService;
     }
 }

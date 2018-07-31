@@ -11,4 +11,11 @@ public interface TransferOrderService extends CrudService<TransferOrder, Transfe
      * @param purchaseOrderDTO 采购订单
      */
     void generateDeliverOrder(PurchaseOrderDTO purchaseOrderDTO);
+
+    /**
+     * 根据原始单据查询送货单
+     * @param originOrderId 原始单据id
+     * @return 送货单
+     */
+    TransferOrder findOneByOriginOrderId(String originOrderId);
 }

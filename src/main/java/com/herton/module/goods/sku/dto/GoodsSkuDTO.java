@@ -39,6 +39,9 @@ public class GoodsSkuDTO extends BaseDTO<GoodsSkuDTO, GoodsSku> {
     @ApiModelProperty("商品属性值，用逗号分隔 例 attrTypeId:红色")
     private String goodsAttributes;
 
+    @ApiModelProperty(value = "规格")
+    private String attributeName;
+
     @Override
     public boolean equals(Object obj) {
         if(!(obj instanceof GoodsSkuDTO)) {

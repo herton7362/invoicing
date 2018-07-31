@@ -6,6 +6,7 @@ import com.herton.exceptions.InvalidParamException;
 import com.herton.module.codenumber.domain.CodeNumber;
 import com.herton.module.codenumber.service.CodeNumberService;
 import com.herton.module.orderform.purchase.dto.PurchaseOrderSkuDTO;
+import com.herton.module.orderform.transfer.domain.QTransferOrder;
 import com.herton.module.orderform.transfer.domain.TransferOrder;
 import com.herton.module.orderform.transfer.dto.TransferOrderDTO;
 import com.herton.module.orderform.purchase.dto.PurchaseOrderDTO;
@@ -58,6 +59,17 @@ public class TransferOrderServiceImpl extends AbstractCrudService<TransferOrder,
         }
         transferOrderDTO.setItems(transferOrderSkuDTOS);
         super.save(transferOrderDTO);
+    }
+
+    @Override
+    public TransferOrder findOneByOriginOrderId(String originOrderId) {
+        if(StringUtils.isBlank(originOrderId)) {
+            return null;
+        }
+        QTransferOrder qTransferOrder = QTransferOrder.transferOrder;
+        TransferOrder transferOrder = this.queryFactory
+                .selectFrom(qTransferOrder).where(qTransferOrder.originOrderId.eq(originOrderId)).fetchFirst();
+        return transferOrder;
     }
 
     @Autowired

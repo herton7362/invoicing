@@ -37,4 +37,9 @@ public class TransferOrderDTO extends BaseDTO<TransferOrderDTO, TransferOrder> {
     @Children(service = TransferOrderSkuService.class)
     @ApiModelProperty(value = "订单项目")
     private List<TransferOrderSkuDTO> items;
+
+    @ApiModelProperty(value = "创建人名称")
+    private String createUserName;
+    @ApiModelProperty(value = "状态名称")
+    private String statusName;
 }

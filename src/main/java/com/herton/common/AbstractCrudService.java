@@ -85,7 +85,7 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
 
     @Override
     public PageResult<D> findAll(PageRequest pageRequest, Map<String, ?> param) {
-        Page<E> page = pageRepository.findAll(getSpecification(param), pageRequest);
+        PageResult<E> page = findAllEntities(pageRequest, param);
         PageResult<D> pageResult = new PageResult<>();
         pageResult.setContent(baseDTO.convertFor(page.getContent()));
         pageResult.setTotalElements(page.getTotalElements());
@@ -96,8 +96,18 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
     }
 
     @Override
+    public PageResult<E> findAllEntities(PageRequest pageRequest, Map<String, ?> param) {
+        return new PageResult<>(pageRepository.findAll(getSpecification(param), pageRequest));
+    }
+
+    @Override
     public List<D> findAll(Map<String, ?> param) {
-        return baseDTO.convertFor(pageRepository.findAll(getSpecification(param)));
+        return baseDTO.convertFor(findAllEntities(param));
+    }
+
+    @Override
+    public List<E> findAllEntities(Map<String, ?> param) {
+        return pageRepository.findAll(getSpecification(param));
     }
 
     @Override
@@ -109,10 +119,18 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
         if(cache.get(id) != null) {
             return (D) cache.get(id);
         }
-        E e = pageRepository.findOne(id);
+        E e = findOneEntity(id);
+        if(e == null) {
+            return null;
+        }
         D d = baseDTO.convertFor(e);
         cache.set(id, d);
         return d;
+    }
+
+    @Override
+    public E findOneEntity(String id) {
+        return pageRepository.findOne(id);
     }
 
     @Override
@@ -153,7 +171,7 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
         if(d == null) {
             return null;
         }
-        E e = pageRepository.save(d.convert());
+        E e = saveEntity(d.convert());
         d.setId(e.getId());
         CascadePersistHelper.saveChildren(d);
         d = baseDTO.convertFor(e);
@@ -161,6 +179,10 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
         return d;
     }
 
+    @Override
+    public E saveEntity(E e) {
+        return pageRepository.save(e);
+    }
 
     @Override
     public List<D> save(Iterable<D> dList) {
@@ -175,6 +197,18 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
     }
 
     @Override
+    public List<E> saveEntities(Iterable<E> eList) {
+        if(eList == null) {
+            return null;
+        }
+        List<E> result = new ArrayList<>();
+        for (E e : eList) {
+            result.add(saveEntity(e));
+        };
+        return result;
+    }
+
+    @Override
     public void delete(Iterable<? extends D> ts) {
         if(ts == null) {
             return;
@@ -183,6 +217,17 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
             delete(t.getId());
             cache.remove(t.getId());
         }
+    }
+
+    @Override
+    public void deleteEntities(Iterable<? extends E> ts) {
+        if(ts == null) {
+            return;
+        }
+        ts.forEach(e -> {
+            delete(e.getId());
+            cache.remove(e.getId());
+        });
     }
 
     /**
