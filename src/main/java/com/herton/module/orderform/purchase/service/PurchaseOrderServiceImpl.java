@@ -29,7 +29,6 @@ public class PurchaseOrderServiceImpl extends AbstractCrudService<PurchaseOrder,
         if(StringUtils.isBlank(purchaseOrderDTO.getWarehouseId())) {
             throw new InvalidParamException("交货仓库id不能为空");
         }
-        codeNumberService.generateNextCode(CodeNumber.BusinessType.JHD);
         purchaseOrderDTO.setOrderNumber(codeNumberService.getCodeByBusinessType(CodeNumber.BusinessType.JHD));
         // 确认订单生成配送单
         if(purchaseOrderDTO.getStatus() == PurchaseOrder.OrderStatus.CONFIRMED) {

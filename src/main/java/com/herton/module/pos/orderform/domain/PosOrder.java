@@ -1,4 +1,4 @@
-package com.herton.module.codenumber.domain;
+package com.herton.module.pos.orderform.domain;
 
 import com.herton.entity.BaseEntity;
 import lombok.Getter;
@@ -10,21 +10,24 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
 @Entity
-@Setter
 @Getter
-public class CodeNumber extends BaseEntity {
+@Setter
+public class PosOrder extends BaseEntity {
+    @Column(length = 36)
+    private String orderNumber;
+    @Column(length = 36)
+    private String operator;
+    @Column(length = 36)
+    private String posSessionId;
     @Column(length = 20)
     @Enumerated(EnumType.STRING)
-    private BusinessType businessType;
-    @Column(length = 20)
-    private String nextCode;
+    private OrderStatus status;
 
-    public enum BusinessType {
-        JHD("进货订单"),
-        PHH("POS会话"),
-        SHD("送货单");
+    public enum OrderStatus {
+        NEW("新建"),
+        PAYED("已支付");
         private String displayName;
-        BusinessType(String displayName) {
+        OrderStatus(String displayName) {
             this.displayName = displayName;
         }
         public String getDisplayName() {
