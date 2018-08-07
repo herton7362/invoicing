@@ -1,6 +1,5 @@
 package com.herton.common;
 
-import com.herton.common.utils.CacheUtils;
 import com.herton.common.utils.ReflectionUtils;
 import com.herton.common.utils.SpringUtils;
 import com.herton.common.utils.StringUtils;
@@ -13,6 +12,8 @@ import com.herton.module.auth.UserThread;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.Assert;
@@ -39,7 +40,6 @@ import java.util.*;
  * @param <D> DTO对象
  */
 public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDTO<D, E>> implements CrudService<E, D> {
-    protected final CacheUtils cache = CacheUtils.getInstance();
     @Value("${service.showAllEntities}")
     private Boolean showAllEntities;
 
@@ -133,29 +133,29 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
     }
 
     @Override
+    @Cacheable("dto")
     @SuppressWarnings("unchecked")
     public D findOne(String id) {
         if(id == null) {
             return null;
-        }
-        if(cache.get(id) != null) {
-            return (D) cache.get(id);
         }
         E e = findOneEntity(id);
         if(e == null) {
             return null;
         }
         D d = baseDTO.convertFor(e);
-        cache.set(id, d);
+        System.out.println("=================查询了数据库=============={}" + id);
         return d;
     }
 
     @Override
+    @Cacheable("entity")
     public E findOneEntity(String id) {
         return pageRepository.findOne(id);
     }
 
     @Override
+    @CacheEvict({"dto", "entity"})
     @SuppressWarnings("unchecked")
     public void delete(String id) {
         if(id == null) {
@@ -176,7 +176,6 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
 
         }
         pageRepository.delete(id);
-        cache.remove(id);
     }
 
     @Override
@@ -188,6 +187,7 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
     }
 
     @Override
+    @CacheEvict("dto")
     @SuppressWarnings("unchecked")
     public D save(D d) {
         if(d == null) {
@@ -197,11 +197,11 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
         d.setId(e.getId());
         CascadePersistHelper.saveChildren(d);
         d = baseDTO.convertFor(e);
-        cache.set(e.getId(), d);
         return d;
     }
 
     @Override
+    @CacheEvict("entity")
     public E saveEntity(E e) {
         return pageRepository.save(e);
     }
@@ -237,7 +237,6 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
         }
         for (D t : ts) {
             delete(t.getId());
-            cache.remove(t.getId());
         }
     }
 
@@ -248,7 +247,6 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
         }
         ts.forEach(e -> {
             delete(e.getId());
-            cache.remove(e.getId());
         });
     }
 

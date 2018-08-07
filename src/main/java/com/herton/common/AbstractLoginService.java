@@ -1,11 +1,12 @@
 package com.herton.common;
 
-import com.herton.common.utils.CacheUtils;
 import com.herton.entity.BaseUser;
 import com.herton.exceptions.InvalidParamException;
 import com.herton.kits.notification.Notification;
 import com.herton.kits.notification.message.SmsVerifyCodeMessage;
 import com.herton.module.auth.domain.Admin;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.User;
@@ -34,7 +35,8 @@ public abstract class AbstractLoginService {
      *
      * @param mobile 手机号码
      */
-    public void sendVerifyCode(String mobile) throws Exception {
+    @Cacheable("verifyCode")
+    public String sendVerifyCode(String mobile) throws Exception {
         if (!Pattern.matches(REGEX_MOBILE, mobile)) {
             throw new InvalidParamException(String.format("%s无效的手机号码", mobile));
         }
@@ -42,11 +44,11 @@ public abstract class AbstractLoginService {
         admin.setLoginName(mobile);
         admin.setMobile(mobile);
         String code = generateVerifyCode();
-        CacheUtils.getInstance().add(mobile, code);
         SmsVerifyCodeMessage message = new SmsVerifyCodeMessage();
         message.setDestUser(admin);
         message.setVerifyCode(code);
         getNotification().send(message);
+        return code;
     }
 
     /**
@@ -106,7 +108,7 @@ public abstract class AbstractLoginService {
      * @return 验证码是否正确
      */
     protected Boolean verifyVerifyCode(String mobile, String verifyCode) throws Exception {
-        return verifyCode.equals(CacheUtils.getInstance().get(mobile));
+        return verifyCode.equals(getVerifyCode(mobile));
     }
 
     /**
@@ -114,8 +116,19 @@ public abstract class AbstractLoginService {
      *
      * @param mobile 手机号
      */
+    @Cacheable("verifyCode")
+    protected String getVerifyCode(String mobile) throws Exception {
+        return null;
+    }
+
+    /**
+     * 根据手机号删除验证码
+     *
+     * @param mobile 手机号
+     */
+    @CacheEvict("verifyCode")
     protected void clearVerifyCode(String mobile) throws Exception {
-        CacheUtils.getInstance().remove(mobile);
+        return ;
     }
 
     /**
