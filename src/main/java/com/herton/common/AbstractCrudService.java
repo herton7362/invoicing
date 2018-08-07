@@ -144,7 +144,6 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
             return null;
         }
         D d = baseDTO.convertFor(e);
-        System.out.println("=================查询了数据库=============={}" + id);
         return d;
     }
 
