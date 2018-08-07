@@ -13,7 +13,6 @@ import com.herton.module.auth.UserThread;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.Assert;
@@ -81,6 +80,29 @@ public abstract class AbstractCrudService<E extends BaseEntity, D extends BaseDT
             }
         });
         return newParam;
+    }
+
+    private Map<String, Object> object2Map(Object obj) {
+        Field[] fields = ReflectionUtils.getDeclaredFields(obj.getClass());
+        Map<String, Object> map = new HashMap<>();
+        Object value;
+        for (Field field : fields) {
+            value = ReflectionUtils.getFieldValue(obj, field);
+            if(value != null) {
+                map.put(field.getName(), value);
+            }
+        }
+        return map;
+    }
+
+    @Override
+    public PageResult<D> findAll(PageRequest pageRequest, D param) {
+        return findAll(pageRequest, object2Map(param));
+    }
+
+    @Override
+    public PageResult<E> findAllEntities(PageRequest pageRequest, E param) {
+        return findAllEntities(pageRequest, object2Map(param));
     }
 
     @Override

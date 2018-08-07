@@ -14,6 +14,22 @@ public interface CrudService<E extends BaseEntity, D extends BaseDTO<D, E>> {
      * @param param 查询条件
      * @return {@link PageResult} spring boot 分页类
      */
+    PageResult<D> findAll(PageRequest pageRequest, D param);
+
+    /**
+     * 分页查询
+     * @param pageRequest 分页条件
+     * @param param 查询条件
+     * @return {@link PageResult} spring boot 分页类
+     */
+    PageResult<E> findAllEntities(PageRequest pageRequest, E param);
+
+    /**
+     * 分页查询
+     * @param pageRequest 分页条件
+     * @param param 查询条件
+     * @return {@link PageResult} spring boot 分页类
+     */
     PageResult<D> findAll(PageRequest pageRequest, Map<String, ?> param);
 
     /**
